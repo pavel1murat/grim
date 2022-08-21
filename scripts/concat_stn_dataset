@@ -1,0 +1,60 @@
+#!/usr/bin/bash
+#------------------------------------------------------------------------------
+# concatenate stntuples produced by a grid job
+# stntuple files are assumed to reside in the output directory of the grid job ran under 'mu2epro' account
+# the job can be run in a private , not necessarily created by mu2epro, release 
+# and is stored in a [temporary] results/$output_dataset_id directory, from where 
+# stntuples are uploaded to the mu2epro area
+# the workflow is kludgy, but allows one to proceed
+# 
+# assume that the input directory contains output of several grid jobs - sometimes recovery is needed
+#
+# however, also assume that there is no duplicate stntuple files in those directory 
+# call signature via example:
+#
+#           su2020/scripts/concat_stn_dataset su2020 cele0s41b2 s5:reco_stn_b1 cele0s51b2 [gridID1[,gridID2[...]]]
+#
+# - if gridID is not specified, stntuples from all jobs are concatenated together
+#------------------------------------------------------------------------------
+project=$1
+  idsid=$2
+  stage=`echo $3 | awk -F : '{print $1}'`
+  jtype=`echo $3 | awk -F : '{print $2}'`
+  odsid=$4
+  grid_id=$5
+
+#idir=/pnfs/mu2e/persistent/users/mu2epro/workflow/su2020.$idsid.${stage}_${jtype}/outstage
+idir=/pnfs/mu2e/scratch/users/huangs/workflow/su2020.$idsid.${stage}_${jtype}/outstage
+if [ ".$grid_id" == "." ] ; then 
+  ls -l $idir/*/00/?????/*.stn | awk '{print $9}' | sort -k1.124,1.160 >| $odsid.stn.files
+else
+  list=`echo $grid_id | sed 's/,/ /g'`
+
+  # echo list=$list
+
+  for id in $list ; do
+      ls -l $idir/$id/00/?????/*.stn | awk '{print $9}'
+  done | sort -k1.124,1.160 >| $odsid.stn.files
+
+fi
+
+# ultimately, need stntuples in /pnfs/mu2e/persistent/users/mu2epro/su2020/stntuple/$odsid
+
+odir=$PWD/results/$odsid
+if [ ! -d $odir ] ; then mkdir -p $odir ; fi
+
+#------------------------------------------------------------------------------
+# default file size limit : 1.6 GBytes (approx), set in make_concat_requests.rb
+# add '--max_file_size size' (in megabytes) to change that
+#------------------------------------------------------------------------------
+
+concat_script=$PWD/${odsid}_concat_request.C
+Stntuple/scripts/make_concat_requests.rb -l $odsid.stn.files -b su2020 -d $odsid -o $odir -f stntuple -t $concat_script -m 4000
+
+# concatenation itself
+
+root.exe << EOF
+.L Stntuple/scripts/dh.C
+dh::concatenate("$concat_script")
+.q
+EOF

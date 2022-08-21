@@ -1,0 +1,13 @@
+#------------------------------------------------------------------------------
+# template configuration file for the grid submission
+# the same config file may include multiple projects configurations, 
+# this template includes only one - su2020
+#------------------------------------------------------------------------------
+# su2020 project
+#------------------------------------------------------------------------------
+su2020.base_release      /mu2e/app/users/murat/su2020_prof        # base release used to build the code tarball
+su2020.code_tarball      su2020.code.murat.4661eec3.tbz           # name of the code tarball to be used
+su2020.tmp_dir           tmp/su2020                               # location of the temporary work files
+su2020.grid_output_dir   /pnfs/mu2e/scratch/users                 # location of the GRID job output  
+su2020.log_dir           /mu2e/data/users/murat                   # location of the logfiles on disk
+$------------------------------------------------------------------------------

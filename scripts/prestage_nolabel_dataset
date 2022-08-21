@@ -1,0 +1,6 @@
+#!/bin/bash
+
+
+while read f; do
+  file "$f" &
+done <$1

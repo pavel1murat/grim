@@ -1,0 +1,10 @@
+#! /usr/bin/bash
+# use as mu2epro (may not work for regular users)
+# call: check_pnfs_file_locality  full_filename
+#
+fn=$1
+dn=`dirname $fn`
+bn=`basename $fn`
+cd $dn
+# cat ".(get)($bn)(locality)"
+cat ".(use)(4)($bn)"

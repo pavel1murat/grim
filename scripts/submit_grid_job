@@ -1,0 +1,79 @@
+#!/bin/bash 
+#------------------------------------------------------------------------------
+# one thing for sure: for different projects the grid submission is slightly different
+# - the code tarball naming may follow different rules
+# by default, use dcache
+# examples:
+#           su2020/scripts/submit_grid_job su2020 bpim0s00b0    s1:sim   2000MB:24h:ifdh   .
+#           su2020/scripts/submit_grid_job su2020 pbar0s01b0:03 s1:sim   3000MB:24h:ifdh   .
+#           su2020/scripts/submit_grid_job su2020 bpim0s11b0    s2:sim   4000MB:10h:xrootd .
+#
+# special value doit='xrd_debug' turns on the XROOTD client debugging and adds MB's of printout
+#------------------------------------------------------------------------------
+        project=$1  # su2020
+          idsid=$2  # bmum2s21b0[:01] ... or gen:250_20000:[:01] ; if 'gen', '250_20000' means 'njobs_neventsPerJob'
+     p_job_type=$3  # 's1:sim' or 's1:stn' , for example  or s1:sim:r01
+  p_time_xrootd=$4  # '5h:xrootd' or '16h:ifdh'
+	   
+ input_stream=`echo $ist | awk -F : '{print $1}'`;
+      fileset=`echo $ist | awk -F : '{print $2}'`;
+
+       memory=`echo $p_time_xrootd | awk -F : '{print $1}'`;
+         time=`echo $p_time_xrootd | awk -F : '{print $2}'`;
+       xrootd=`echo $p_time_xrootd | awk -F : '{print $3}'`;
+
+        stage=`echo $p_job_type | awk -F : '{print $1}'`
+        jtype=`echo $p_job_type | awk -F : '{print $2}'`
+      fileset=`echo $p_job_type | awk -F : '{print $3}'`
+recovery_stub=`echo $p_job_type | awk -F : '{print $4}'`
+
+if [ ".$5" != "." ] ; then doit=$5 ; else doit='d' ; fi
+
+     sub_stub=${stage}_${jtype}
+
+expected_job_time=8h
+if [ $time != "." ] ; then expected_job_time=$time ; fi
+
+setup mu2etools
+setup mu2efiletools
+setup mu2egrid 
+
+tarball_bn=`cat .grid_config | grep $project.code_tarball | awk '{print $2}'`
+
+code_tarball=/pnfs/mu2e/resilient/users/$USER/$project/$tarball_bn
+
+user_stub=$USER
+if [ $USER == "mu2epro" ] ; then user_stub="mu2e" ; fi
+
+ fcl_tarball=/pnfs/mu2e/resilient/users/$USER/$project/cnf.$user_stub.${idsid}.$sub_stub.$project.fcl.tbz
+# if [ ".$fclt" != "." ] ; then fcl_tarball=$fclt ; fi
+
+if [ ".$fileset" != "." ] ; then 
+    fcl_tarball=/pnfs/mu2e/resilient/users/$USER/$project/cnf.$user_stub.$idsid.$sub_stub.$project.$fileset.fcl.tbz
+fi
+
+if [ ".$recovery_stub" != "." ] ; then 
+    fcl_tarball=/pnfs/mu2e/resilient/users/$USER/$project/cnf.$user_stub.$idsid.$sub_stub.$project.$recovery_stub.fcl.tbz
+fi
+
+dataset_conf=${project}
+work_project=${project}.${idsid}.$sub_stub
+
+parameters="--code=$code_tarball --fcllist=$fcl_tarball --dsconf=$dataset_conf --wfproject=$work_project  --error-delay=10 --transfer-all-files --expected-lifetime=$time"
+
+parameters=$parameters" --memory=$memory"
+if [ $xrootd == "xrootd" ] ; then 
+    parameters=$parameters" --xrootd" ; 
+    parameters=$parameters" --jobsub-arg=-e --jobsub-arg=XRD_STREAMTIMEOUT=300"
+    if [ ".$doit" == ".xrd_debug" ] ; then 
+	parameters=$parameters" --jobsub-arg=-e --jobsub-arg=XRD_LOADBALANCERTTL=7200"
+	parameters=$parameters" --jobsub-arg=-e --jobsub-arg=XRD_LOGLEVEL=Debug" ; 
+    fi
+fi
+
+# echo \* \<`date +%Y-%m-%d\ %a`\> *xxxxxxxx SUBMITTED* : $project.$idsid.$sub_stub          $p_time_xrootd 
+
+if [ ".$doit" == ".d" ] ; then parameters=$parameters" --dry-run" ; fi
+
+date ; mu2eprodsys $parameters
+ 

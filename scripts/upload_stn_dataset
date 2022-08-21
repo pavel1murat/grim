@@ -1,0 +1,42 @@
+#!/usr/bin/bash
+#------------------------------------------------------------------------------
+# assume that a concatenated STNTUPLE dataset to be uploaded is copied to 
+# the /pnfs/mu2e/persistent/users/mu2epro/su2020/stntuple/$dsid/tmp area 
+# 
+#------------------------------------------------------------------------------
+project=$1
+   dsid=$2
+
+ dir=/pnfs/mu2e/persistent/users/mu2epro/$project/stntuple/$dsid/tmp
+
+setup mu2etools
+setup mu2efiletools
+# setup dhtools
+
+cwd=`pwd`
+cd $dir
+
+rc=0
+
+for f in `ls $dir/*.stn` ; do 
+    # jsonMaker.py  -f phy-nts  -x  $f 
+    printJson --no-parents $f  >| $f.json
+    rc=$?
+    if [ $rc != "0" ] ; then 
+	echo file=$f failed to generate metadata rc = $rc
+	break ; 
+    fi
+    echo rc=$rc , printing metadata:
+    cat $f.json
+done
+
+if [ $rc == "0" ] ; then 
+    ls $dir/*.json | mu2eFileDeclare
+    rc=$?
+    if [ $rc == "0" ] ; then
+	ls $dir/*.stn  | mu2eFileUpload --tape 
+    fi
+fi
+cd $cwd
+
+echo on EXIT rc=$rc

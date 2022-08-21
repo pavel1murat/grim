@@ -1,0 +1,10 @@
+#!/usr/bin/bash
+# assume dataset is already copied to PNFS:mu2epro
+# make sure kerberos ticket is current
+project=$1
+   dsid=$2
+   idir=/pnfs/mu2e/persistent/users/mu2epro/$project/stntuple/$dsid
+
+catalog_dir=/web/sites/mu2e.fnal.gov/htdocs/atwork/computing/Stntuple/cafdfc
+
+Stntuple/scripts/catalog_stntuples --access=xrootd -b su2020 -d $dsid -D $idir -p $dsid --install $catalog_dir # --verbose 1 --cleanup no

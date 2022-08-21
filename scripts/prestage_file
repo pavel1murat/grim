@@ -1,0 +1,31 @@
+#!/bin/bash
+#------------------------------------------------------------------------------
+# prestage a single file using SAM, so one could monitor the process via the SAM project
+# assume Mu2e offline (but not necessarily dhtools) is setup
+#
+# call signature: prestage_file.sh filename
+#
+# example: 
+#          prestage_file dig.mu2e.fele2s41b1.su2020.001000_00002861.art
+#------------------------------------------------------------------------------
+    fn=`basename $1`   # allow path-qualified filenames
+  dsid=`echo $fn | awk -F . '{print $1"."$2"."$3"."$4"."$6}'`
+subrun=`echo $fn | awk -F . '{print $5}' | awk -F _ '{printf("%i",$2)}'`
+
+setup dhtools
+
+dims="dh.dataset $dsid and dh.first_subrun $subrun"
+# echo dims=$dims
+
+tempdef=$dsid.`date +%s` ; # append time in seconds 
+
+# echo tempdef=$tempdef
+
+# the definition name is unique - it is time-stamped, so no need to check that
+samweb create-definition $tempdef "$dims"
+
+samweb prestage-dataset --defname=$tempdef ; rc=$?
+
+samweb delete-definition $tempdef
+
+echo $fn prestaged with rc = $rc

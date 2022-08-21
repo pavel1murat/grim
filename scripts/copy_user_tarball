@@ -1,0 +1,17 @@
+#!/usr/bin/bash
+#------------------------------------------------------------------------------
+# copy code tarball from the user area to mu2epro area, preserving its name
+# the tarball name is assumed to have the structure as follows:
+#
+#     su2020.code.murat.97d1fb1a.tbz 
+#------------------------------------------------------------------------------
+tarball=$1
+project=`echo $tarball | awk -F . '{print $1}'`
+   user=`echo $tarball | awk -F . '{print $3}'`
+
+t1=/pnfs/mu2e/resilient/users/$user/$project/$tarball
+t2=/pnfs/mu2e/resilient/users/mu2epro/$project/$tarball
+
+cp -f $t1 $t2
+
+# this should be it
