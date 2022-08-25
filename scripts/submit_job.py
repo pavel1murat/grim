@@ -17,7 +17,8 @@ class Tool:
     def __init__(self):
         self.fProject       = None
         self.fProjectDir    = None
-        self.fDsid          = 'xxx_xxxx'  # just to make it up 
+        self.fFamilyID      = None
+        self.fInputDsid     = 'xxx_xxxx'  # just to make it up 
         self.fDoit          = 'd'
         self.fStageName     = "undefined" # stage name
         self.fStage         = None;       # configuraton of the stage
@@ -77,7 +78,7 @@ class Tool:
             elif key == '--doit':
                 self.fDoit = val
             elif key == '--dsid':
-                self.fDsid = val
+                self.fFamilyID = val
             elif key == '--job':
                 self.fJType = val
             elif key == '--fileset':
@@ -95,19 +96,21 @@ class Tool:
             fn              = 'tmp/'+self.fProject+'/grid_job_status/'+self.fRecover;
             dict            = json.loads(open(fn).read())
 
-            self.fProject   = dict['project']
-            self.fDsid      = dict['idsid'][0:5]
-            self.fStageName = dict['stage']
-            self.fJType     = dict['job_name']
-            self.fFileset   = dict['fileset']
+            self.fProject   = dict['project'  ]
+            self.fFamilyID  = dict['family_id']
+            self.fInputDsid = dict['idsid'    ]
+            self.fStageName = dict['stage'    ]
+            self.fJType     = dict['job_name' ]
+            self.fFileset   = dict['fileset'  ]
 
 
-        self.fProjectDir = self.fProject+'/datasets/'+self.fDsid;
+        self.fProjectDir = self.fProject+'/datasets/'+self.fFamilyID;
 
         self.Print(name,1,'Project      = %s' % self.fProject)
         self.Print(name,1,'Verbose      = %s' % self.fVerbose)
         self.Print(name,1,'Doit         = %s' % self.fDoit)
-        self.Print(name,1,'Dsid         = %s' % self.fDsid)
+        self.Print(name,1,'FamilyID     = %s' % self.fFamilyID)
+        self.Print(name,1,'InputDsid    = %s' % self.fInputDsid)
         self.Print(name,1,'ProjectDir   = %s' % self.fProjectDir)
         self.Print(name,1,'Recover      = %s' % self.fRecover)
         self.Print(name,1,'Fileset      = %s' % self.fFileset)
@@ -132,7 +135,6 @@ class Tool:
 
         self.fStage         = self.fConfig.fStage[self.fStageName]
         self.fJob           = self.fStage.fJob[self.fJType]
-
 #------------------------------------------------------------------------------
 # check log files. asume they are copied into the output area
 #------------------------------------------------------------------------------
@@ -159,12 +161,11 @@ class Tool:
 # - fileset is included into the name of the original tarball, 
 # - recover=original grid job id is included into the name of the recovery tarball
 #------------------------------------------------------------------------------
-        fcl_tb_bn    = 'cnf.'+name_stub+'.'+self.fProject+'.'+job.input_dataset().id()+'.'+sub_stub+'.fcl.tbz'
-        if (self.fRecover):
-            fcl_tb_bn    = 'cnf.'+name_stub+'.'+self.fProject+'.'+job.input_dataset().id()+'.'+sub_stub+'.'+self.fRecover+'.fcl.tbz'
+        fcl_tb_bn    = 'cnf.'+name_stub+'.'+self.fProject+'.'+job.input_dataset().id()+'.'+sub_stub; # +'.fcl.tbz'
+        if   (self.fRecover): fcl_tb_bn = fcl_tb_bn +'.'+self.fRecover;
+        elif (self.fFileset): fcl_tb_bn = fcl_tb_bn +'.'+self.fFileset;
 
-        elif (self.fFileset):
-            fcl_tb_bn    = 'cnf.'+name_stub+'.'+self.fProject+'.'+job.input_dataset().id()+'.'+sub_stub+'.'+self.fFileset+'.fcl.tbz'
+        fcl_tb_bn   += '.fcl.tbz';
 
         fcl_tarball  = '/pnfs/mu2e/resilient/users/'+self.fUser+'/'+self.fProject+'/'+fcl_tb_bn;
 
@@ -179,7 +180,7 @@ class Tool:
         self.Print(name,1,'nsegments: %i'%nsegments)
 
         dsconf       = self.fProject
-        work_project = self.fProject+'.'+self.fDsid+'.'+sub_stub
+        work_project = self.fProject+'.'+job.input_dataset().id()+'.'+sub_stub
         script       = 'pmgrid/scripts/submit_grid_job'
         stage_job    = stage.name()+':'+job.name();
 
@@ -239,6 +240,7 @@ class Tool:
                 r['id'        ] = int(jobid)
                 r['server'    ] = server
                 r['project'   ] = self.fProject
+                r['family_id' ] = self.fFamilyID;
                 r['idsid'     ] = job.input_dsid();
                 r['stage'     ] = stage.name()
                 r['job_name'  ] = job.name()

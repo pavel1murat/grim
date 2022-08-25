@@ -19,6 +19,7 @@ class Tool:
     def __init__(self):
         self.fProject       = None
         self.fProjectDir    = None
+        self.fFamilyID      = None
         self.fDsid          = 'xxx_xxxx' # just to make up 
         self.fDoit          = 1
         self.fJob           = None       # task to be executed
@@ -112,7 +113,8 @@ class Tool:
         # dict            = json.loads(open(fn).read())
 
         self.fProject   = self.fGridJob.project()
-        self.fDsid      = self.fGridJob.input_dsid()[0:5]
+        self.fFamilyID  = self.fGridJob.family_id()
+        self.fDsid      = self.fGridJob.input_dsid()
         self.fStageName = self.fGridJob.stage()
         self.fJType     = self.fGridJob.name()
         self.fFileset   = self.fGridJob.fileset()
@@ -129,7 +131,7 @@ class Tool:
             self.Print(name,0,'Error: Project not defined - exiting!')
             sys.exit(1)
 
-        self.fProjectDir = self.fProject+'/datasets/'+self.fDsid[0:5];
+        self.fProjectDir = self.fProject+'/datasets/'+self.fFamilyID;
         sys.path.append(self.fProjectDir) ; 
 
         self.Print(name,1,'ProjectDir   = %s' % self.fProjectDir  )

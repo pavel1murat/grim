@@ -23,6 +23,7 @@ class GridJob:
         if ('server' in dict.keys()): self.fServer = dict['server'];
 
         self.fProject   = dict['project' ]
+        self.fFamilyID  = dict['familyid']
         self.fIDsid     = dict['idsid'   ]
         self.fStage     = dict['stage'   ]
         self.fJType     = dict['job_name']
@@ -105,7 +106,7 @@ class GridJob:
         return od
 
     def family_id(self):
-        return self.fIDsid[0:5];
+        return self.fFamilyID;
 
     def fileset(self):
         return self.fFileset;
@@ -166,6 +167,7 @@ class GridJob:
         r['id'        ] = int(self.fGridID);
         r['server'    ] = self.fServer;
         r['project'   ] = self.fProject
+        r['familyid'  ] = self.fFamilyID;
         r['idsid'     ] = self.input_dsid();
         r['stage'     ] = self.fStage
         r['job_name'  ] = self.fJType
