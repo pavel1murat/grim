@@ -4,3 +4,4 @@
 *.d
 *dict_rdict.pcm
 *#*
+scripts/__pycache__/
