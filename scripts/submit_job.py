@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # call examples: 
-#               su2020/scripts/submit_job.py --project=su2020 --dsid=cele0 --stage=s4 --job=sim [--doit=[yes/d]] [--fileset=...]
+#               pmgrid/scripts/submit_job.py --project=su2020 --dsid=cele0 --stage=s4 --job=sim [--doit=[yes/d]] [--fileset=...]
 #
 # --doit=d         : 'dry_run' mode of mu2eprodsys (this is the default)
 # --doit=xrd_debug : turns on XROOTD client debugging and adds a lot of printout
@@ -92,7 +92,7 @@ class Tool:
         if (self.fRecover):
             # read parameters of the job being recovered
 
-            fn              = 'tmp/su2020/grid_job_status/'+self.fRecover;
+            fn              = 'tmp/'+self.fProject+'/grid_job_status/'+self.fRecover;
             dict            = json.loads(open(fn).read())
 
             self.fProject   = dict['project']
@@ -140,7 +140,7 @@ class Tool:
         name = 'submit_grid_job'
 
 
-        cmd = 'cat .grid_config | grep su2020.code_tarball | awk \'{print $2}\''
+        cmd = 'cat .grid_config | grep '+self.fProject+'.code_tarball | awk \'{print $2}\''
         p = subprocess.run(cmd,shell=True,capture_output=True,universal_newlines=True)
 
         code_tarball = None;
@@ -181,7 +181,7 @@ class Tool:
 
         dsconf       = self.fProject
         work_project = self.fProject+'.'+self.fDsid+'.'+sub_stub
-        script       = self.fProject+'/scripts/submit_grid_job'
+        script       = 'pmgrid/scripts/submit_grid_job'
         stage_job    = stage.name()+':'+job.name();
 
         if (self.fFileset):
