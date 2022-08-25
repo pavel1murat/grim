@@ -11,7 +11,7 @@ if [ ! -d ./tmp/$project/grid_job_status ] ; then mkdir ./tmp/$project/grid_job_
 if [ ! -d ./tmp/$project/completed_jobs  ] ; then mkdir ./tmp/$project/completed_jobs  ; fi
 
 if [ ! -f ./.grid_config ] ; then 
-    cp $project/scripts/.grid_config . ; 
+    cp pmgrid/scripts/.grid_config . ; 
     echo '.grid_config file created, check its configuration'
 else                              
     echo 'WARNING: ./.grid_config file already exists, dont recreate' ;

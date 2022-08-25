@@ -24,6 +24,7 @@ class Tool:
         self.fStage         = None;       # configuraton of the stage
         self.fJob           = None;       # configuration of the job to be run
         self.fUser          = os.getenv('USER')
+        self.fMuseStub      = os.getenv('MUSE_STUB')
         self.fGridJobID     = None;
         self.fConfig        = {}
 
@@ -56,7 +57,7 @@ class Tool:
         self.Print(name,2, '%s' % sys.argv)
 
         try:
-            optlist, args = getopt.getopt(sys.argv[1:], '', ['project=','verbose='])
+            optlist, args = getopt.getopt(sys.argv[1:], '', ['project=','muse-stub=','verbose='])
  
         except getopt.GetoptError:
             self.Print(name,0,'%s' % sys.argv)
@@ -69,6 +70,8 @@ class Tool:
 
             if key == '--project':
                 self.fProject = val
+            elif key == '--muse-stub':
+                self.fMuseStub = val
             elif key == '--verbose':
                 self.fVerbose = int(val)
 
@@ -102,14 +105,18 @@ class Tool:
     def build_tarball(self):
         name = 'build_tarball'
 
-        last_offline_git_commit = os.popen('git log -p -1 | head -n 1').readlines()[0].split()[1][0:8]
-
         exclude_file = self.fProject+'/AAA_GRIDEXPORT_EXCLUDE.txt';
 
+        # assume we're in a muse work area , figure the Offline git tag
+        last_offline_git_commit = os.popen('cd Offline; git log -p -1 | head -n 1; cd ..').readlines()[0].split()[1][0:8]
+
+        # qual should be either 'debug' or 'prof'
+        qual = self.fMuseStub.split('-')[1];
 
         cmd  = 'source /cvmfs/mu2e.opensciencegrid.org/setupmu2e-art.sh ; '
-        cmd += 'source ./setup.sh ; '
-        cmd += 'setup gridexport ; gridexport -E '+os.getenv('PWD')+'/grid_export -A '+exclude_file;
+        cmd += 'setup muse -q '+qual+'; '
+
+        cmd += 'muse tarball -x '+exclude_file;
 
         # cmd='echo A; echo B'
         print(sys.version);
@@ -125,11 +132,15 @@ class Tool:
         self.Print(name,1,"done executing, return code:%i"%p.returncode);
 
         if (p.returncode == 0):
-            lines       = output.decode('ascii').split('\n')
-            for line in lines: print(line)
+            # parse output of 'muse tarball' - first line looks as follows
+            # 'Tarball: /mu2e/data/users/murat/museTarball/tmp.y5joX2M67W/Code.tar.bz2'
 
-            word        = lines[2].split();
-            tarball     = word[4]
+            lines       = output.decode('ascii').split('\n')
+            for i in range(len(lines)):
+                print('i, line: ',i, lines[i])
+
+            word        = lines[0].split();
+            tarball     = word[1]
             tmp_dir     = os.path.dirname(tarball)
 
             if (os.getenv('USER') == 'mu2epro'):

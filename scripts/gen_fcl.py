@@ -4,7 +4,7 @@
 # 
 # setup Mu2e offline before calling
 #
-# call: su2020/scripts/gen_fcl.py --project=su2020 --dsid=bmum3 --stage=s2  --job=sim [--recover=grid_id] [--fileset=xxxx]
+# call: pmgrid/scripts/gen_fcl.py --project=su2020 --dsid=bmum3 --stage=s2  --job=sim [--recover=grid_id] [--fileset=xxxx]
 #   project  : project name
 #   idsid    : input dataset id
 #   stage    : stage of the job (sometimes Mu2e uses multi-stage generation)
@@ -101,7 +101,7 @@ class Tool:
 
         if (self.fRecover):
             self.fGridID    = self.fRecover;
-            fn              = 'tmp/su2020/grid_job_status/'+self.fGridID;
+            fn              = 'tmp/'+self.fProject+'/grid_job_status/'+self.fGridID;
             dict            = json.loads(open(fn).read())
 
             self.fProject   = dict['project' ]
@@ -428,9 +428,10 @@ class Tool:
         #------------------------------------------------------------------------------
         # define generate_fcl call parameters
         #------------------------------------------------------------------------------
-        cmd = 'setup mu2etools v3_05_00; export FHICL_FILE_PATH=$MU2E_BASE_RELEASE; ' 
+        # cmd = 'setup mu2etools v3_05_00; export FHICL_FILE_PATH=$MU2E_BASE_RELEASE; ' 
+        cmd = 'setup mu2etools; export FHICL_FILE_PATH=$MUSE_WORK_DIR; ' 
         cmd = cmd+'generate_fcl --description='+desc+' --dsconf='+dsconf+' --embed '+base_fcl;
-        cmd = cmd+' --max-engines=50'
+        cmd = cmd+' --max-seed=50'
 
         if (self.fFirstSubrun): cmd = cmd+' --first-subrun=%i'%self.fFirstSubrun;
 
@@ -470,7 +471,7 @@ class Tool:
                 dataset            = job.fAuxInputs[key][1];
                 nfiles_per_segment = job.fAuxInputs[key][2];
                 # now: get filelist - start from assuming a local list
-                filelist = 'su2020/'+dataset.dsid_stub()+'/catalog/'+dataset.defname()+'.files'
+                filelist = self.fProject+'/'+dataset.dsid_stub()+'/catalog/'+dataset.defname()+'.files'
                 cmd = cmd+' --auxinput='+'%i'%nfiles_per_segment+':'+var+':'+filelist ;
            
         self.Print(name,1,"executing :%s"%cmd);
