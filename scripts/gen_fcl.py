@@ -111,7 +111,7 @@ class Tool:
             self.fFileset   = dict['fileset' ]
 
 
-        self.fProjectDir = self.fProject+'/'+self.fDsid[0:5];
+        self.fProjectDir = self.fProject+'/datasets/'+self.fDsid;
 
         if (self.fVerbose > 0): 
             print(sys.version)
@@ -223,7 +223,7 @@ class Tool:
             sfields    = fields.copy()
 
             sfields[0] = 'nts'
-            sfields[2] = job.output_dsid(0)
+            sfields[3] = job.output_dsid(0)
             sfields[5] = 'stn'
             stn_fn     = '.'.join(sfields)
 
@@ -246,7 +246,7 @@ class Tool:
             f1   = open(fn1,'w')
 
             for line in f.readlines():
-                # process Andrei's templates
+                # process Andrei's templa
                 if ('MU2EGRIDDSOWNER' in line): line = line.replace('MU2EGRIDDSOWNER',self.fOwner)
                 if ('MU2EGRIDDSCONF'  in line): line = line.replace('MU2EGRIDDSCONF' ,self.fProject)
 
@@ -254,9 +254,11 @@ class Tool:
                 key   = words[0].strip();
                 kfields = key.split('.')
                 # print(' kfields : ',kfields);
-
+                #------------------------------------------------------------------------------
                 # define STNTUPLE filename
-                if (key == 'physics.filters.InitStntuple.histFileName'): line  = 'physics.filters.InitStntuple.histFileName : \"'+stn_fn+'"\n'
+                #------------------------------------------------------------------------------
+                if (key == 'physics.analyzers.InitStntuple.histFileName'): 
+                    line  = 'physics.analyzers.InitStntuple.histFileName : \"'+stn_fn+'"\n'
 
                 if ((len(kfields) == 3) and kfields[0] == 'outputs') and (kfields[2] == 'fileName'):
                     #------------------------------------------------------------------------------
@@ -307,7 +309,7 @@ class Tool:
 #------------------------------------------------------------------------------
             fcltop  = os.getcwd()+'/tmp/'+self.fProject+'/fcl'
 
-            name_stub = fcltop+'/'+'cnf.'+self.fOwner+'.'+self.fIDsID+'.'+stage.name()+'_'+job.name()+'.'+self.fProject ;
+            name_stub = fcltop+'/'+'cnf.'+self.fOwner+'.'+self.fProject +'.'+self.fIDsID+'.'+stage.name()+'_'+job.name() ;
 
             if (self.fFileset):
                 tarfile = name_stub+'.%s.fcl.tbz'%self.fFileset;
@@ -366,8 +368,8 @@ class Tool:
         base_fcl   = job.fBaseFcl;
         run_number = job.fRunNumber;
 
-        desc       = self.fIDsID+'_'+stage.name()+'_'+job.name();
-        dsconf     = self.fProject;
+        desc       = self.fProject;
+        dsconf     = self.fIDsID+'_'+stage.name()+'_'+job.name();
 
         input_file_list        = None;
         delete_input_file_list = None;
@@ -489,7 +491,8 @@ class Tool:
         #------------------------------------------------------------------------------
         # handle quirk of generate_fcl
 
-        pattern='seeds.'+self.fOwner+'.'+desc+'.'+self.fProject+'.*.txt'
+        pattern='seeds.'+self.fOwner+'.'+desc+'.'+dsconf+'.*.txt'
+        self.Print(name,1,'seed file pattern:%s'%pattern);
 
         seeds = glob.glob(pattern)
 

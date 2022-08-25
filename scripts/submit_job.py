@@ -102,7 +102,7 @@ class Tool:
             self.fFileset   = dict['fileset']
 
 
-        self.fProjectDir = self.fProject+'/'+self.fDsid;
+        self.fProjectDir = self.fProject+'/datasets/'+self.fDsid;
 
         self.Print(name,1,'Project      = %s' % self.fProject)
         self.Print(name,1,'Verbose      = %s' % self.fVerbose)
@@ -154,18 +154,17 @@ class Tool:
 
         name_stub    = self.fUser;
         if (self.fUser == 'mu2epro'): name_stub = 'mu2e'
-
-        fcl_tb_bn    = 'cnf.'+name_stub+'.'+job.input_dataset().id()+'.'+sub_stub+'.'+self.fProject+'.fcl.tbz'
 #------------------------------------------------------------------------------
 # for the tarball name, recover and fileset are mutually exclusive:
 # - fileset is included into the name of the original tarball, 
 # - recover=original grid job id is included into the name of the recovery tarball
 #------------------------------------------------------------------------------
+        fcl_tb_bn    = 'cnf.'+name_stub+'.'+self.fProject+'.'+job.input_dataset().id()+'.'+sub_stub+'.fcl.tbz'
         if (self.fRecover):
-            fcl_tb_bn    = 'cnf.'+name_stub+'.'+job.input_dataset().id()+'.'+sub_stub+'.'+self.fProject+'.'+self.fRecover+'.fcl.tbz'
+            fcl_tb_bn    = 'cnf.'+name_stub+'.'+self.fProject+'.'+job.input_dataset().id()+'.'+sub_stub+'.'+self.fRecover+'.fcl.tbz'
 
         elif (self.fFileset):
-            fcl_tb_bn    = 'cnf.'+name_stub+'.'+job.input_dataset().id()+'.'+sub_stub+'.'+self.fProject+'.'+self.fFileset+'.fcl.tbz'
+            fcl_tb_bn    = 'cnf.'+name_stub+'.'+self.fProject+'.'+job.input_dataset().id()+'.'+sub_stub+'.'+self.fFileset+'.fcl.tbz'
 
         fcl_tarball  = '/pnfs/mu2e/resilient/users/'+self.fUser+'/'+self.fProject+'/'+fcl_tb_bn;
 

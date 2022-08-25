@@ -90,7 +90,8 @@ class Job:
         self.fVerbose                 = None;
         self.fCompletedStatus         = None;
 
-        cmd = 'cat .grid_config | grep su2020.grid_output_dir | awk \'{print $2}\''
+        pattern = self.fStage.fProject.fProjectName+'.grid_output_dir';
+        cmd = 'cat .grid_config | grep '+pattern+' | awk \'{print $2}\''
         p = subprocess.run(cmd,shell=True,capture_output=True,universal_newlines=True)
 
         self.fOutputDir = None;
@@ -173,7 +174,7 @@ class Stage:
         self.fJob[name] = job
 
     def new_job(self, name):
-        self.fJob[name] = Job(name)
+        self.fJob[name] = Job(name,self)
         return self.fJob[name]
 
     def job(self, name):

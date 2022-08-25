@@ -100,8 +100,8 @@ class Tool:
 
         # read job status file
 
-        self.fRunningDir   = 'tmp/su2020/grid_job_status';
-        self.fCompletedDir = 'tmp/su2020/completed_jobs'
+        self.fRunningDir   = 'tmp/'+self.fProject+'/grid_job_status';
+        self.fCompletedDir = 'tmp/'+self.fProject+'/completed_jobs'
 
         fn              = self.fRunningDir+'/'+gridID;
         if (self.fUseRunningDir == 0):
@@ -129,7 +129,7 @@ class Tool:
             self.Print(name,0,'Error: Project not defined - exiting!')
             sys.exit(1)
 
-        self.fProjectDir = self.fProject+'/'+self.fDsid[0:5];
+        self.fProjectDir = self.fProject+'/datasets/'+self.fDsid[0:5];
         sys.path.append(self.fProjectDir) ; 
 
         self.Print(name,1,'ProjectDir   = %s' % self.fProjectDir  )

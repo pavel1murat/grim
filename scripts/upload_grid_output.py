@@ -116,7 +116,7 @@ class UploadGridOutput:
     def InitProject(self):
         name = 'InitProject'
 
-        self.fProjectDir = self.fProject+'/'+self.fDsid[0:5];
+        self.fProjectDir = self.fProject+'/datasets/'+self.fDsid[0:5];
 
         sys.path.append(self.fProjectDir) ; print ('self.fProjectDir = '+self.fProjectDir);
         import init_project

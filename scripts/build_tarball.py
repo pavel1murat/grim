@@ -17,7 +17,6 @@ class Tool:
 
     def __init__(self):
         self.fProject       = None
-        self.fProjectDir    = None
         self.fDsid          = 'xxx_xxxx'  # just to make it up 
         self.fDoit          = None
         self.fStageName     = "undefined" # stage name
@@ -84,20 +83,6 @@ class Tool:
 
         self.Print(name,1,'Done')
         return 0
-
-#------------------------------------------------------------------------------
-    def InitProject(self):
-        name = 'InitProject'
-
-#        sys.path.append(self.fProjectDir)
-#        import init_project
-
-        #------------------------------------------------------------------------------
-        # read project config file
-#        self.fConfig = init_project.Project(); # init_project.init(self.fConfig)
-
-#        self.fStage         = self.fConfig.fStage[self.fStageName]
-#        self.fJob           = self.fStage.fJob[self.fJType]
 
 #------------------------------------------------------------------------------
 # build tarball for grid submission
@@ -176,8 +161,6 @@ if (__name__ == '__main__'):
     x = Tool()
 
     x.ParseParameters()
-
-    x.InitProject()
 
     x.build_tarball()
 

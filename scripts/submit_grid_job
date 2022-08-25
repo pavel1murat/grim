@@ -45,15 +45,15 @@ code_tarball=/pnfs/mu2e/resilient/users/$USER/$project/$tarball_bn
 user_stub=$USER
 if [ $USER == "mu2epro" ] ; then user_stub="mu2e" ; fi
 
- fcl_tarball=/pnfs/mu2e/resilient/users/$USER/$project/cnf.$user_stub.${idsid}.$sub_stub.$project.fcl.tbz
+ fcl_tarball=/pnfs/mu2e/resilient/users/$USER/$project/cnf.$user_stub.$project.${idsid}.$sub_stub.fcl.tbz
 # if [ ".$fclt" != "." ] ; then fcl_tarball=$fclt ; fi
 
 if [ ".$fileset" != "." ] ; then 
-    fcl_tarball=/pnfs/mu2e/resilient/users/$USER/$project/cnf.$user_stub.$idsid.$sub_stub.$project.$fileset.fcl.tbz
+    fcl_tarball=/pnfs/mu2e/resilient/users/$USER/$project/cnf.$user_stub.$project.$idsid.$sub_stub.$fileset.fcl.tbz
 fi
 
 if [ ".$recovery_stub" != "." ] ; then 
-    fcl_tarball=/pnfs/mu2e/resilient/users/$USER/$project/cnf.$user_stub.$idsid.$sub_stub.$project.$recovery_stub.fcl.tbz
+    fcl_tarball=/pnfs/mu2e/resilient/users/$USER/$project/cnf.$user_stub.$project.$idsid.$sub_stub.$recovery_stub.fcl.tbz
 fi
 
 dataset_conf=${project}

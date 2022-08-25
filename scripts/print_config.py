@@ -76,7 +76,7 @@ class PrintConfig:
             elif key == '--verbose':
                 self.fVerbose = int(val)
 
-        self.fProjectDir = self.fProject+'/'+self.fDsid[0:5];
+        self.fProjectDir = self.fProject+'/datasets/'+self.fDsid[0:5];
 
         if (self.fVerbose > 0): 
             print(sys.version)

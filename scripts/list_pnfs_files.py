@@ -93,7 +93,7 @@ class ListPnfsFiles:
     def InitProject(self,job):
         name = 'InitProject'
         
-        self.fProjectDir = job.project_name()+'/'+job.family_id();
+        self.fProjectDir = job.project_name()+'/datasets/'+job.family_id();
 
         sys.path.append(self.fProjectDir) ; print ('self.fProjectDir = '+self.fProjectDir);
         import init_project

@@ -419,7 +419,7 @@ class GridGui:
             self.fMinSubrun = args.subruns.split(':')[0]
             self.fMaxSubrun = args.subruns.split(':')[1]
         
-        self.fProjectDir = self.fProject+'/'+self.fDsid[0:5];
+        self.fProjectDir = self.fProject+'/datasets/'+self.fDsid[0:5];
 
         self.Print(name,1,'Job        = %s' % self.fJob    )
         self.Print(name,1,'Project    = %s' % self.fProject)

@@ -2,7 +2,7 @@
 #------------------------------------------------------------------------------
 # monitor grid jobs for a given project, print a table of running ones
 # supposed to be run by cron
-# call: monitor_grid_jobs.py --project=project_name
+# call: grid_monitor.py --project=project_name
 #------------------------------------------------------------------------------
 
 import configparser, subprocess, shutil, datetime, json
