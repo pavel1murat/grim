@@ -62,6 +62,7 @@ work_project=${project}.${idsid}.$sub_stub
 parameters="--code=$code_tarball --fcllist=$fcl_tarball --dsconf=$dataset_conf --wfproject=$work_project  --error-delay=10 --transfer-all-files --expected-lifetime=$time"
 
 parameters=$parameters" --memory=$memory"
+parameters=$parameters" --jobsub-arg=-e --jobsub-arg=MU2E_SEARCH_PATH=$MU2E_SEARCH_PATH:/"
 if [ $xrootd == "xrootd" ] ; then 
     parameters=$parameters" --xrootd" ; 
     parameters=$parameters" --jobsub-arg=-e --jobsub-arg=XRD_STREAMTIMEOUT=300"

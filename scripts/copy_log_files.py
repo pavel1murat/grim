@@ -14,7 +14,7 @@ class CopyLogFiles:
     def __init__(self):
         self.fProject       = None
         self.fProjectDir    = None
-        self.fDsid          = 'xxx_xxxx' # just to make up 
+        self.fFamilyID      = 'xxx_xxxx' # just to make up 
         self.fFileTypes     = 'log'      # or 'log,fcl' , comma-separated
 
         self.fUser          = os.getenv('USER')
@@ -34,7 +34,7 @@ class CopyLogFiles:
     def Print(self,Name,level,Message):
         if(level>self.fVerbose): return 0;
         now     = time.strftime('%Y/%m/%d %H:%M:%S',time.localtime(time.time()))
-        message = now+' [ GridSubmit::'+Name+' ] '+Message
+        message = now+' [ CopyLogFiles::'+Name+' ] '+Message
         print(message)
         
 #----------------------------------------------------------------------

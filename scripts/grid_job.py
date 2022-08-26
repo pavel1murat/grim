@@ -22,11 +22,11 @@ class GridJob:
         self.fServer    = '';
         if ('server' in dict.keys()): self.fServer = dict['server'];
 
-        self.fProject   = dict['project' ]
-        self.fFamilyID  = dict['familyid']
-        self.fIDsid     = dict['idsid'   ]
-        self.fStage     = dict['stage'   ]
-        self.fJType     = dict['job_name']
+        self.fProject   = dict['project'  ]
+        self.fFamilyID  = dict['family_id']
+        self.fIDsid     = dict['idsid'    ]
+        self.fStage     = dict['stage'    ]
+        self.fJType     = dict['job_name' ]
 
         self.fFileset = -1;
         if ('fileset'  in dict.keys()) : self.fFileset  = dict['fileset' ]
@@ -53,7 +53,8 @@ class GridJob:
         self.fStageConfig   = None;
         self.fConfig        = None;
         
-        cmd = 'cat .grid_config | grep su2020.grid_output_dir | awk \'{print $2}\''
+        pattern = self.fProject+'.grid_output_dir'
+        cmd = 'cat .grid_config | grep '+pattern+' | awk \'{print $2}\''
         p = subprocess.run(cmd,shell=True,capture_output=True,universal_newlines=True)
 
         self.fGridOutputDir = None;
@@ -65,7 +66,9 @@ class GridJob:
         
         # print ("GridJob::__init__ fGridOutputDir : ",self.fGridOutputDir)
 
-        cmd = 'cat .grid_config | grep su2020.log_dir | awk \'{print $2}\''
+        
+        pattern = self.fProject+'.log_dir'
+        cmd = 'cat .grid_config | grep '+pattern+' | awk \'{print $2}\''
         p = subprocess.run(cmd,shell=True,capture_output=True,universal_newlines=True)
 
         self.fLogDir = None;
