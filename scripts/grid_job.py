@@ -103,7 +103,7 @@ class GridJob:
         return desc
 
     def grid_output_dir(self):
-        desc = self.fProject+'.'+self.input_dsid()+'.'+self.stage()+'_'+self.name();
+        desc = self.input_dsid()+'.'+self.stage()+'_'+self.name();
         od = self.fGridOutputDir+'/'+os.getenv('USER')+'/workflow/'+desc+'/outstage/'+self.id()
         print('od = ',od)
         return od
@@ -170,7 +170,7 @@ class GridJob:
         r['id'        ] = int(self.fGridID);
         r['server'    ] = self.fServer;
         r['project'   ] = self.fProject
-        r['familyid'  ] = self.fFamilyID;
+        r['family_id' ] = self.fFamilyID;
         r['idsid'     ] = self.input_dsid();
         r['stage'     ] = self.fStage
         r['job_name'  ] = self.fJType

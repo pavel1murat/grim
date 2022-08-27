@@ -113,7 +113,7 @@ class ListPnfsFiles:
         topdir     = job.grid_output_dir();
         self.Print(name,1,'topdir=%s'%topdir)
 
-        self.fProjectDir   = self.fProject+'/'+job.family_id();
+        # self.fProjectDir   = self.fProject+'/'+job.family_id();
         catalog_dir        = self.fProjectDir+'/catalog'
 
         if (not os.path.exists(catalog_dir)):
@@ -133,11 +133,10 @@ class ListPnfsFiles:
             for ext in extensions:
 
                 # maintain backward compatibility
-                # if (self.fFileset):
-                if (job.fileset()):
-                    catalog_fn  = catalog_dir+'/'+job.fConfig.fOutputFnPattern[i]+'.'+self.fProject+'.'+ext+'.files'+'.'+job.fileset();
-                else:
-                    catalog_fn  = catalog_dir+'/'+job.fConfig.fOutputFnPattern[i]+'.'+self.fProject+'.'+ext+'.files'
+                # 'fileset' catalogs have '#{fileset_name}' appended (use Ruby notations :))
+                catalog_fn  = catalog_dir+'/'+job.fConfig.fOutputFnPattern[i]+'.'+self.fProject+'.'+ext+'.files'
+
+                if (job.fileset()): catalog_fn  = catalog_fn+'.'+job.fileset();
     
                 print('i, odsid, catalog_fn=',i,odsid,catalog_fn)
     

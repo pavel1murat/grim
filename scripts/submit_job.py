@@ -152,16 +152,17 @@ class Tool:
             print('ERROR: couldnt determine the code tarball')
             return -1
 
-        sub_stub     = self.fStageName+'_'+self.fJType
-
-        name_stub    = self.fUser;
-        if (self.fUser == 'mu2epro'): name_stub = 'mu2e'
 #------------------------------------------------------------------------------
 # for the tarball name, recover and fileset are mutually exclusive:
 # - fileset is included into the name of the original tarball, 
 # - recover=original grid job id is included into the name of the recovery tarball
 #------------------------------------------------------------------------------
-        fcl_tb_bn    = 'cnf.'+name_stub+'.'+self.fProject+'.'+job.input_dataset().id()+'.'+sub_stub; # +'.fcl.tbz'
+        if (self.fUser == 'mu2epro'): name_stub = 'mu2e'
+        else                        : name_stub = self.fUser;
+
+        sub_stub     = self.fStageName+'_'+self.fJType
+        fcl_tb_bn    = 'cnf.'+name_stub+'.'+job.input_dataset().id()+'.'+sub_stub+'.'+self.fProject;
+
         if   (self.fRecover): fcl_tb_bn = fcl_tb_bn +'.'+self.fRecover;
         elif (self.fFileset): fcl_tb_bn = fcl_tb_bn +'.'+self.fFileset;
 

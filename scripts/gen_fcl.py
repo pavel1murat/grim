@@ -223,7 +223,7 @@ class Tool:
             sfields    = fields.copy()
 
             sfields[0] = 'nts'
-            sfields[3] = job.output_dsid(0)
+            sfields[2] = job.output_dsid(0)
             sfields[5] = 'stn'
             stn_fn     = '.'.join(sfields)
 
@@ -309,7 +309,7 @@ class Tool:
 #------------------------------------------------------------------------------
             fcltop  = os.getcwd()+'/tmp/'+self.fProject+'/fcl'
 
-            name_stub = fcltop+'/'+'cnf.'+self.fOwner+'.'+self.fProject +'.'+self.fIDsID+'.'+stage.name()+'_'+job.name() ;
+            name_stub = fcltop+'/'+'cnf.'+self.fOwner +'.'+self.fIDsID+'.'+stage.name()+'_'+job.name()+'.'+self.fProject ;
 
             if (self.fFileset):
                 tarfile = name_stub+'.%s.fcl.tbz'%self.fFileset;
@@ -368,8 +368,9 @@ class Tool:
         base_fcl   = job.fBaseFcl;
         run_number = job.fRunNumber;
 
-        desc       = self.fProject;
-        dsconf     = self.fIDsID+'_'+stage.name()+'_'+job.name();
+        desc       = self.fIDsID+'_'+stage.name()+'_'+job.name();
+        # dsconf     = self.fIDsID+'_'+stage.name()+'_'+job.name();
+        dsconf     = self.fProject;
 
         input_file_list        = None;
         delete_input_file_list = None;

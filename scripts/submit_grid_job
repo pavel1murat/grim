@@ -4,11 +4,11 @@
 # - the code tarball naming may follow different rules
 # by default, use dcache
 # examples:
-#           su2020/scripts/submit_grid_job su2020 bpim0s00b0    s1:sim   2000MB:24h:ifdh   .
-#           su2020/scripts/submit_grid_job su2020 pbar0s01b0:03 s1:sim   3000MB:24h:ifdh   .
-#           su2020/scripts/submit_grid_job su2020 bpim0s11b0    s2:sim   4000MB:10h:xrootd .
+#           pmgrid/scripts/submit_grid_job su2020 bpim0s00b0    s1:sim   2000MB:24h:ifdh   .
+#           pmgrid/scripts/submit_grid_job su2020 pbar0s01b0:03 s1:sim   3000MB:24h:ifdh   .
+#           pmgrid/scripts/submit_grid_job su2020 bpim0s11b0    s2:sim   4000MB:10h:xrootd .
 #
-# special value doit='xrd_debug' turns on the XROOTD client debugging and adds MB's of printout
+# doit='xrd_debug' turns on the XROOTD client debugging and adds MB's of printout
 #------------------------------------------------------------------------------
         project=$1  # su2020
           idsid=$2  # bmum2s21b0[:01] ... or gen:250_20000:[:01] ; if 'gen', '250_20000' means 'njobs_neventsPerJob'
@@ -29,8 +29,6 @@ recovery_stub=`echo $p_job_type | awk -F : '{print $4}'`
 
 if [ ".$5" != "." ] ; then doit=$5 ; else doit='d' ; fi
 
-     sub_stub=${stage}_${jtype}
-
 expected_job_time=8h
 if [ $time != "." ] ; then expected_job_time=$time ; fi
 
@@ -42,10 +40,11 @@ tarball_bn=`cat .grid_config | grep $project.code_tarball | awk '{print $2}'`
 
 code_tarball=/pnfs/mu2e/resilient/users/$USER/$project/$tarball_bn
 
-user_stub=$USER
-if [ $USER == "mu2epro" ] ; then user_stub="mu2e" ; fi
+if [ $USER == "mu2epro" ] ; then user_stub="mu2e" ; 
+else                             user_stub=$USER  ;   fi
 
- fcl_tarball=/pnfs/mu2e/resilient/users/$USER/$project/cnf.$user_stub.$project.${idsid}.$sub_stub.fcl.tbz
+    sub_stub=${stage}_${jtype}
+ fcl_tarball=/pnfs/mu2e/resilient/users/$USER/$project/cnf.$user_stub.${idsid}.$sub_stub.$project.fcl.tbz
 # if [ ".$fclt" != "." ] ; then fcl_tarball=$fclt ; fi
 
 if [ ".$fileset" != "." ] ; then 
@@ -56,13 +55,12 @@ if [ ".$recovery_stub" != "." ] ; then
     fcl_tarball=/pnfs/mu2e/resilient/users/$USER/$project/cnf.$user_stub.$project.$idsid.$sub_stub.$recovery_stub.fcl.tbz
 fi
 
-dataset_conf=${project}
-work_project=${project}.${idsid}.$sub_stub
+wfproject=${idsid}.$sub_stub
+   dsconf=$project
 
-parameters="--code=$code_tarball --fcllist=$fcl_tarball --dsconf=$dataset_conf --wfproject=$work_project  --error-delay=10 --transfer-all-files --expected-lifetime=$time"
+parameters="--code=$code_tarball --fcllist=$fcl_tarball --dsconf=$dsconf --wfproject=$wfproject --error-delay=10 --transfer-all-files --expected-lifetime=$time"
 
 parameters=$parameters" --memory=$memory"
-parameters=$parameters" --jobsub-arg=-e --jobsub-arg=MU2E_SEARCH_PATH=$MU2E_SEARCH_PATH:/"
 if [ $xrootd == "xrootd" ] ; then 
     parameters=$parameters" --xrootd" ; 
     parameters=$parameters" --jobsub-arg=-e --jobsub-arg=XRD_STREAMTIMEOUT=300"

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # interface to Andrei's generate_fcl
-# call: check_completed_job.py --project=su2020 --grid_id=11122234
+# call: pmgrid/scripts/check_completed_job.py --project=su2020 --grid_id=11122234
 #-------------------------------------------------------------------------------------------------
 
 import configparser, subprocess, shutil, json
@@ -67,7 +67,13 @@ class Tool:
 
         try:
             optlist, args = getopt.getopt(sys.argv[1:], '',
-                                          ['project=', 'verbose=', 'grid_id=', 'use-running-dir=', 'output-check='] )
+                                          ['project='        , 
+                                           'verbose='        , 
+                                           'grid_id='        , 
+                                           'rename='          ,
+                                           'output-check='   ,
+                                           'use-running-dir='
+                                       ] )
  
         except getopt.GetoptError:
             self.Print(name,0,'%s' % sys.argv)
@@ -84,6 +90,8 @@ class Tool:
                 self.fGridJobID = val.split(',')
             elif key == '--use-running-dir':
                 self.fUseRunningDir = int(val)
+            elif key == '--rename':
+                self.fRename = val
             elif key == '--output-check':
                 self.fOutputCheck = int(val)
             elif key == '--verbose':
@@ -118,6 +126,7 @@ class Tool:
         self.fStageName = self.fGridJob.stage()
         self.fJType     = self.fGridJob.name()
         self.fFileset   = self.fGridJob.fileset()
+        self.fRename    = 'yes';
 
         self.Print(name,1,'Project      = %s' % self.fProject     )
         self.Print(name,1,'Verbose      = %s' % self.fVerbose     )
@@ -167,13 +176,14 @@ class Tool:
 #------------------------------------------------------------------------------
     def handle_failed_segment(self,segment_dir,job,next_fcl_dir,segment_fcl):
 
-        # make sure output files in the failed segment directory are not used
-        ns = len(job.fOutputStream)
-        for i in range(0,ns):
-            for ext in job.fOutputFormat[i].split(':'):
-                list = glob.glob(segment_dir+'/*.'+ext)
-                for fn in list:
-                    shutil.move(fn,fn+'.save')
+        if (self.fRename != 'yes') :
+            # make sure output files in the failed segment directory are not used
+            ns = len(job.fOutputStream)
+            for i in range(0,ns):
+                for ext in job.fOutputFormat[i].split(':'):
+                    list = glob.glob(segment_dir+'/*.'+ext)
+                    for fn in list:
+                        shutil.move(fn,fn+'.save')
 
         # copy fcl file of the failed segment to the destination to be tarred up for the recovery job
         if (next_fcl_dir):
@@ -200,7 +210,11 @@ class Tool:
 
         fcl_list = glob.glob(fcl_dir+'/'+'*.fcl')
         fcl_list.sort();
-        nseg     = len(fcl_list)      
+        n1       = len(fcl_list)
+        nseg     = self.fGridJob.n_segments();
+
+        if (n1 != nseg):
+            self.Print(name,0,'ERROR: n1(%i) != nseg(%i)'%(n1,nseg))
 
         # in case next recovery step is needed
         next_fcl_dir = base_dir+'.'+job.grid_id();

@@ -3,7 +3,7 @@
 # to run, need a valid kerberos ticket
 #
 # call examples: 
-#               su2020/scripts/build_tarball.py --project=su2020
+#               pmgrid/scripts/build_tarball.py --project=su2020
 # comments:
 # ---------
 # - in python 2.7,  subprocess has a different interface
