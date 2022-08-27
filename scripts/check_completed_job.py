@@ -42,6 +42,14 @@ class Tool:
         self.fUseRunningDir = 1
         self.fOutputCheck   = 1
 
+#------------------------------------------------------------------------------
+# assume that the script runs in an area with .grid_config in it
+# today - ./tmp is there 
+#------------------------------------------------------------------------------
+    def base_fcl_dir(self,job):
+        fcl_dir = os.getcwd()+'/tmp/'+self.fProject+'/fcl/'+job.input_dsid()+'.'+self.fGridJob.stage()+'_'+job.name();
+        return fcl_dir
+
 # ---------------------------------------------------------------------
     def Print(self,Name,level,Message):
         if(level>self.fVerbose): return 0;
@@ -176,6 +184,10 @@ class Tool:
 #------------------------------------------------------------------------------
     def handle_failed_segment(self,segment_dir,job,next_fcl_dir,segment_fcl):
 
+        # name sure the directory exists
+        if (not os.path.exists(next_fcl_dir)): 
+            os.makedirs(next_fcl_dir,exist_ok=True);
+
         if (self.fRename != 'yes') :
             # make sure output files in the failed segment directory are not used
             ns = len(job.fOutputStream)
@@ -200,11 +212,12 @@ class Tool:
         print('grid_output_dir:',grid_output_dir)
         # assume that the directory with FCL files still exist
 
-        base_dir = os.getcwd()+'/tmp/'+self.fProject+'/fcl/'+job.input_dsid()+'.'+self.fGridJob.stage()+'_'+job.name();
+        base_dir = self.base_fcl_dir(job);
+
         fcl_dir  = base_dir;
 
-        if   (self.fGridJob.recover() ): fcl_dir = fcl_dir +'.'+self.fGridJob.recover();
-        elif (self.fFileset ): fcl_dir = base_dir+'.'+self.fFileset;
+        if   (self.fGridJob.recover() ): fcl_dir = fcl_dir+'.'+self.fGridJob.recover();
+        elif (self.fFileset           ): fcl_dir = fcl_dir+'.'+self.fFileset;
 
         self.Print(name,1,'fcl_dir   = %s' % fcl_dir)
 
@@ -219,9 +232,6 @@ class Tool:
         # in case next recovery step is needed
         next_fcl_dir = base_dir+'.'+job.grid_id();
 
-        if (not os.path.exists(next_fcl_dir)): 
-            os.makedirs(next_fcl_dir,exist_ok=True);
-
         nsuccess = 0;
         for i in range(0,nseg):
             dd = grid_output_dir+'/00/'+'%05i'%i
@@ -229,6 +239,10 @@ class Tool:
             if (not os.path.exists(dd)):
                 print('>> segment %5i: ERROR'%i,' GRID output directory doesn\'t exist, fcl: ',fcl_list[i])
                 if (next_fcl_dir):
+
+                    if (not os.path.exists(next_fcl_dir)): 
+                        os.makedirs(next_fcl_dir,exist_ok=True);
+
                     dst = next_fcl_dir+'/'+os.path.basename(fcl_list[i]);
                     shutil.copyfile(fcl_list[i], dst)
                 continue
@@ -240,23 +254,10 @@ class Tool:
                 print('>> segment %5i: ERROR'%i,' no log file, fcl: ',fcl_list[i])
 
                 self.handle_failed_segment(dd,job,next_fcl_dir,fcl_list[i])
-
-                # # make sure output files in the failed segment directory are not used
-                # ns = len(job.fOutputStream)
-                # for i in range(0,ns):
-                #     for ext in job.fOutputFormat[i].split(':'):
-                #         list = glob.glob(dd+'/*.'+ext)
-                #         for fn in list:
-                #             shutil.move(fn,fn+'.save')
-                # # copy fcl file of the failed segment to the destination to be tarred up for the recovery job
-                # if (next_fcl_dir):
-                #     dst = next_fcl_dir+'/'+os.path.basename(fcl_list[i]);
-                #     shutil.copyfile(fcl_list[i], dst)
-
                 continue;
 
             #------------------------------------------------------------------------------
-            # this is what one expects - one log file. 
+            # this is what one expects - one log file per segment subdirectory. 
             # 1. check ART return code
 
             logfile = logs[0]
@@ -266,11 +267,7 @@ class Tool:
             self.Print(name,1,'output:%s'%out)
             if (len(out) == 0):
                 print('>> segment %5i: ERROR: no art return code'%i)
-
                 self.handle_failed_segment(dd,job,next_fcl_dir,fcl_list[i]);
-                # if (next_fcl_dir):
-                #    dst = next_fcl_dir+'/'+os.path.basename(fcl_list[i]);
-                #    shutil.copyfile(fcl_list[i], dst)
                 continue;
             #------------------------------------------------------------------------------
             # art return code present , analyze it
@@ -279,9 +276,6 @@ class Tool:
             if (rc != '0'):
                 print('>> segment %5i: art ERROR'%i,' rc = ',rc,' fcl:',fcl_list[i])
                 self.handle_failed_segment(dd,job,next_fcl_dir,fcl_list[i]);
-                # if (next_fcl_dir):
-                #     dst = next_fcl_dir+'/'+os.path.basename(fcl_list[i]);
-                #     shutil.copyfile(fcl_list[i], dst)
                 continue;
 
             #------------------------------------------------------------------------------
@@ -294,18 +288,12 @@ class Tool:
             if (len(out) == 0):
                 print('>> segment %5i: ERROR: no mu2eprodsys return code'%i)
                 self.handle_failed_segment(dd,job,next_fcl_dir,fcl_list[i]);
-                # if (next_fcl_dir):
-                #     dst = next_fcl_dir+'/'+os.path.basename(fcl_list[i]);
-                #     shutil.copyfile(fcl_list[i], dst)
                 continue;
             else:
                 rc = out[0].strip()
                 if (rc != '0'):
                     print('>> segment %5i: ERROR: mu2eprodsys return code not 0'%i)
                     self.handle_failed_segment(dd,job,next_fcl_dir,fcl_list[i]);
-                    # if (next_fcl_dir):
-                    #     dst = next_fcl_dir+'/'+os.path.basename(fcl_list[i]);
-                    #     shutil.copyfile(fcl_list[i], dst)
                     continue;
             #------------------------------------------------------------------------------
             # mu2egrid return code = 0

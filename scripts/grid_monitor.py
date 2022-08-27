@@ -19,6 +19,7 @@ class GridMonitor:
         self.fRunningDir    = None;
         self.fDescription   = 'xxxxxxxxxx'
         self.fConfigFile    = '.grid_config'
+        self.fFilesToDelete = None
 
 # ---------------------------------------------------------------------
     def Print(self,Name,level,Message):
@@ -39,7 +40,11 @@ class GridMonitor:
 
         try:
             optlist, args = getopt.getopt(sys.argv[1:], '',
-                     ['project=', 'verbose=' ] )
+                                          ['project=', 
+                                           'delete=', 
+                                           'verbose=' 
+                                          ]
+                                         )
  
         except getopt.GetoptError:
             self.Print(name,0,'%s' % sys.argv)
@@ -52,6 +57,8 @@ class GridMonitor:
 
             if key == '--project':
                 self.fProject = val
+            elif key == '--delete':
+                self.fFilesToDelete = val;
             elif key == '--verbose':
                 self.fVerbose = int(val)
 
@@ -85,6 +92,20 @@ class GridMonitor:
 
         self.fRunningDir   = self.fTmpDir+'/grid_job_status';
         return 0;
+
+#------------------------------------------------------------------------------
+# delete obsolete file in tmp/ (assume a comma-separated list of grid ID's on input)
+#------------------------------------------------------------------------------
+    def delete_files(self):
+        name = 'delete_files'
+
+        running_dir   = self.fTmpDir+'/grid_job_status'
+
+        list = self.fFilesToDelete.split(',');
+        for fn in list:
+            grid_id = fn.split('@')[0] # allow for full grid job ID
+            fn      = running_dir+'/'+grid_id
+            os.remove(fn)
 
 #------------------------------------------------------------------------------
 # check log files. asume they are copied into the output area
@@ -178,6 +199,7 @@ if (__name__ == '__main__'):
 
     x.init()
 
-    x.monitor()
+    if (x.fFilesToDelete) : x.delete_files()
+    else                  : x.monitor()
 
     sys.exit(0);
