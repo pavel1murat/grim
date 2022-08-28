@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # creates local list of output files produced by the job , places it into su2020/$dsid/catalog area
-# call: su2020/scripts/list_pnfs_files.py --project=su2020 --grid_id=35469055
+# call: grim/scripts/list_pnfs_files.py --project=su2020 --grid_id=35469055
 # it is assumed that the current directory has a ".grid_status" file in it
 # see 
 #-------------------------------------------------------------------------------------------------

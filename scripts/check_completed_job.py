@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # interface to Andrei's generate_fcl
-# call: pmgrid/scripts/check_completed_job.py --project=su2020 --grid_id=11122234
+# call: grim/scripts/check_completed_job.py --project=su2020 --grid_id=11122234
 #-------------------------------------------------------------------------------------------------
 
 import configparser, subprocess, shutil, json

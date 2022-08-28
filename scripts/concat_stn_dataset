@@ -12,7 +12,7 @@
 # however, also assume that there is no duplicate stntuple files in those directory 
 # call signature via example:
 #
-#           su2020/scripts/concat_stn_dataset su2020 cele0s41b2 s5:reco_stn_b1 cele0s51b2 [gridID1[,gridID2[...]]]
+#           grim/scripts/concat_stn_dataset su2020 cele0s41b2 s5:reco_stn_b1 cele0s51b2 [gridID1[,gridID2[...]]]
 #
 # - if gridID is not specified, stntuples from all jobs are concatenated together
 #------------------------------------------------------------------------------

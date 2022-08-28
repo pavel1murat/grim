@@ -4,7 +4,7 @@
 # 
 # setup Mu2e offline before calling
 #
-# call: su2020/scripts/print_config.py --project=su2020 --dsid=bmum3 
+# call: grim/scripts/print_config.py --project=su2020 --dsid=bmum3 
 #   project  : project name
 #   dsid     : input dataset family
 #-------------------------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 #------------------------------------------------------------------------------
-# clone configuration of an existing dataset to create a prototype configuration 
+# clone configuration of an existing dataset family to create a prototype configuration 
 # for a new one
 # call signatute:
 #                   clone project old_ds new_ds

@@ -4,7 +4,8 @@
 # 
 # setup Mu2e offline before calling
 #
-# call: pmgrid/scripts/gen_fcl.py --project=su2020 --dsid=bmum3 --stage=s2  --job=sim [--recover=grid_id] [--fileset=xxxx]
+# call: grim/scripts/gen_fcl.py --project=su2020 --dsid=bmum3 --stage=s2  --job=sim [--recover=grid_id] [--fileset=xxxx]
+# 
 #   project  : project name
 #   idsid    : input dataset id
 #   stage    : stage of the job (sometimes Mu2e uses multi-stage generation)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #------------------------------------------------------------------------------
-# call: su2020/scripts/copy_log_files.py --project=su2020 --grid_id=35469055[,xxxxxx,[yyy]]
+# call: grim/scripts/copy_log_files.py --project=su2020 --grid_id=35469055[,xxxxxx,[yyy]]
 #       can specify a list of comma-separated grid ID's (need to go in the right order)
 #------------------------------------------------------------------------------
 

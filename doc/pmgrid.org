@@ -1,11 +1,10 @@
 # -*- mode:org -*-
 #+startup:fold
 #
-# documentaion on PMGRID (grid submission scripts) 
-# gen_fcl.py , list_pnfs_files.py, and friends
+# documentaion on GRIM (GRId submission and Monitoring scripts) 
+# gen_fcl.py , submit_job.py, list_pnfs_files.py, and friends
 # ------------------------------------------------------------------------------
-
-* testing tarball:                                
+* testing tarball:                                                           
 
 - untar it in a new shell 
 - source Code/setup.sh
@@ -17,71 +16,71 @@
 
   0.1) clone offline code from git, compile it
 
-  0.2) create ./.grid_config configuration file in the working directory: 
+  0.2) create ./.grid_config configuration file in the working directory for your
+       project. Below, $project will stand for the project name
 
-            source pmgrid/scripts/create_project pbar2m
+            source grim/scripts/create_project pbar2m   # project=pbar2m
 
        this needs to be done once per project. A template for the configuration file 
        can be found here: file:../scripts/.grid_config
 
   0.3) build the code tarball 
   
-          pmgrid/scripts/build_tarball.py --project=pbar2m
+          grim/scripts/build_tarball.py --project=$project
 
-       the code tarball is automatically copied to /pnfs/mu2e/resilient/$USER/pbar2m
+       the code tarball is automatically copied to /pnfs/mu2e/resilient/$USER/$project
        after the tarball is built, update .grid_config file to specify the tarball name there
-       It is needed for pmgrid/scripts/submit_job.py to find the code tarball
+       It is needed for grim/scripts/submit_job.py to find the code tarball
 
        if the tarball is built under personal account and you're running as mu2epro, 
        copy tarball (as mu2epro): 
 
-          pmgrid/scripts/copy_user_tarball tarball
+          grim/scripts/copy_user_tarball tarball
 
   1) generate FCL tarball 
 
-             pmgrid/scripts/gen_fcl.py .. parameters... (see gen_fcl help below)
+             grim/scripts/gen_fcl.py .. parameters... (see gen_fcl help below)
 
      to generate an fcl tarfile for grid submission
 
      The fcl tarball is also copied to /pnfs/mu2e/resilient/$USER/$project for jobsub to find it there
 
   2) run 
-             pmgrid/scripts/submit_job.py  (see help below)
+             grim/scripts/submit_job.py  (see help below)
 
      to submit a grid job
 
   3) to monitor status run 
 
-            pmgrid/scripts/grid_monitor.py su2020
+            grim/scripts/grid_monitor.py --project=$project
 
      to identify completed jobs. When a job finishes, grid_monitor changes status of the job from 'running' to 'finished'
 
   4) run check_completed_job.py:
 
-         pmgrid/scripts/check_completed_job.py --grid_id=xxxxxxxx
+         grim/scripts/check_completed_job.py --grid_id=xxxxxxxx
 
      the script checks if all job segments have completed successfully and, if some have failed, 
      automatically creates an input for the recovery job. To create an fcl tarball for the recovery job:
 
-     pmgrid/scripts/gen_fcl.py --recover=<grid_id>
+     grim/scripts/gen_fcl.py --recover=<grid_id>
 
      where <grid_id> is a GRID ID of the initial job which needs to be recovered. 
 
   4.05) submitting a recovery job: 
 
-        pmgrid/scripts/submit_job.py --recover=<grid_id>
+        grim/scripts/submit_job.py --recover=<grid_id>
 
+  4.1) after the output create input for the next stage: 
 
-  4.1) after teh output create input for the next stage: 
-
-       pmgrid/scripts/list_pnfs_files.py --grid_id=<grid_id>
+       grim/scripts/list_pnfs_files.py --grid_id=<grid_id>
 
   4.2) save log files of a successfully completed job: 
 
-       pmgrid/scripts/copy_log_files.py --grid_id=<grid_id>
+       grim/scripts/copy_log_files.py --grid_id=<grid_id>
 
       do all that only after running grid_monitor.py - the scripts operate only on completed jobs, 
-      which status files are available in tmp/pmgrid/completed_jobs
+      which status files are available in tmp/$project/completed_jobs
 
   5.) proceed with the next stage
 
@@ -89,14 +88,14 @@
 
 * ------------------------------------------------------------------------------
 * individual scripts in alphabetic order                                     
-** [[file:../scripts/build_tarball.py][pmgrid/scripts/build_tarball.py]]         : interface to Rob's gridexport                                                 
-** [[file:../scripts/check_completed_job.py][pmgrid/scripts/check_completed_job.py]]   : checks status of the completed grid job, reports failed segments              
+** [[file:../scripts/build_tarball.py][grim/scripts/build_tarball.py]]         : interface to Rob's gridexport                                                 
+** [[file:../scripts/check_completed_job.py][grim/scripts/check_completed_job.py]]   : checks status of the completed grid job, reports failed segments              
 
    call signature:
 
-   pmgrid/scripts/check_competed_job.py --project=pmgrid --dsid=cele0 --stage=s4 --job=sim  --gridid=
+   grim/scripts/check_competed_job.py --project=grim --dsid=cele0 --stage=s4 --job=sim  --gridid=
 
-    - project: pmgrid
+    - project: grim
     - dsid   : input dataset [10 char long]
     - gridid : grid job ID of the completed job
     - job    : job type , as defined by init_project.py 
@@ -114,10 +113,10 @@
 
     submit_job.py --recover=34566555
     
-** [[file:../scripts/check_pnfs_file_locality][pmgrid/scripts/check_pnfs_file_locality]] : checks status of file in PNFS                                                 
+** [[file:../scripts/check_pnfs_file_locality][grim/scripts/check_pnfs_file_locality]] : checks status of file in PNFS                                                 
    call signature:
 #+begin_src
-                pmgrid/scripts/check_pnfs_file_locality full_file_name
+                grim/scripts/check_pnfs_file_locality full_file_name
 #+end_src
 
    output:
@@ -129,29 +128,29 @@
    example:
 
 #+begin_src
-pmgrid/scripts/check_pnfs_file_locality /pnfs/mu2e/tape/phy-sim/dig/mu2e/rmce2s41b0/pmgrid/art/73/bc/dig.mu2e.rmce2s41b0.pmgrid.001000_00000005.art
+grim/scripts/check_pnfs_file_locality /pnfs/mu2e/tape/phy-sim/dig/mu2e/rmce2s41b0/grim/art/73/bc/dig.mu2e.rmce2s41b0.grim.001000_00000005.art
 ONLINE_AND_NEARLINE
 #+end_src
 
-** [[file:../scripts/concat_stn_dataset][pmgrid/scripts/concat_stn_dataset]]       : concatenate stntuple dataset                                                  
+** [[file:../scripts/concat_stn_dataset][grim/scripts/concat_stn_dataset]]       : concatenate stntuple dataset                                                  
 
-** [[file:../scripts/copy_log_files.py][pmgrid/scripts/copy_log_files.py]]        : copy log files of a grid job to /mu2e/data/users/$USER/$project               
+** [[file:../scripts/copy_log_files.py][grim/scripts/copy_log_files.py]]        : copy log files of a grid job to /mu2e/data/users/$USER/$project               
 
-** [[file:../scripts/clone.sh][pmgrid/scripts/clone.sh]]                 : create template files to generate new dataset family                          
+** [[file:../scripts/clone.sh][grim/scripts/clone.sh]]                 : create template files to generate new dataset family                          
 
-   - call signature:  pmgrid/scripts/clone.sh project family1 family2
+   - call signature:  grim/scripts/clone.sh project family1 family2
 
      - project: project 
      - family1: existing family definition (in subdirectory $prokect/$family1)
      - family2: new family definition template, to be edited 
 
-   - example: pmgrid/scripts/clone.sh  pmgrid  rmci0 rmci1
+   - example: grim/scripts/clone.sh  grim  rmci0 rmci1
 
-** [[file:../scripts/gen_fcl.py][pmgrid/scripts/gen_fcl.py]]               : interface to Andrei's generate_fcl                                            
+** [[file:../scripts/gen_fcl.py][grim/scripts/gen_fcl.py]]               : interface to Andrei's generate_fcl                                            
 
-    pmgrid/scripts/gen_fcl.py --project=pmgrid --dsid=cele0 --stage=s4 --job=sim [ --recover=step ]
+    grim/scripts/gen_fcl.py --project=grim --dsid=cele0 --stage=s4 --job=sim [ --recover=step ]
 
-    - project: pmgrid
+    - project: grim
     - dsid   : dataset family - 5 first characters of the dataset ID
     - stage  : job stage, as defined by init_project.py of this family (or group)
     - job    : job name , as defined by init_project.py 
@@ -160,7 +159,7 @@ ONLINE_AND_NEARLINE
                with a few FCL files corresponding to segments to be recovered already exists and populated ,
                so all one needs to to is to tar them up and copy the tarball to /pnfs
                
-    generated fcls are copied to tmp/pmgrid/fcl/... and tarball - to /pnfs/mu2e/resilient/users/$USER/$project/.
+    generated fcls are copied to tmp/grim/fcl/... and tarball - to /pnfs/mu2e/resilient/users/$USER/$project/.
 
     assume the number of segments < 1000, if more than 1000 segments to be submitted, run 
 
@@ -168,92 +167,92 @@ ONLINE_AND_NEARLINE
 
     by default, first-subrun=fileset*n_segments specified in init_project.py for this job
 
-** [[file:../scripts/grid_time_ana.C][pmgrid/scripts/grid_time_ana.C]]          : read data produced by parse_grid_logs.rb , plot histograms                    
-** [[file:../scripts/grid_monitor.py][pmgrid/scripts/grid_monitor.py]]          : displays and updates status of the jobs submitted by *submit_job.py*                       
+** [[file:../scripts/grid_time_ana.C][grim/scripts/grid_time_ana.C]]          : read data produced by parse_grid_logs.rb , plot histograms                    
+** [[file:../scripts/grid_monitor.py][grim/scripts/grid_monitor.py]]          : displays and updates status of the jobs submitted by *submit_job.py*                       
 
-    pmgrid/scripts/grid_monitor.py --project=pmgrid [--delete=list] [--verbose=1]
+    grim/scripts/grid_monitor.py --project=grim [--delete=list] [--verbose=1]
 
-    - project: pmgrid
+    - project: grim
     - delete : delete a list of comma-separated grid jobs, cleaning up the report. example:
 #+begin_src
-pmgrid/scripts/grid_monitor.py --project=pbar2m --delete=37547802@jobsub03.fnal.gov,37548352,37548579
+grim/scripts/grid_monitor.py --project=pbar2m --delete=37547802@jobsub03.fnal.gov,37548352,37548579
 #+end_src
 
-** [[file:../scripts/jobsub_gui.C][pmgrid/scripts/jobsub_gui.C]]             : ROOT_based prototype of a GUI interface, redo with PyQT5 gui builder          
+** [[file:../scripts/jobsub_gui.C][grim/scripts/jobsub_gui.C]]             : ROOT_based prototype of a GUI interface, redo with PyQT5 gui builder          
 
-   temporary files in $PWD/tmp/pmgrid
+   temporary files in $PWD/tmp/grim
    
-** [[file:../scripts/list_pnfs_files.py][pmgrid/scripts/list_pnfs_files.py]]       : create 'catalogs' of temporary datasets to speed up the next stage submission 
+** [[file:../scripts/list_pnfs_files.py][grim/scripts/list_pnfs_files.py]]       : create 'catalogs' of temporary datasets to speed up the next stage submission 
 
-** [[file:../scripts/parse_grid_logs.rb][pmgrid/scripts/parse_grid_logs.rb]]       : parse timing information for timing etc analysis
-** [[file:../scripts/print_config.py][pmgrid/scripts/print_config.py]]          : print configuration of jobs for a given dataset family
+** [[file:../scripts/parse_grid_logs.rb][grim/scripts/parse_grid_logs.rb]]       : parse timing information for timing etc analysis
+** [[file:../scripts/print_config.py][grim/scripts/print_config.py]]          : print configuration of jobs for a given dataset family                        
 example of the script output:
 #+begin_src
-/projects/mu2e/app/users/murat/pmgrid>pmgrid/scripts/print_config.py --project=pmgrid --dsid=bmum0
+/projects/mu2e/app/users/murat/grim>grim/scripts/print_config.py --project=grim --dsid=bmum0
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 stage          job                   input DSID  N(seg) N(outputs)  output DSID      outputFnPattern                base FCL
 -----------------------------------------------------------------------------------------------------------------------------------------------------
-s1    sim                            bmum0s00b0    400       1       bmum0s11b0 sim.murat.bmum0s11b0 pmgrid/bmum0/s1_muon_beam_bmum0.fcl
-s1    sim_e9                         bmum0s00b0   1000       1       bmum0s11b0 sim.murat.bmum0s11b0 pmgrid/bmum0/s1_muon_beam_bmum0.fcl
-s1    concat                         bmum0s11b0     -1       1       bmum0s11b0 sim.murat.bmum0s11b0 pmgrid/bmum0/s1_concat_bmum0.fcl
-s1    spmc_ele_filter                bmum0s11b0     -1       1       bmum0s16b0 sim.murat.bmum0s16b0 pmgrid/bmum0/s1_spmc_ele_filter_bmum0.fcl
-s1    muon_beam_stn                  bmum0s11b0     -1       1       bmum0s11b0 nts.murat.bmum0s11b0 pmgrid/bmum0/s1_muon_beam_stn_bmum0.fcl
-s1    stn_s16                        bmum0s16b0     -1       1       bmum0s16b0 nts.murat.bmum0s16b0 pmgrid/bmum0/s1_muon_beam_stn_bmum0.fcl
+s1    sim                            bmum0s00b0    400       1       bmum0s11b0 sim.murat.bmum0s11b0 su2020/bmum0/s1_muon_beam_bmum0.fcl
+s1    sim_e9                         bmum0s00b0   1000       1       bmum0s11b0 sim.murat.bmum0s11b0 su2020/bmum0/s1_muon_beam_bmum0.fcl
+s1    concat                         bmum0s11b0     -1       1       bmum0s11b0 sim.murat.bmum0s11b0 su2020/bmum0/s1_concat_bmum0.fcl
+s1    spmc_ele_filter                bmum0s11b0     -1       1       bmum0s16b0 sim.murat.bmum0s16b0 su2020/bmum0/s1_spmc_ele_filter_bmum0.fcl
+s1    muon_beam_stn                  bmum0s11b0     -1       1       bmum0s11b0 nts.murat.bmum0s11b0 su2020/bmum0/s1_muon_beam_stn_bmum0.fcl
+s1    stn_s16                        bmum0s16b0     -1       1       bmum0s16b0 nts.murat.bmum0s16b0 su2020/bmum0/s1_muon_beam_stn_bmum0.fcl
 -----------------------------------------------------------------------------------------------------------------------------------------------------
-s2    sim                            bmum0s11b0     -1       1       bmum0s21b0 sim.murat.bmum0s21b0 pmgrid/bmum0/s2_muon_beam_bmum0.fcl
-s2    concat                         bmum0s21b0     -1       1       bmum0s21b0 sim.murat.bmum0s21b0 pmgrid/bmum0/s2_concat_bmum0.fcl
-s2    sim_muo                        bmum0s11b0     -1       1       bmum0s27b0 sim.murat.bmum0s27b0 pmgrid/bmum0/s2_muon_beam_01_bmum0.fcl
-s2    sim_ele                        bmum0s16b0     -1       1       bmum0s26b0 sim.murat.bmum0s26b0 pmgrid/bmum0/s2_muon_beam_02_bmum0.fcl
-s2    spmc_ele_filter                bmum0s27b0     -1       1       bmum0s28b0 sim.murat.bmum0s28b0 pmgrid/bmum0/s2_spmc_ele_filter_bmum0.fcl
-s2    stn_s26                        bmum0s26b0     -1       1       bmum0s26b0 nts.murat.bmum0s26b0 pmgrid/bmum0/s2_muon_beam_stn_bmum0.fcl
-s2    stn_s28                        bmum0s28b0     -1       1       bmum0s28b0 nts.murat.bmum0s28b0 pmgrid/bmum0/s2_muon_beam_stn_bmum0.fcl
-s2    muon_beam_stn                  bmum0s21b0     -1       1       bmum0s21b0 nts.murat.bmum0s21b0 pmgrid/bmum0/s2_mubeam_stn_bmum0.fcl
+s2    sim                            bmum0s11b0     -1       1       bmum0s21b0 sim.murat.bmum0s21b0 su2020/bmum0/s2_muon_beam_bmum0.fcl
+s2    concat                         bmum0s21b0     -1       1       bmum0s21b0 sim.murat.bmum0s21b0 su2020/bmum0/s2_concat_bmum0.fcl
+s2    sim_muo                        bmum0s11b0     -1       1       bmum0s27b0 sim.murat.bmum0s27b0 su2020/bmum0/s2_muon_beam_01_bmum0.fcl
+s2    sim_ele                        bmum0s16b0     -1       1       bmum0s26b0 sim.murat.bmum0s26b0 su2020/bmum0/s2_muon_beam_02_bmum0.fcl
+s2    spmc_ele_filter                bmum0s27b0     -1       1       bmum0s28b0 sim.murat.bmum0s28b0 su2020/bmum0/s2_spmc_ele_filter_bmum0.fcl
+s2    stn_s26                        bmum0s26b0     -1       1       bmum0s26b0 nts.murat.bmum0s26b0 su2020/bmum0/s2_muon_beam_stn_bmum0.fcl
+s2    stn_s28                        bmum0s28b0     -1       1       bmum0s28b0 nts.murat.bmum0s28b0 su2020/bmum0/s2_muon_beam_stn_bmum0.fcl
+s2    muon_beam_stn                  bmum0s21b0     -1       1       bmum0s21b0 nts.murat.bmum0s21b0 su2020/bmum0/s2_mubeam_stn_bmum0.fcl
 -----------------------------------------------------------------------------------------------------------------------------------------------------
-s3    sim                            bmum0s21b0     -1       2       bmum0s31b0 sim.murat.bmum0s31b0 pmgrid/bmum0/s3_muon_beam_bmum0.fcl
+s3    sim                            bmum0s21b0     -1       2       bmum0s31b0 sim.murat.bmum0s31b0 su2020/bmum0/s3_muon_beam_bmum0.fcl
                                                                      bmum0s32b0 sim.murat.bmum0s32b0
-s3    sim_muo                        bmum0s27b0     -1       1       bmum0s37b0 sim.murat.bmum0s37b0 pmgrid/bmum0/s3_muon_beam_vd9_01_bmum0.fcl
-s3    sim_vd9                        bmum0s21b0     -1       1       bmum0s3cb0 sim.murat.bmum0s3cb0 pmgrid/bmum0/s3_muon_beam_vd9_bmum0.fcl
-s3    add_proton_time_map_s3c        bmum0s3cb0     -1       1       bmum0s3cb0 sim.murat.bmum0s3cb0 pmgrid/bmum0/s3_add_proton_time_map_s3c_bmum0.fcl
-s3    spmc_ele_filter                bmum0s37b0     -1       1       bmum0s39b0 sim.murat.bmum0s39b0 pmgrid/bmum0/s3_spmc_ele_filter_bmum0.fcl
-s3    spmc_muo_filter                bmum0s37b0     -1       1       bmum0s3ab0 sim.murat.bmum0s3ab0 pmgrid/bmum0/s3_spmc_muo_filter_bmum0.fcl
-s3    sim_ele                        bmum0s26b0     -1       1       bmum0s36b0 sim.murat.bmum0s36b0 pmgrid/bmum0/s3_muon_beam_vd9_02_bmum0.fcl
-s3    sim_ele_28                     bmum0s28b0     -1       1       bmum0s38b0 sim.murat.bmum0s38b0 pmgrid/bmum0/s3_muon_beam_vd9_02_bmum0.fcl
-s3    resample_ele                   bmum0s26b0     -1       1       bmum0s36b0  sim.mu2e.bmum0s36b0 pmgrid/bmum0/s3_resample_ele_bmum0.fcl
-s3    stn_s31                        bmum0s31b0     -1       1       bmum0s31b0 nts.murat.bmum0s31b0 pmgrid/bmum0/s3_stn_s31_bmum0.fcl
-s3    stn_s32                        bmum0s32b0     -1       1       bmum0s32b0 nts.murat.bmum0s32b0 pmgrid/bmum0/s3_stn_s32_bmum0.fcl
-s3    stn_s3c                        bmum0s3cb0     -1       1       bmum0s3cb0 nts.murat.bmum0s3cb0 pmgrid/bmum0/s3_stn_s3c_bmum0.fcl
-s3    muon_beam_stn                  bmum0s37b0     -1       1       bmum0s37b0 nts.murat.bmum0s37b0 pmgrid/bmum0/s3_muon_beam_stn_bmum0.fcl
+s3    sim_muo                        bmum0s27b0     -1       1       bmum0s37b0 sim.murat.bmum0s37b0 su2020/bmum0/s3_muon_beam_vd9_01_bmum0.fcl
+s3    sim_vd9                        bmum0s21b0     -1       1       bmum0s3cb0 sim.murat.bmum0s3cb0 su2020/bmum0/s3_muon_beam_vd9_bmum0.fcl
+s3    add_proton_time_map_s3c        bmum0s3cb0     -1       1       bmum0s3cb0 sim.murat.bmum0s3cb0 su2020/bmum0/s3_add_proton_time_map_s3c_bmum0.fcl
+s3    spmc_ele_filter                bmum0s37b0     -1       1       bmum0s39b0 sim.murat.bmum0s39b0 su2020/bmum0/s3_spmc_ele_filter_bmum0.fcl
+s3    spmc_muo_filter                bmum0s37b0     -1       1       bmum0s3ab0 sim.murat.bmum0s3ab0 su2020/bmum0/s3_spmc_muo_filter_bmum0.fcl
+s3    sim_ele                        bmum0s26b0     -1       1       bmum0s36b0 sim.murat.bmum0s36b0 su2020/bmum0/s3_muon_beam_vd9_02_bmum0.fcl
+s3    sim_ele_28                     bmum0s28b0     -1       1       bmum0s38b0 sim.murat.bmum0s38b0 su2020/bmum0/s3_muon_beam_vd9_02_bmum0.fcl
+s3    resample_ele                   bmum0s26b0     -1       1       bmum0s36b0  sim.mu2e.bmum0s36b0 su2020/bmum0/s3_resample_ele_bmum0.fcl
+s3    stn_s31                        bmum0s31b0     -1       1       bmum0s31b0 nts.murat.bmum0s31b0 su2020/bmum0/s3_stn_s31_bmum0.fcl
+s3    stn_s32                        bmum0s32b0     -1       1       bmum0s32b0 nts.murat.bmum0s32b0 su2020/bmum0/s3_stn_s32_bmum0.fcl
+s3    stn_s3c                        bmum0s3cb0     -1       1       bmum0s3cb0 nts.murat.bmum0s3cb0 su2020/bmum0/s3_stn_s3c_bmum0.fcl
+s3    muon_beam_stn                  bmum0s37b0     -1       1       bmum0s37b0 nts.murat.bmum0s37b0 su2020/bmum0/s3_muon_beam_stn_bmum0.fcl
 -----------------------------------------------------------------------------------------------------------------------------------------------------
-s4    sim_muo_vd10                   bmum0s37b0     -1       1       bmum0s47b0 sim.murat.bmum0s47b0 pmgrid/bmum0/s4_sim_muo_vd10_bmum0.fcl
-s4    spmc_muo_filter                bmum0s47b0     -1       1       bmum0s4bb0 sim.murat.bmum0s4bb0 pmgrid/bmum0/s4_spmc_muo_filter_bmum0.fcl
-s4    muon_beam_stn                  bmum0s47b0     -1       1       bmum0s47b0 nts.murat.bmum0s47b0 pmgrid/bmum0/s4_muon_beam_stn_bmum0.fcl
+s4    sim_muo_vd10                   bmum0s37b0     -1       1       bmum0s47b0 sim.murat.bmum0s47b0 su2020/bmum0/s4_sim_muo_vd10_bmum0.fcl
+s4    spmc_muo_filter                bmum0s47b0     -1       1       bmum0s4bb0 sim.murat.bmum0s4bb0 su2020/bmum0/s4_spmc_muo_filter_bmum0.fcl
+s4    muon_beam_stn                  bmum0s47b0     -1       1       bmum0s47b0 nts.murat.bmum0s47b0 su2020/bmum0/s4_muon_beam_stn_bmum0.fcl
 -----------------------------------------------------------------------------------------------------------------------------------------------------
-s5    resample_vd9_to_mother_s36     bmum0s36b0     -1       1       bmum0s56b0 sim.murat.bmum0s56b0 pmgrid/bmum0/s5_resample_vd9_to_mother_s36_bmum0.fcl
-s5    resample_vd9_to_mother_s3a     bmum0s3ab0     -1       1       bmum0s5ab0 sim.murat.bmum0s5ab0 pmgrid/bmum0/s5_resample_vd9_to_mother_s3a_bmum0.fcl
-s5    resample_vd9_to_mother_s38     bmum0s38b0     -1       1       bmum0s58b0 sim.murat.bmum0s58b0 pmgrid/bmum0/s5_resample_vd9_to_mother_bmum0.fcl
-s5    resample_vd9_to_mother_s39     bmum0s39b0     -1       1       bmum0s59b0 sim.murat.bmum0s59b0 pmgrid/bmum0/s5_resample_vd9_to_mother_bmum0.fcl
-s5    resample_vd10_to_mother        bmum0s4bb0      1       1       bmum0s5bb0 sim.murat.bmum0s5bb0 pmgrid/bmum0/s5_resample_vd10_to_mother_bmum0.fcl
-s5    stn_s56                        bmum0s56b0     -1       1       bmum0s56b0 nts.murat.bmum0s56b0 pmgrid/bmum0/s5_stn_bmum0.fcl
-s5    stn_s58                        bmum0s58b0     -1       1       bmum0s58b0 nts.murat.bmum0s58b0 pmgrid/bmum0/s5_stn_bmum0.fcl
-s5    stn_s59                        bmum0s59b0     -1       1       bmum0s59b0 nts.murat.bmum0s59b0 pmgrid/bmum0/s5_stn_bmum0.fcl
-s5    stn_s5a                        bmum0s5ab0     -1       1       bmum0s5ab0 nts.murat.bmum0s5ab0 pmgrid/bmum0/s5_stn_bmum0.fcl
-s5    stn_s5b                        bmum0s5bb0     -1       1       bmum0s5bb0 nts.murat.bmum0s5bb0 pmgrid/bmum0/s5_stn_bmum0.fcl
+s5    resample_vd9_to_mother_s36     bmum0s36b0     -1       1       bmum0s56b0 sim.murat.bmum0s56b0 su2020/bmum0/s5_resample_vd9_to_mother_s36_bmum0.fcl
+s5    resample_vd9_to_mother_s3a     bmum0s3ab0     -1       1       bmum0s5ab0 sim.murat.bmum0s5ab0 su2020/bmum0/s5_resample_vd9_to_mother_s3a_bmum0.fcl
+s5    resample_vd9_to_mother_s38     bmum0s38b0     -1       1       bmum0s58b0 sim.murat.bmum0s58b0 su2020/bmum0/s5_resample_vd9_to_mother_bmum0.fcl
+s5    resample_vd9_to_mother_s39     bmum0s39b0     -1       1       bmum0s59b0 sim.murat.bmum0s59b0 su2020/bmum0/s5_resample_vd9_to_mother_bmum0.fcl
+s5    resample_vd10_to_mother        bmum0s4bb0      1       1       bmum0s5bb0 sim.murat.bmum0s5bb0 su2020/bmum0/s5_resample_vd10_to_mother_bmum0.fcl
+s5    stn_s56                        bmum0s56b0     -1       1       bmum0s56b0 nts.murat.bmum0s56b0 su2020/bmum0/s5_stn_bmum0.fcl
+s5    stn_s58                        bmum0s58b0     -1       1       bmum0s58b0 nts.murat.bmum0s58b0 su2020/bmum0/s5_stn_bmum0.fcl
+s5    stn_s59                        bmum0s59b0     -1       1       bmum0s59b0 nts.murat.bmum0s59b0 su2020/bmum0/s5_stn_bmum0.fcl
+s5    stn_s5a                        bmum0s5ab0     -1       1       bmum0s5ab0 nts.murat.bmum0s5ab0 su2020/bmum0/s5_stn_bmum0.fcl
+s5    stn_s5b                        bmum0s5bb0     -1       1       bmum0s5bb0 nts.murat.bmum0s5bb0 su2020/bmum0/s5_stn_bmum0.fcl
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 #+end_src
-** [[file:../scripts/submit_job.py][pmgrid/scripts/submit_job.py]]            : grid job submission tool, today it is an inteface to mu2eprodsys              
+** [[file:../scripts/submit_job.py][grim/scripts/submit_job.py]]            : grid job submission tool, today it is an inteface to mu2eprodsys              
 #+begin_src 
     call signature:
 
-    pmgrid/scripts/submit_job.py --project=pmgrid --dsid=cele0 --stage=s4 --job=sim  [--recover=step] [--doit=./d//]
+    grim/scripts/submit_job.py --project=grim --dsid=cele0 --stage=s4 --job=sim  [--recover=step] [--doit=./d//]
 
-    - project: pmgrid
+    - project: grim
     - dsid   : dataset family (5 first characters of the dataset ID)
     - stage  : job stage, as defined by init_project.py of this family (or group)
     - job    : job type , as defined by init_project.py 
     - recover: recovery step - if defined, the corresponding "recovery" FCL tarball will be used for submission
                if '--recover' parameter is specified, nothing else , except --doit is needed, for example:
 
-               pmgrid/scripts/submit_job.py --recover=39134961 --doit=.
+               grim/scripts/submit_job.py --recover=39134961 --doit=.
 
     stage and type parameters together define the fcl file configuring the job
 
@@ -261,10 +260,10 @@ s5    stn_s5b                        bmum0s5bb0     -1       1       bmum0s5bb0 
        - 'd'                      : Andrei's dry_run mode
        - 'yes' (or anything else) : submit the job 
 
-    pmgrid/scripts/submit_job.py stores information about the submitted job into 
+    grim/scripts/submit_job.py stores information about the submitted job into 
 
 #+end_src
 
-** [[file:../scripts/upload_grid_output.sh][pmgrid/scripts/upload_grid_output.sh]]    : upload output of a grid job to tape
-** [[file:../scripts/validate_dcache_files.sh][pmgrid/scripts/validate_dcache_files.sh]] : extracts inputs defind in a given FCL file, checks if they are readable     
+** [[file:../scripts/upload_grid_output.sh][grim/scripts/upload_grid_output.sh]]    : upload output of a grid job to tape
+** [[file:../scripts/validate_dcache_files.sh][grim/scripts/validate_dcache_files.sh]] : extracts inputs defind in a given FCL file, checks if they are readable     
 * ------------------------------------------------------------------------------
