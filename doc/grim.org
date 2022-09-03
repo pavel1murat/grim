@@ -4,14 +4,20 @@
 # documentaion on GRIM (GRId submission and Monitoring scripts) 
 # gen_fcl.py , submit_job.py, list_pnfs_files.py, and friends
 # ------------------------------------------------------------------------------
-* testing tarball:                                                           
+* grid submission prerequisites                                              
+#+begin_src                                                                  
+kinit
+kx509
+voms-proxy-init -noregen -rfc -voms fermilab:/fermilab/mu2e/Role=Analysis
+#+end_src
+* testing tarball                                                            
 
 - untar it in a new shell 
 - source Code/setup.sh
 - run your executable 
 
 * ------------------------------------------------------------------------------
-* workflow:                                                                  
+* workflow                                                                   
 #+begin_quote
 
   0.1) clone offline code from git, compile it
