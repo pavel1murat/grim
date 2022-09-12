@@ -174,7 +174,7 @@ ONLINE_AND_NEARLINE
     by default, first-subrun=fileset*n_segments specified in init_project.py for this job
 
 ** [[file:../scripts/grid_time_ana.C][grim/scripts/grid_time_ana.C]]          : read data produced by parse_grid_logs.rb , plot histograms                    
-** [[file:../scripts/grid_monitor.py][grim/scripts/grid_monitor.py]]          : displays and updates status of the jobs submitted by *submit_job.py*                       
+** [[file:../scripts/grid_monitor.py][grim/scripts/grid_monitor.py]]          : displays and updates status of the jobs submitted by *submit_job.py*          
 
     grim/scripts/grid_monitor.py --project=grim [--delete=list] [--verbose=1]
 

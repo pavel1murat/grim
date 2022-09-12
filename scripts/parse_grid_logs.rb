@@ -30,25 +30,34 @@ end
 opts = GetoptLong.new(
   [ "--dsid"          , "-d",     GetoptLong::REQUIRED_ARGUMENT ],
   [ "--fileset"       , "-f",     GetoptLong::REQUIRED_ARGUMENT ],
+  [ "--input-dir"     , "-i",     GetoptLong::REQUIRED_ARGUMENT ],
   [ "--job"           , "-j",     GetoptLong::REQUIRED_ARGUMENT ],
+  [ "--output-dir"    , "-o",     GetoptLong::REQUIRED_ARGUMENT ],
   [ "--project"       , "-p",     GetoptLong::REQUIRED_ARGUMENT ],
   [ "--stage"         , "-s",     GetoptLong::REQUIRED_ARGUMENT ],
+  [ "--user"          , "-u",     GetoptLong::REQUIRED_ARGUMENT ],
   [ "--verbose"       , "-v",     GetoptLong::NO_ARGUMENT       ]
 )
 #----------------------------- defaults
 $dsid    = nil
 $fileset = nil
+$idir    = nil
 $job     = nil
+$odir    = nil
 $project = nil
 $stage   = nil
+$user    = nil
 $verbose = 0
 
 opts.each do |opt, arg|
   if    (opt == "--dsid"          ) ; $dsid     = arg
   elsif (opt == "--fileset"       ) ; $fileset  = arg
+  elsif (opt == "--input-dir"     ) ; $idir     = arg
   elsif (opt == "--job"           ) ; $job      = arg
+  elsif (opt == "--output-dir"    ) ; $odir     = arg
   elsif (opt == "--project"       ) ; $project  = arg
   elsif (opt == "--stage"         ) ; $stage    = arg
+  elsif (opt == "--user"          ) ; $user     = arg
   elsif (opt == "--verbose"       ) ; $verbose  = 1
   end
 
@@ -57,24 +66,30 @@ end
 
 #------------------------------------------------------------------------------
 def run(dsid)
+  user = $user ; if (user == $nil) then user = ENV["USER"] ; end
+  idir = $idir ; if (idir == $nil) then idir = "/mu2e/data/users/"+user+'/'+$project; end
 
-  dir = "/mu2e/data/users/"+ENV["USER"]+"/"+$project+"/"+$dsid+"."+$stage+'_'+$job ;
-  if ($fileset) then dir = dir + '/' + $fileset; end
-  puts "dir = #{dir}"
+  idir = idir+"/"+$dsid+"."+$stage+'_'+$job ;
+
+  if ($fileset) then idir = idir + '/' + $fileset; end
+  puts "idir = #{idir}"
 #------------------------------------------------------------------------------
 # oen output file
 #------------------------------------------------------------------------------
-  odir = dir+'/timing_data'
+  odir = $odir; if (odir == $nil) then odir = idir; end
+  odir = odir+'/timing_data'
   if (not File.exist?(odir)) then FileUtils.mkdir_p(odir) ; end 
 
-  ofn = dir+'/timing_data/'+$project+'.'+$dsid+'.'+$stage+'_'+$job+'.txt';
+  puts "odir = #{odir}"
+
+  ofn = odir+'/'+$project+'.'+$dsid+'.'+$stage+'_'+$job+'.txt';
   of  = File.open(ofn,'w');
 #------------------------------------------------------------------------------
 # write ntuple format string
 #------------------------------------------------------------------------------
   of.printf ("jobid/I:node_name/C:cpu_id/C:bogomips/F:dsid/C:vmpeak/F:vmhwm/F:tstage/I:totcpu/I:totwall/I:tfull/F:tistn/F:tkffpar/F:tkffdar/F\n");
 
-  for fn in Dir.glob("#{dir}/log/*.log") do
+  for fn in Dir.glob("#{idir}/log/*.log") do
     #    puts "-----------------"+fn
 
     f = File.open(fn);
