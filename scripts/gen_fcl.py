@@ -435,7 +435,7 @@ class Tool:
         # cmd = 'setup mu2etools v3_05_00; export FHICL_FILE_PATH=$MU2E_BASE_RELEASE; ' 
         cmd = 'setup mu2etools; export FHICL_FILE_PATH=$MUSE_WORK_DIR; ' 
         cmd = cmd+'generate_fcl --description='+desc+' --dsconf='+dsconf+' --embed '+base_fcl;
-        cmd = cmd+' --max-seed=50'
+        # cmd = cmd+' --max-seed=50'
 
         if (self.fFirstSubrun): cmd = cmd+' --first-subrun=%i'%self.fFirstSubrun;
 

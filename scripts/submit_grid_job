@@ -4,9 +4,9 @@
 # - the code tarball naming may follow different rules
 # by default, use dcache
 # examples:
-#           pmgrid/scripts/submit_grid_job su2020 bpim0s00b0    s1:sim   2000MB:24h:ifdh   .
-#           pmgrid/scripts/submit_grid_job su2020 pbar0s01b0:03 s1:sim   3000MB:24h:ifdh   .
-#           pmgrid/scripts/submit_grid_job su2020 bpim0s11b0    s2:sim   4000MB:10h:xrootd .
+#           grim/scripts/submit_grid_job su2020 bpim0s00b0    s1:sim   2000MB:24h:ifdh   .
+#           grim/scripts/submit_grid_job su2020 pbar0s01b0:03 s1:sim   3000MB:24h:ifdh   .
+#           grim/scripts/submit_grid_job su2020 bpim0s11b0    s2:sim   4000MB:10h:xrootd .
 #
 # doit='xrd_debug' turns on the XROOTD client debugging and adds MB's of printout
 #------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # call examples: 
-#               pmgrid/scripts/submit_job.py --project=su2020 --dsid=cele0 --stage=s4 --job=sim [--doit=[yes/d]] [--fileset=...]
+#               grim/scripts/submit_job.py --project=su2020 --dsid=cele0 --stage=s4 --job=sim [--doit=[yes/d]] [--fileset=...]
 #
 # --doit=d         : 'dry_run' mode of mu2eprodsys (this is the default)
 # --doit=xrd_debug : turns on XROOTD client debugging and adds a lot of printout
@@ -182,7 +182,7 @@ class Tool:
 
         dsconf       = self.fProject
         work_project = self.fProject+'.'+job.input_dataset().id()+'.'+sub_stub
-        script       = 'pmgrid/scripts/submit_grid_job'
+        script       = 'grim/scripts/submit_grid_job'
         stage_job    = stage.name()+':'+job.name();
 
         if (self.fFileset):
