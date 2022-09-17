@@ -1,0 +1,117 @@
+#+startup:fold
+# ------------------------------------------------------------------------------
+# grid submission workflow
+# ------------------------
+# grim works with projects. It is assumed that the information related to a project 
+# is stored in a ./$project subdirectory of a current work area
+#
+# a project includes generation of one or several dataset families
+# a dataset family stands for several datasets which need to be generated togetehr
+# for example, generation and reconstruction of MC CE dataset , involves two datasets:
+# dig and mcs
+#
+# another example: tracing of the beam from the production to the stopping target 
+# may involve more stages
+#
+# datasets produced at different stages comprise a dataset family
+#
+# for a given dataset family, configurations of all respective jobs are defined 
+# in a file named $project/datasets/$family/init_project.py
+#
+# ------------------------------------------------------------------------------
+* 0.0 [[file:init_project.org][format of init_project.py]]
+* ------------------------------------------------------------------------------
+* steps of the workflow
+* ------------------------------------------------------------------------------
+* 0.1) clone offline code from git, compile it
+* 0.2) create *./.grid_config* configuration file                            
+
+  - it is created in the working (muse) directory for your project.
+  - Below, $project stands for the project name
+  - a .grid_config file could specify several projects 
+
+   the template file:../scripts/.grid_config specifies just one
+
+#+begin_src 
+  source grim/scripts/create_project pbar2m   # project=pbar2m
+#+end_src
+
+  this needs to be done once per project. A template for the configuration file 
+  can be found here: file:../scripts/.grid_config
+  
+  Note, that the code tarball tag has to be specified manually after the tarball has been built 
+  (see next step)
+
+* 0.3) build the code tarball                                                
+  
+   grim/scripts/build_tarball.py --project=$project
+
+   the code tarball is automatically copied to /pnfs/mu2e/resilient/$USER/$project
+   after the tarball is built, update .grid_config file to specify the tarball name there
+   It is needed for grim/scripts/submit_job.py to find the code tarball 
+
+   note: if /pnfs/mu2e/resilient/$USER/$project directory doesnt exist, just create it
+   
+   if the tarball is built under personal account and you're running as mu2epro, 
+   copy tarball (as mu2epro), do teh following:
+
+   grim/scripts/copy_user_tarball tarball
+	  
+* 1.0) generate the FCL tarball                                              
+
+   grim/scripts/gen_fcl.py .. parameters... (see gen_fcl help below)
+
+   to generate the fcl tarfile for grid submission
+
+   The fcl tarball is also copied to /pnfs/mu2e/resilient/$USER/$project for jobsub to find it there
+
+* 1.1) test the tarballs locally                                             
+
+- untar the code tarball in a new shell 
+- source Code/setup.sh
+- run your executable 
+
+* 2.0) submit the grid job                                                   
+   
+#+begin_src                       
+   grim/scripts/submit_job.py  (see help below)
+#+end_src
+   to submit a grid job
+
+* 3.0) monitor the status of the submitted job(s) by running *grid_monitor*  
+
+  grim/scripts/grid_monitor.py --project=$project
+
+  When a job finishes, *grid_monitor* changes status of the job from 'running' to 'finished'
+
+* 4.0) run *check_completed_job.py* to identify failed segments :            
+
+  grim/scripts/check_completed_job.py --grid_id=xxxxxxxx
+
+  the script will check if all job segments have completed successfully and, 
+  if some have failed, will automatically create an input for the recovery job. 
+  To create an fcl tarball for the recovery job, run
+
+  grim/scripts/gen_fcl.py --recover=<grid_id>
+   
+  where <grid_id> is a GRID ID of the initial job which needs to be recovered. 
+
+* 4.1) if there were failed segments, submit a recovery job                  
+
+  grim/scripts/submit_job.py --recover=<grid_id>
+
+* 4.2) create input for the next stage                                       
+
+  grim/scripts/list_pnfs_files.py --grid_id=<grid_id>
+
+* 4.3) save log files of a successfully completed job:                       
+
+       grim/scripts/copy_log_files.py --grid_id=<grid_id>
+
+      do all that only after running grid_monitor.py - the scripts operate only on completed jobs, 
+      which status files are available in tmp/$project/completed_jobs
+
+* 5.0) proceed with the next stage
+* ------------------------------------------------------------------------------
+* back to file:grim.org
+* ------------------------------------------------------------------------------

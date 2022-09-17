@@ -1,0 +1,12 @@
+#+startup:fold
+
+
+- definition of the input dataset:
+
+ job.fInputDataset = Dataset('dig.mu2e.bmum1s52b0.pbar2m.art','bmum1s52b0','local')
+
+  #1 : defname, full dataset definition name
+  #2 : dsid, short dataset definition, still uniquely identifying the dataset
+  #3 : location of the dataset catalog:
+  - 'local' - in $project/datasets/$family/catalog/$defname.files
+  - 'sam'   - in SAM 

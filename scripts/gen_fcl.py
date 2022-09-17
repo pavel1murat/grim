@@ -462,7 +462,7 @@ class Tool:
 
             cmd = cmd+' --events=%i'%job.fNEventsPerSegment;
             cmd = cmd+' --njobs=%i'%nfiles;
-            cmd = cmd+' --auxinput=1:physics.filters.resamplingMixer.fileNames:'+input_file_list;
+            cmd = cmd+' --auxinput=1:physics.filters.TargetStopResampler.fileNames:'+input_file_list;
 
         if (job.fAuxInputs):
             #------------------------------------------------------------------------------

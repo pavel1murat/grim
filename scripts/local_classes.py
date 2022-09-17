@@ -92,7 +92,7 @@ class Job:
 
         pattern = self.fStage.fProject.fProjectName+'.grid_output_dir';
 
-        print('>>> pattern = ',pattern);
+        # print('>>> pattern = ',pattern);
 
         cmd = 'cat .grid_config | grep '+pattern+' | awk \'{print $2}\''
         p = subprocess.run(cmd,shell=True,capture_output=True,universal_newlines=True)
@@ -152,6 +152,9 @@ class Job:
 
     def output_stream(self,i):
         return self.fOutputStream[i];
+
+    def stage(self):
+        return self.fStage;
 
 #------------------------------------------------------------------------------
     def aprint(self):

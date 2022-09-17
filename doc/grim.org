@@ -10,88 +10,8 @@ kinit
 kx509
 voms-proxy-init -noregen -rfc -voms fermilab:/fermilab/mu2e/Role=Analysis
 #+end_src
-* testing tarball                                                            
-
-- untar it in a new shell 
-- source Code/setup.sh
-- run your executable 
-
 * ------------------------------------------------------------------------------
-* workflow                                                                   
-#+begin_quote
-
-  0.1) clone offline code from git, compile it
-
-  0.2) create ./.grid_config configuration file in the working directory for your
-       project. Below, $project will stand for the project name
-
-            source grim/scripts/create_project pbar2m   # project=pbar2m
-
-       this needs to be done once per project. A template for the configuration file 
-       can be found here: file:../scripts/.grid_config
-
-  0.3) build the code tarball 
-  
-          grim/scripts/build_tarball.py --project=$project
-
-       the code tarball is automatically copied to /pnfs/mu2e/resilient/$USER/$project
-       after the tarball is built, update .grid_config file to specify the tarball name there
-       It is needed for grim/scripts/submit_job.py to find the code tarball
-
-       if the tarball is built under personal account and you're running as mu2epro, 
-       copy tarball (as mu2epro): 
-
-          grim/scripts/copy_user_tarball tarball
-
-  1) generate FCL tarball 
-
-             grim/scripts/gen_fcl.py .. parameters... (see gen_fcl help below)
-
-     to generate an fcl tarfile for grid submission
-
-     The fcl tarball is also copied to /pnfs/mu2e/resilient/$USER/$project for jobsub to find it there
-
-  2) run 
-             grim/scripts/submit_job.py  (see help below)
-
-     to submit a grid job
-
-  3) to monitor status run 
-
-            grim/scripts/grid_monitor.py --project=$project
-
-     to identify completed jobs. When a job finishes, grid_monitor changes status of the job from 'running' to 'finished'
-
-  4) run check_completed_job.py:
-
-         grim/scripts/check_completed_job.py --grid_id=xxxxxxxx
-
-     the script checks if all job segments have completed successfully and, if some have failed, 
-     automatically creates an input for the recovery job. To create an fcl tarball for the recovery job:
-
-     grim/scripts/gen_fcl.py --recover=<grid_id>
-
-     where <grid_id> is a GRID ID of the initial job which needs to be recovered. 
-
-  4.05) submitting a recovery job: 
-
-        grim/scripts/submit_job.py --recover=<grid_id>
-
-  4.1) after the output create input for the next stage: 
-
-       grim/scripts/list_pnfs_files.py --grid_id=<grid_id>
-
-  4.2) save log files of a successfully completed job: 
-
-       grim/scripts/copy_log_files.py --grid_id=<grid_id>
-
-      do all that only after running grid_monitor.py - the scripts operate only on completed jobs, 
-      which status files are available in tmp/$project/completed_jobs
-
-  5.) proceed with the next stage
-
-#+end_quote
-
+* [[file:workflow.org][workflow]]                                                                   
 * ------------------------------------------------------------------------------
 * individual scripts in alphabetic order                                     
 ** [[file:../scripts/build_tarball.py][grim/scripts/build_tarball.py]]         : interface to Rob's gridexport                                                 
