@@ -106,7 +106,7 @@ class Tool:
             dict            = json.loads(open(fn).read())
 
             self.fProject   = dict['project' ]
-            self.fDsid      = dict['idsid'   ][0:5]
+            self.fDsid      = dict['idsid'   ][0:7]  # this is a dangerous choice FIXME
             self.fStageName = dict['stage'   ]
             self.fJType     = dict['job_name']
             self.fFileset   = dict['fileset' ]

@@ -12,6 +12,11 @@ voms-proxy-init -noregen -rfc -voms fermilab:/fermilab/mu2e/Role=Analysis
 #+end_src
 * ------------------------------------------------------------------------------
 * [[file:workflow.org][workflow]]                                                                   
+* running test jobs                                                          
+  test jobs are usually ran on a single file. By default, grim assumes that a job 
+  is run on a dataset consisting of many files. 
+  However, one can descrinbe a fileset (a set of files) corresponging to a dataset
+  after that all grim tools can be used with the '--fileset' command line parameter
 * ------------------------------------------------------------------------------
 * individual scripts in alphabetic order                                     
 ** [[file:../scripts/build_tarball.py][grim/scripts/build_tarball.py]]         : interface to Rob's gridexport                                                 

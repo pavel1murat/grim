@@ -18,7 +18,7 @@ class PrintConfig:
     def __init__(self):
         self.fProject       = None
         self.fProjectDir    = None
-        self.fDsid          = 'xxx_xxxx' # just to make up 
+        self.fFamilyID      = 'xxx_xxxx' # just to make up 
         self.fJob           = None       # task to be executed
         self.fStage         = None
         self.fStageName     = None
@@ -59,7 +59,7 @@ class PrintConfig:
         
         try:
             optlist, args = getopt.getopt(sys.argv[1:], '',
-                     ['project=', 'dsid=', 'verbose=' ] )
+                     ['project=', 'dsid=', 'fid=', 'verbose=' ] )
  
         except getopt.GetoptError:
             self.Print(name,0,'%s' % sys.argv)
@@ -72,11 +72,13 @@ class PrintConfig:
             if key == '--project':
                 self.fProject = val
             elif key == '--dsid':
-                self.fDsid = val
+                self.fFamilyID = val
+            elif key == '--fid':
+                self.fFamilyID = val
             elif key == '--verbose':
                 self.fVerbose = int(val)
 
-        self.fProjectDir = self.fProject+'/datasets/'+self.fDsid[0:5];
+        self.fProjectDir = self.fProject+'/datasets/'+self.fFamilyID;
 
         if (self.fVerbose > 0): 
             print(sys.version)
@@ -86,7 +88,7 @@ class PrintConfig:
         self.Print(name,1,'Project    = %s' % self.fProject)
         self.Print(name,1,'StageName  = %s' % self.fStageName)
         self.Print(name,1,'Verbose    = %s' % self.fVerbose)
-        self.Print(name,1,'Dsid       = %s' % self.fDsid)
+        self.Print(name,1,'Dsid       = %s' % self.fFamilyID)
         self.Print(name,1,'ProjectDir = %s' % self.fProjectDir)
 
         if (self.fProject == None) :
@@ -117,10 +119,10 @@ class PrintConfig:
         name = 'print_family'
 
         line = '----------------------------------------------------------------------------------------------------------';
-        line += '-------------------------------------------'
+        line += '----------------------------------------------------------'
         print(line)
-        print('stage          job                   input DSID  N(seg) N(outputs) ',end='');
-        print(' output DSID      outputFnPattern                base FCL');
+        print('stage     job                          input DSID   N(seg) N(outputs) ',end='');
+        print('   output DSID        outputFnPattern                   base FCL');
         print(line)
         for k in self.fConfig.fStage.keys():
             s = self.fConfig.fStage[k]

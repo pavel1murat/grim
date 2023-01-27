@@ -86,19 +86,19 @@
 
 * 4.0) run *check_completed_job.py* to identify failed segments :            
 
-  grim/scripts/check_completed_job.py --grid_id=xxxxxxxx
+  grim/scripts/check_completed_job.py --project=<project> --grid_id=xxxxxxxx
 
   the script will check if all job segments have completed successfully and, 
   if some have failed, will automatically create an input for the recovery job. 
   To create an fcl tarball for the recovery job, run
 
-  grim/scripts/gen_fcl.py --recover=<grid_id>
+  grim/scripts/gen_fcl.py --project=<project> --recover=<grid_id>
    
   where <grid_id> is a GRID ID of the initial job which needs to be recovered. 
 
 * 4.1) if there were failed segments, submit a recovery job                  
 
-  grim/scripts/submit_job.py --recover=<grid_id>
+  grim/scripts/submit_job.py --project=<project> --recover=<grid_id>
 
 * 4.2) create input for the next stage                                       
 
