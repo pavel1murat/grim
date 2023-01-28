@@ -2,18 +2,20 @@
 # ------------------------------------------------------------------------------
 # grid submission workflow
 # ------------------------
-# grim works with projects. It is assumed that the information related to a project 
+# *grim* works with projects. It is assumed that the information related to a project 
 # is stored in a ./$project subdirectory of a current work area
 #
-# a project includes generation of one or several dataset families
-# a dataset family stands for several datasets which need to be generated togetehr
-# for example, generation and reconstruction of MC CE dataset , involves two datasets:
-# dig and mcs
+# - a project includes generation of one or several dataset families and definitions 
+#   of jobs to produce the datasets
+#
+# - a dataset family stands for several datasets generated together
+#   for example, generation and reconstruction of MC CE dataset, 
+#   involves two datasets: dig and mcs
 #
 # another example: tracing of the beam from the production to the stopping target 
-# may involve more stages
+# may involve two, three or more stages
 #
-# datasets produced at different stages comprise a dataset family
+# datasets produced at different stages, together, comprise a dataset family
 #
 # for a given dataset family, configurations of all respective jobs are defined 
 # in a file named $project/datasets/$family/init_project.py
