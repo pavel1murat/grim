@@ -58,7 +58,7 @@ class Dataset:
 #------------------------------------------------------------------------------
 class Job:
 
-    def __init__(self, name, stage = None):
+    def __init__(self, name, stage = None, input_dataset = None):
 
         self.fName                    = name
         self.fStage                   = stage
@@ -68,10 +68,11 @@ class Job:
         self.fType                    = ''
         self.fTarball                 = '';
 
-        self.fInputDataset            = None;
+        self.fInputDataset            = input_dataset;
         self.fInputFileset            = None;
         self.fNSegments               = None;
         self.fNInputFiles             =  1
+        self.fRecoVersion             = '00'
 
         self.fAuxInputs               = None
         self.fBaseFcl                 = 'undefined.fcl'
@@ -152,6 +153,9 @@ class Job:
 
     def output_stream(self,i):
         return self.fOutputStream[i];
+                                                  # like 'r01'
+    def reco_version(self):
+        return 'r'+self.fRecoVersion;
 
     def stage(self):
         return self.fStage;
@@ -170,18 +174,36 @@ class Stage:
     def __init__(self, name, project = None):
         self.fName               = name
         self.fProject            = project
+        self.fInputDataset       = {}
         self.fJob                = {}
+        self.fJob['undefined']   = {}
 
     def name(self):
         return self.fName;
 
     def add_job(self, job):
-        name = job.name()
-        self.fJob[name] = job
+        name  = job.name()
+        idsid = job.input_dataset().id();
+        if (idsid):
+            if ((idsid in self.fJob.keys()) == False): self.fJob[idsid] = {}
+            self.fJob[idsid][name] = job;
+        else:
+            self.fJob['undefined'][name] = job;
+            
+                
 
-    def new_job(self, name):
-        self.fJob[name] = Job(name,self)
-        return self.fJob[name]
+    def new_job(self, name, idsid = None):
+        ids = self.fProject.dataset(idsid);
 
-    def job(self, name):
-        return self.fJob[name]
+        job = Job(name,self,ids);
+        if ((idsid in self.fJob.keys()) == False): 
+            self.fJob[idsid] = {}
+
+        self.fJob[idsid][name] = job;
+
+        return job
+
+    def job(self,idsid,name):
+        # print("stage::job: name,idsid:",name,idsid);
+        # print("self.fJob:",self.fJob);
+        return self.fJob[idsid][name];

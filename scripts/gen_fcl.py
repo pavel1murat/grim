@@ -10,6 +10,7 @@
 #   idsid    : input dataset id
 #   stage    : stage of the job (sometimes Mu2e uses multi-stage generation)
 #   job      : 'sim' or 'stn' , more coming
+#   pileup   : default: 'b0'
 #   recover  : text string labeling the recovery step
 #              it is appended to the FCL tarball and the directory containing the FCL files for recovery jobs 
 #              that directory is supposed to contain only FCL files for segments to be resubmitted
@@ -24,7 +25,8 @@ class Tool:
     def __init__(self):
         self.fProject       = None
         self.fProjectDir    = None
-        self.fDsid          = 'xxx_xxxx' # just to make up 
+        self.fFamilyID      = 'xxx_xxxx' # just to make up 
+        self.fDsID          = 'xxx_xxxx' # input dataset ID
         self.fJob           = None       # task to be executed
         self.fStage         = None
         self.fStageName     = None
@@ -33,6 +35,7 @@ class Tool:
         self.fMinSubrun     = None
         self.fMaxSubrun     = None
         self.fUser          = os.getenv('USER')
+        self.fPileup        = '0';       # no pileup 
         self.fRecover       = None;
         self.fFileset       = None;
         self.fConfig        = {}
@@ -43,6 +46,10 @@ class Tool:
         if (self.fOwner == 'mu2epro'): self.fOwner = 'mu2e';
         
         self.fVerbose       = 0
+
+# ---------------------------------------------------------------------
+    def FamilyID(self,dsid):
+        return dsid[0:7]
 
 # ---------------------------------------------------------------------
     def Print(self,Name,level,Message):
@@ -65,7 +72,7 @@ class Tool:
         
         try:
             optlist, args = getopt.getopt(sys.argv[1:], '',
-                     ['project=', 'verbose=', 'job=', 'notar', 'dsid=', 'fileset=', 'first-subrun=', 'stage=', 'recover=' ] )
+                     ['project=', 'verbose=', 'job=', 'notar', 'dsid=', 'fid=', 'fileset=', 'first-subrun=', 'stage=', 'pileup=', 'recover=' ] )
  
         except getopt.GetoptError:
             self.Print(name,0,'%s' % sys.argv)
@@ -79,7 +86,8 @@ class Tool:
             if key == '--project':
                 self.fProject = val
             elif key == '--dsid':
-                self.fDsid = val
+                self.fDsID     = val                   # 'cele0b2s51r02'
+                self.fFamilyID = self.FamilyID(val);   # 'cele0b2'
             elif key == '--fileset':
                 self.fFileset = val
             elif key == '--first-subrun':
@@ -88,6 +96,8 @@ class Tool:
                 self.fJType = val
             elif key == '--notar':
                 self.fNotar = 1
+            elif key == '--pileup':
+                self.fPileup = val           # '1' or '2'
             elif key == '--recover':
                 self.fRecover = val
             elif key == '--subruns':
@@ -106,23 +116,27 @@ class Tool:
             dict            = json.loads(open(fn).read())
 
             self.fProject   = dict['project' ]
-            self.fDsid      = dict['idsid'   ][0:7]  # this is a dangerous choice FIXME
+
+            self.fDsID      = dict['idsid'   ]            #
+            self.fFamilyID  = self.FamilyID(self.fDsID);  # this is a dangerous choice FIXME
+
             self.fStageName = dict['stage'   ]
             self.fJType     = dict['job_name']
             self.fFileset   = dict['fileset' ]
 
 
-        self.fProjectDir = self.fProject+'/datasets/'+self.fDsid;
+        self.fProjectDir = self.fProject+'/datasets/'+self.fFamilyID;
 
         if (self.fVerbose > 0): 
             print(sys.version)
             self.Print(name,1, '%s' % sys.argv)
 
-        self.Print(name,1,'Job        = %s' % self.fJob    )
-        self.Print(name,1,'Project    = %s' % self.fProject)
-        self.Print(name,1,'StageName  = %s' % self.fStageName)
-        self.Print(name,1,'Verbose    = %s' % self.fVerbose)
-        self.Print(name,1,'Dsid       = %s' % self.fDsid)
+        self.Print(name,1,'Job        = %s' % self.fJob       )
+        self.Print(name,1,'Project    = %s' % self.fProject   )
+        self.Print(name,1,'StageName  = %s' % self.fStageName )
+        self.Print(name,1,'Verbose    = %s' % self.fVerbose   )
+        self.Print(name,1,'DsID       = %s' % self.fDsID      )
+        self.Print(name,1,'FamilyID   = %s' % self.fFamilyID  )
         self.Print(name,1,'ProjectDir = %s' % self.fProjectDir)
 
         if (self.fProject == None) :
@@ -146,14 +160,14 @@ class Tool:
         self.fConfig = init_project.Project(); # init_project.init(self.fConfig)
 
         self.fStage  = self.fConfig.fStage[self.fStageName];
-        self.fJob    = self.fStage.fJob[self.fJType];
+        self.fJob    = self.fStage.job(self.fDsID,self.fJType);
 
         self.fIDsID  = self.fJob.input_dataset().id();
-        if (self.fIDsID == None) : self.fIDsID = self.fDsid;
+        if (self.fIDsID == None) : self.fIDsID = self.fFamilyID;
 
         # step 1: need to generate fcl files 
         projectName         = self.fProject;
-        dsid                = self.fDsid;
+        dsid                = self.fFamilyID;
         
         self.Print(name,1,'projectName   = %s' % projectName)
         self.Print(name,1,'dsid          = %s' % dsid)
@@ -559,7 +573,7 @@ if (__name__ == '__main__'):
     x.InitProject()
 
     stage = x.fStage;
-    job   = stage.fJob[x.fJType];
+    job   = stage.job(x.fDsID,x.fJType);
     rc    = x.gen_fcl(stage,job)
 
     sys.exit(rc);

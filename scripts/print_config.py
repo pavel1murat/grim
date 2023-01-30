@@ -122,19 +122,23 @@ class PrintConfig:
         line = '----------------------------------------------------------------------------------------------------------';
         line += '----------------------------------------------------------'
         print(line)
-        print('stage     job                          input DSID   N(seg) N(outputs) ',end='');
+        print('stage  input DSID       job                   N(seg) N(outputs) ',end='');
         print('   output DSID        outputFnPattern                   base FCL');
         print(line)
         for k in self.fConfig.fStage.keys():
             s = self.fConfig.fStage[k]
-            for j in s.fJob.keys():
-                job  = s.fJob[j];
-                nos  = job.n_output_streams();
-                print('%-5s %-30s %10s %6i %7i'%(s.name(),job.name(),job.input_dsid(),job.n_segments(),nos),end=' ')
-                print('      %10s %20s %20s'%(job.output_dsid(0),job.output_fn_pattern(0),job.base_fcl()));
-                if (nos > 1):
-                    for os in range(1,nos):
-                        print('%67s  %10s %20s'%('',job.output_dsid(os),job.output_fn_pattern(os)));
+#------------------------------------------------------------------------------
+# keys : input datasets
+#------------------------------------------------------------------------------
+            for idsid in s.fJob.keys():
+                for job_name in s.fJob[idsid]:
+                    job  = s.fJob[idsid][job_name];
+                    nos  = job.n_output_streams();
+                    print('%-5s %11s     %-20s %6i %7i'%(s.name(),job.input_dsid(),job.name(),job.n_segments(),nos),end=' ')
+                    print('      %10s  %20s  %20s'%(job.output_dsid(0),job.output_fn_pattern(0),job.base_fcl()));
+                    if (nos > 1):
+                        for os in range(1,nos):
+                            print('%67s  %10s %20s'%('',job.output_dsid(os),job.output_fn_pattern(os)));
             print(line);
         return 0;
 
