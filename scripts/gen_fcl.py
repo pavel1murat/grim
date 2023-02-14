@@ -446,7 +446,8 @@ class Tool:
         #------------------------------------------------------------------------------
         # define generate_fcl call parameters
         #------------------------------------------------------------------------------
-        # cmd = 'setup mu2etools v3_05_00; export FHICL_FILE_PATH=$MU2E_BASE_RELEASE; ' 
+        # cmd = 'setup mu2etools v3_05_01; export FHICL_FILE_PATH=$MU2E_BASE_RELEASE; ' 
+        # cmd = 'setup mu2etools v3_05_01; export FHICL_FILE_PATH=$MUSE_WORK_DIR; '
         cmd = 'setup mu2etools; export FHICL_FILE_PATH=$MUSE_WORK_DIR; ' 
         cmd = cmd+'generate_fcl --description='+desc+' --dsconf='+dsconf+' --embed '+base_fcl;
         # cmd = cmd+' --max-seed=50'

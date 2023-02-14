@@ -38,6 +38,10 @@ class Tool:
         self.fVerbose       = 1
 
 # ---------------------------------------------------------------------
+    def FamilyID(self,dsid):
+        return dsid[0:7]
+
+# ---------------------------------------------------------------------
     def Print(self,Name,level,Message):
         if(level>self.fVerbose): return 0;
         now = time.strftime('%Y/%m/%d %H:%M:%S',time.localtime(time.time()))
@@ -78,7 +82,8 @@ class Tool:
             elif key == '--doit':
                 self.fDoit = val
             elif key == '--dsid':
-                self.fFamilyID = val
+                self.fDsID     = val                   # 'cele0b2s51r02'
+                self.fFamilyID = self.FamilyID(val);   # 'cele0b2'
             elif key == '--job':
                 self.fJType = val
             elif key == '--fileset':
@@ -134,7 +139,7 @@ class Tool:
         self.fConfig = init_project.Project(); # init_project.init(self.fConfig)
 
         self.fStage         = self.fConfig.fStage[self.fStageName]
-        self.fJob           = self.fStage.fJob[self.fJType]
+        self.fJob           = self.fStage.job(self.fDsID,self.fJType);
 #------------------------------------------------------------------------------
 # check log files. asume they are copied into the output area
 #------------------------------------------------------------------------------
@@ -286,7 +291,7 @@ if (__name__ == '__main__'):
     x.InitProject()
 
     stage = x.fStage;
-    job   = stage.fJob[x.fJType];
+    job   = stage.job(x.fDsID,x.fJType);
 
     x.submit_grid_job(stage,job)
 

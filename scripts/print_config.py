@@ -74,6 +74,7 @@ class PrintConfig:
                 self.fProject = val
             elif key == '--dsid':
                 self.fFamilyID = val
+                print('"--dsid" is obsolete, use "--fid" instead\n');
             elif key == '--fid':
                 self.fFamilyID = val
             elif key == '--verbose':
