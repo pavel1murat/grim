@@ -97,13 +97,12 @@ class ListPnfsFiles:
 
         sys.path.append(self.fProjectDir) ; print ('self.fProjectDir = '+self.fProjectDir);
         import init_project
-        #------------------------------------------------------------------------------
-        # read project config file and cache project/state/job configuration
-        #------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+# read project config file and cache project/state/job configuration
+#------------------------------------------------------------------------------
         job.fProjectConfig = init_project.Project();
         job.fStageConfig   = job.fProjectConfig.fStage[job.stage_name()];
-        job.fConfig        = job.fStageConfig.fJob[job.name()];
-
+        job.fConfig        = job.fStageConfig.job(job.input_dsid(),job.name());
 #------------------------------------------------------------------------------
 # list pnfs files
 #------------------------------------------------------------------------------
@@ -134,7 +133,8 @@ class ListPnfsFiles:
 
                 # maintain backward compatibility
                 # 'fileset' catalogs have '#{fileset_name}' appended (use Ruby notations :))
-                catalog_fn  = catalog_dir+'/'+job.fConfig.fOutputFnPattern[i]+'.'+self.fProject+'.'+ext+'.files'
+                # catalog_fn  = catalog_dir+'/'+job.fConfig.fOutputFnPattern[i]+'.'+self.fProject+'.'+ext+'.files'
+                catalog_fn  = catalog_dir+'/'+job.fConfig.fOutputFnPattern[i]+'.'+ext+'.files'
 
                 if (job.fileset()): catalog_fn  = catalog_fn+'.'+job.fileset();
     

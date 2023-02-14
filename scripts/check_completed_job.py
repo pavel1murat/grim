@@ -160,7 +160,7 @@ class Tool:
         self.fConfig         = init_project.Project(); 
 
         self.fStage          = self.fConfig.fStage[self.fStageName];
-        self.fJob            = copy.deepcopy(self.fStage.fJob[self.fJType]);
+        self.fJob            = copy.deepcopy(self.fStage.job(self.fDsid,self.fJType));
         self.fJob.fGridID    = gridID;
 
         self.fJob.fNSegments = self.fGridJob.n_segments()  # could be a recovery job

@@ -55,7 +55,7 @@ if [ ".$recovery_stub" != "." ] ; then
     fcl_tarball=/pnfs/mu2e/resilient/users/$USER/$project/cnf.$user_stub.$idsid.$sub_stub.$project.$recovery_stub.fcl.tbz
 fi
 
-wfproject=${idsid}.$sub_stub
+wfproject=$project.$idsid.$sub_stub
    dsconf=$project
 
 parameters="--code=$code_tarball --fcllist=$fcl_tarball --dsconf=$dsconf --wfproject=$wfproject --error-delay=10 --transfer-all-files --expected-lifetime=$time"
