@@ -38,21 +38,22 @@ setup mu2egrid
 
 tarball_bn=`cat .grid_config | grep $project.code_tarball | awk '{print $2}'`
 
-code_tarball=/pnfs/mu2e/resilient/users/$USER/$project/$tarball_bn
+grid_tarball_dir=/mu2e/data/users/$USER/grid/$project
+    code_tarball=$grid_tarball_dir/$tarball_bn
 
 if [ $USER == "mu2epro" ] ; then user_stub="mu2e" ; 
 else                             user_stub=$USER  ;   fi
 
     sub_stub=${stage}_${jtype}
- fcl_tarball=/pnfs/mu2e/resilient/users/$USER/$project/cnf.$user_stub.$idsid.$sub_stub.$project.fcl.tbz
+ fcl_tarball=$grid_tarball_dir/cnf.$user_stub.$idsid.$sub_stub.$project.fcl.tbz
 # if [ ".$fclt" != "." ] ; then fcl_tarball=$fclt ; fi
 
 if [ ".$fileset" != "." ] ; then 
-    fcl_tarball=/pnfs/mu2e/resilient/users/$USER/$project/cnf.$user_stub.$idsid.$sub_stub.$project.$fileset.fcl.tbz
+    fcl_tarball=$grid_tarball_dir/cnf.$user_stub.$idsid.$sub_stub.$project.$fileset.fcl.tbz
 fi
 
 if [ ".$recovery_stub" != "." ] ; then 
-    fcl_tarball=/pnfs/mu2e/resilient/users/$USER/$project/cnf.$user_stub.$idsid.$sub_stub.$project.$recovery_stub.fcl.tbz
+    fcl_tarball=$grid_tarball_dir/cnf.$user_stub.$idsid.$sub_stub.$project.$recovery_stub.fcl.tbz
 fi
 
 wfproject=$project.$idsid.$sub_stub
@@ -73,6 +74,10 @@ fi
 # echo \* \<`date +%Y-%m-%d\ %a`\> *xxxxxxxx SUBMITTED* : $project.$idsid.$sub_stub          $p_time_xrootd 
 
 if [ ".$doit" == ".d" ] ; then parameters=$parameters" --dry-run" ; fi
+if [ ".$doit" == ".v" ] ; then 
+    parameters=$parameters" --dry-run" ; 
+    echo "running: mu2eprodsys $parameters"
+fi
 
 date ; mu2eprodsys $parameters
  

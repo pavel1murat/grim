@@ -173,7 +173,7 @@ class Tool:
 
         fcl_tb_bn   += '.fcl.tbz';
 
-        fcl_tarball  = '/pnfs/mu2e/resilient/users/'+self.fUser+'/'+self.fProject+'/'+fcl_tb_bn;
+        fcl_tarball  = '/mu2e/data/users/'+self.fUser+'/grid/'+self.fProject+'/'+fcl_tb_bn;
 
         # 
         cmd          = 'tar -tjf '+fcl_tarball+' | wc -l'
@@ -210,9 +210,12 @@ class Tool:
 
         process = subprocess.run(parms, capture_output=True, universal_newlines=True)
 
+        self.Print(name,1,'submission finished, process.returncode: %i'%process.returncode)
+
         if (process.returncode == 0):
             submission_record = process.stdout.split('\n')
-            print(submission_record)
+            self.Print(name,1,'submission_record:\n'+process.stdout)
+            # print(submission_record)
             # extract the grid job ID and save the output 
             jobid  = 'xxxxxxxx';
             server = 'yyyyyyyy';
@@ -220,9 +223,9 @@ class Tool:
                 print(line)
                 if line != '':
                     w = line.split()
-                    if (w[0] == 'JobsubJobId') : 
-                        jobid  = w[4].split('.')[0]
-                        server = w[4].split('@')[1]
+                    if ((w[0] == 'Use') and (w[1] == 'job') and (w[2] == 'id')) : 
+                        jobid  = w[3].split('.')[0]
+                        server = w[3].split('@')[1]
                         break
     
             # print('jobid:',jobid)
@@ -264,6 +267,7 @@ class Tool:
                 f               = open(status_fn,'w')
                 f.write(rj)
                 f.close()
+                self.Print(name,1,'written status file: '+status_fn)
         else:
             print(process.stderr)
 

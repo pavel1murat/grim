@@ -196,8 +196,7 @@ class Tool:
 #------------------------------------------------------------------------------
 # move tarball with the fcl files for the simulation jobs to PNFS
 #------------------------------------------------------------------------------
-      
-        tar_on_pnfs = '/pnfs/mu2e/resilient/users/'+os.getenv('USER')+'/'+self.fProject+'/'+os.path.basename(tarball)
+        tar_on_pnfs = '/mu2e/data/users/'+os.getenv('USER')+'/grid/'+self.fProject+'/'+os.path.basename(tarball)
 
         if (os.path.exists(tar_on_pnfs)):
             print('WARNING: '+tar_on_pnfs+' already exists, OVERWRITING !')
