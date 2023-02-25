@@ -91,7 +91,7 @@ class CopyLogFiles:
 # 'job': of grid_job.GridJob type 
 #------------------------------------------------------------------------------
     def copy_log_files(self,job):
-        name = 'list_pnfs_files'
+        name = 'copy_log_files'
 
         topdir = job.grid_output_dir();
         odir   = job.log_dir()
@@ -104,11 +104,13 @@ class CopyLogFiles:
         print('odir:',odir)
         #------------------------------------------------------------------------------
         # file_types is either 'log' (default) or 'log,fcl' etc
+        # fcl file are no longer copied - they are source into the log files
         #------------------------------------------------------------------------------
         file_types = self.fFileTypes.split(',');
         for ext in file_types:
 
-            oodir = odir+'/'+ext;
+            # oodir = odir+'/'+ext;
+            oodir = odir;
             if (not os.path.exists(oodir)): os.makedirs(oodir,exist_ok=True)
 
             list_of_dirs = glob.glob(topdir+'/*')

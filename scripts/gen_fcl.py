@@ -40,11 +40,15 @@ class Tool:
         self.fFileset       = None;
         self.fConfig        = {}
         self.fIDsID         = None;
-        self.fNotar         = None
+
+        #        self.fFclTarballDir = '/mu2e/data/users/'+os.getenv('USER')+'/grid';
+        self.fFclTarballDir = '/pnfs/mu2e/scratch/users/'+os.getenv('USER')+'/fcl';
+        self.fNotar         = None;
 
         self.fOwner         = os.getenv('USER');
         if (self.fOwner == 'mu2epro'): self.fOwner = 'mu2e';
-        
+       
+
         self.fVerbose       = 0
 
 # ---------------------------------------------------------------------
@@ -196,7 +200,7 @@ class Tool:
 #------------------------------------------------------------------------------
 # move tarball with the fcl files for the simulation jobs to PNFS
 #------------------------------------------------------------------------------
-        tar_on_pnfs = '/mu2e/data/users/'+os.getenv('USER')+'/grid/'+self.fProject+'/'+os.path.basename(tarball)
+        tar_on_pnfs = self.fFclTarballDir+'/'+self.fProject+'/'+os.path.basename(tarball)
 
         if (os.path.exists(tar_on_pnfs)):
             print('WARNING: '+tar_on_pnfs+' already exists, OVERWRITING !')
@@ -345,7 +349,7 @@ class Tool:
         name = 'gen_fcl'
 
         grid_dsid  = self.fProject+'.'+self.fIDsID+'_'+stage.name()+'_'+job.name();
-        topdir     = '/pnfs/mu2e/scratch/users/'+self.fUser+'/workflow/'+grid_dsid+'/outstage/';
+        # topdir     = '/pnfs/mu2e/scratch/users/'+self.fUser+'/workflow/'+grid_dsid+'/outstage/';
 
         if (self.fRecover):
             # in case of recovery, only need to tar up a bunch of FCL files 

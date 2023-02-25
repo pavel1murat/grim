@@ -32,12 +32,11 @@ if [ ".$5" != "." ] ; then doit=$5 ; else doit='d' ; fi
 expected_job_time=8h
 if [ $time != "." ] ; then expected_job_time=$time ; fi
 
-setup mu2etools
-setup mu2efiletools
-setup mu2egrid 
-
 tarball_bn=`cat .grid_config | grep $project.code_tarball | awk '{print $2}'`
-
+#------------------------------------------------------------------------------
+# code and FCL tarballs are (can be) located in different directories
+#------------------------------------------------------------------------------
+ fcl_tarball_dir=/pnfs/mu2e/scratch/users/$USER/fcl/$project
 grid_tarball_dir=/mu2e/data/users/$USER/grid/$project
     code_tarball=$grid_tarball_dir/$tarball_bn
 
@@ -45,16 +44,11 @@ if [ $USER == "mu2epro" ] ; then user_stub="mu2e" ;
 else                             user_stub=$USER  ;   fi
 
     sub_stub=${stage}_${jtype}
- fcl_tarball=$grid_tarball_dir/cnf.$user_stub.$idsid.$sub_stub.$project.fcl.tbz
-# if [ ".$fclt" != "." ] ; then fcl_tarball=$fclt ; fi
+    fcl_stub=cnf.$user_stub.$idsid.$sub_stub.$project
+ fcl_tarball=$fcl_tarball_dir/$fcl_stub.fcl.tbz
 
-if [ ".$fileset" != "." ] ; then 
-    fcl_tarball=$grid_tarball_dir/cnf.$user_stub.$idsid.$sub_stub.$project.$fileset.fcl.tbz
-fi
-
-if [ ".$recovery_stub" != "." ] ; then 
-    fcl_tarball=$grid_tarball_dir/cnf.$user_stub.$idsid.$sub_stub.$project.$recovery_stub.fcl.tbz
-fi
+if [ ".$fileset"       != "." ] ; then fcl_tarball=$fcl_tarball_dir/$fcl_stub.$fileset.fcl.tbz       ; fi
+if [ ".$recovery_stub" != "." ] ; then fcl_tarball=$fcl_tarball_dir/$fcl_stub.$recovery_stub.fcl.tbz ; fi
 
 wfproject=$project.$idsid.$sub_stub
    dsconf=$project
@@ -78,6 +72,10 @@ if [ ".$doit" == ".v" ] ; then
     parameters=$parameters" --dry-run" ; 
     echo "running: mu2eprodsys $parameters"
 fi
+
+setup mu2etools
+setup mu2efiletools
+setup mu2egrid 
 
 date ; mu2eprodsys $parameters
  

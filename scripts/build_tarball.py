@@ -134,7 +134,7 @@ class Tool:
 
             tarball_bn  = self.fProject+'.code.'+os.getenv('USER')+'.'+last_offline_git_commit+'.tbz';
 
-            grid_dir     = '/pnfs/mu2e/resilient/users/'+self.fUser+'/'+self.fProject
+            grid_dir     = '/mu2e/data/users/'+self.fUser+'/grid/'+self.fProject
 
             if (not os.path.exists(grid_dir)): os.mkdir(grid_dir)
             

@@ -28,13 +28,14 @@ class Tool:
         self.fIStream       = None;
         self.fUser          = os.getenv('USER')
         self.fGridJobID     = None;
-        self.fRecover      = None;
+        self.fRecover       = None;
         self.fFileset       = None;
         self.fConfig        = {}
 
         self.fOutputPath    = {}
         self.fOutputStreams = None
 
+        self.fFclTarballDir = '/pnfs/mu2e/scratch/users/'+os.getenv('USER')+'/fcl';
         self.fVerbose       = 1
 
 # ---------------------------------------------------------------------
@@ -173,7 +174,7 @@ class Tool:
 
         fcl_tb_bn   += '.fcl.tbz';
 
-        fcl_tarball  = '/mu2e/data/users/'+self.fUser+'/grid/'+self.fProject+'/'+fcl_tb_bn;
+        fcl_tarball  = self.fFclTarballDir+'/'+self.fProject+'/'+fcl_tb_bn;
 
         # 
         cmd          = 'tar -tjf '+fcl_tarball+' | wc -l'
