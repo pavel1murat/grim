@@ -1,6 +1,6 @@
 #! /usr/bin/bash
 # use as mu2epro (may not work for regular users)
-# call: check_pnfs_file_locality  full_filename
+# call: query_pnfs_parameters full_filename
 #
 fn=$1
 dn=`dirname $fn`
