@@ -48,11 +48,11 @@
   
    grim/scripts/build_tarball.py --project=$project
 
-   the code tarball is automatically copied to /pnfs/mu2e/resilient/$USER/$project
+   the code tarball is automatically copied to /mu2e/data/users/$USER/grid/$project
    after the tarball is built, update .grid_config file to specify the tarball name there
    It is needed for grim/scripts/submit_job.py to find the code tarball 
 
-   note: if /pnfs/mu2e/resilient/$USER/$project directory doesnt exist, just create it
+   note: if /mu2e/data/users/$USER/grid/$project directory doesnt exist, just create it
    
    if the tarball is built under personal account and you're running as mu2epro, 
    copy tarball (as mu2epro), do teh following:
@@ -65,7 +65,7 @@
 
    to generate the fcl tarfile for grid submission
 
-   The fcl tarball is also copied to /pnfs/mu2e/resilient/$USER/$project for jobsub to find it there
+   The fcl tarball is also copied to /pnfs/mu2e/scratch/$USER/fcl/$project for jobsub to find it there
 
 * 1.1) test the tarballs locally                                             
 

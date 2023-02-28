@@ -4,14 +4,14 @@
 #------------------------------------------------------------------------------
 project=$1
 
-if [ ! -d ./tmp/$project ] ; then mkdir ./tmp/$project ; fi
+if [ ! -d ./tmp/$project ] ; then mkdir -p ./tmp/$project ; fi
 
 if [ ! -d ./tmp/$project/fcl             ] ; then mkdir ./tmp/$project/fcl             ; fi
 if [ ! -d ./tmp/$project/grid_job_status ] ; then mkdir ./tmp/$project/grid_job_status ; fi
 if [ ! -d ./tmp/$project/completed_jobs  ] ; then mkdir ./tmp/$project/completed_jobs  ; fi
 
 if [ ! -f ./.grid_config ] ; then 
-    cp pmgrid/scripts/.grid_config . ; 
+    cp grim/scripts/.grid_config . ; 
     echo '.grid_config file created, check its configuration'
 else                              
     echo 'WARNING: ./.grid_config file already exists, dont recreate' ;
