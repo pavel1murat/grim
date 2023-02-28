@@ -43,8 +43,11 @@ class Dataset:
     def defname(self):
         return self.fDefName;
 
-    def dsid_stub(self):
-        return self.fID[0:5];
+    def dsid(self):
+        return self.fID;
+
+    def family_id(self):
+        return self.fID[0:7];
 
     def fileset(self,id):
         return self.fFileset[id];

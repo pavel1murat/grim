@@ -38,11 +38,16 @@
   source grim/scripts/create_project pbar2m   # project=pbar2m
 #+end_src
 
-  this needs to be done once per project. A template for the configuration file 
-  can be found here: file:../scripts/.grid_config
+  - this needs to be done just once. A template for the configuration file 
+    can be found here: file:../scripts/.grid_config
+
+  - edit the *.grid_config* file - everything there is self-explanatory for 
+    those who ever submitted a grid job
+
+  To add another project, do the same - edit the *.grid_config* file manually
   
-  Note, that the code tarball tag has to be specified manually after the tarball has been built 
-  (see next step)
+  Note, that the code tarball tag has to be specified manually after the tarball 
+  has been built (see next step).
 
 * 0.3) build the code tarball                                                
   
@@ -65,7 +70,11 @@
 
    to generate the fcl tarfile for grid submission
 
-   The fcl tarball is also copied to /pnfs/mu2e/scratch/$USER/fcl/$project for jobsub to find it there
+   The fcl tarball is also copied to /pnfs/mu2e/scratch/$USER/fcl/$project 
+   for jobsub to find it there
+
+   again, if the directory doesn't exist, create it manually.
+   note that 
 
 * 1.1) test the tarballs locally                                             
 

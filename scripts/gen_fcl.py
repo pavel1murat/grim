@@ -158,6 +158,7 @@ class Tool:
         #------------------------------------------------------------------------------
         # efine directory from where to load the init_project and perform initialization
         #------------------------------------------------------------------------------
+        sys.path.append(self.fProject+'/datasets/mixing') ; 
         sys.path.append(self.fProjectDir) ; 
         self.Print (name,1,'self.fProjectDir = %s'%self.fProjectDir);
         import init_project
@@ -451,7 +452,7 @@ class Tool:
         #------------------------------------------------------------------------------
         # cmd = 'setup mu2etools v3_05_01; export FHICL_FILE_PATH=$MU2E_BASE_RELEASE; ' 
         # cmd = 'setup mu2etools v3_05_01; export FHICL_FILE_PATH=$MUSE_WORK_DIR; '
-        cmd = 'setup mu2etools; export FHICL_FILE_PATH=$MUSE_WORK_DIR; ' 
+        cmd = 'setup mu2etools; export FHICL_FILE_PATH=$MUSE_WORK_DIR:$MUSE_BUILD_DIR; ' 
         cmd = cmd+'generate_fcl --description='+desc+' --dsconf='+dsconf+' --embed '+base_fcl;
         # cmd = cmd+' --max-seed=50'
 
@@ -493,7 +494,7 @@ class Tool:
                 dataset            = job.fAuxInputs[key][1];
                 nfiles_per_segment = job.fAuxInputs[key][2];
                 # now: get filelist - start from assuming a local list
-                filelist = self.fProject+'/'+dataset.dsid_stub()+'/catalog/'+dataset.defname()+'.files'
+                filelist = self.fProject+'/datasets/'+dataset.family_id()+'/catalog/'+dataset.defname()+'.files'
                 cmd = cmd+' --auxinput='+'%i'%nfiles_per_segment+':'+var+':'+filelist ;
            
         self.Print(name,1,"executing :%s"%cmd);
