@@ -124,5 +124,12 @@
 
 * 5.0) proceed with the next stage
 * ------------------------------------------------------------------------------
+* pileup generation                                                          
+- datasets describing additional inputs to generate the pileup are project-dependent.
+  They are expected to be defined in the project configuration - 
+
+                  $project/datasets/mixing/mixing_inputs.py 
+
+* ------------------------------------------------------------------------------
 * back to file:grim.org
 * ------------------------------------------------------------------------------
