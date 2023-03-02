@@ -443,6 +443,7 @@ class GridGui:
         #------------------------------------------------------------------------------
         # efine directory from where to load the init_project and perform initialization
         #------------------------------------------------------------------------------
+        sys.path.append(self.fProject+'/datasets/mixing') ; 
         sys.path.append(self.fProjectDir) ; 
         self.Print (name,1,'self.fProjectDir = %s'%self.fProjectDir);
 

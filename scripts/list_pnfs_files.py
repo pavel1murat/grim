@@ -95,7 +95,8 @@ class ListPnfsFiles:
         
         self.fProjectDir = job.project_name()+'/datasets/'+job.family_id();
 
-        sys.path.append(self.fProjectDir) ; print ('self.fProjectDir = '+self.fProjectDir);
+        sys.path.append(self.fProject+'/datasets/mixing') ; 
+        sys.path.append(self.fProjectDir) ; ## print ('self.fProjectDir = '+self.fProjectDir);
         import init_project
 #------------------------------------------------------------------------------
 # read project config file and cache project/state/job configuration

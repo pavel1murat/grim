@@ -118,11 +118,12 @@ class UploadGridOutput:
 
         self.fProjectDir = self.fProject+'/datasets/'+self.fDsid[0:5];
 
+        sys.path.append(self.fProject+'/datasets/mixing') ; 
         sys.path.append(self.fProjectDir) ; print ('self.fProjectDir = '+self.fProjectDir);
         import init_project
-        #------------------------------------------------------------------------------
-        # read project config file
-        #------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+# read project config file
+#------------------------------------------------------------------------------
         self.fConfig = init_project.Project(); # init_project.init(self.fConfig)
 
         self.fStage  = self.fConfig.fStage[self.fStageName];

@@ -149,6 +149,8 @@ class Tool:
             sys.exit(1)
 
         self.fProjectDir = self.fProject+'/datasets/'+self.fFamilyID;
+
+        sys.path.append(self.fProject+'/datasets/mixing') ; 
         sys.path.append(self.fProjectDir) ; 
 
         self.Print(name,1,'ProjectDir   = %s' % self.fProjectDir  )

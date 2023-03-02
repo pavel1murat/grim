@@ -132,6 +132,7 @@ class Tool:
     def InitProject(self):
         name = 'InitProject'
 
+        sys.path.append(self.fProject+'/datasets/mixing') ; 
         sys.path.append(self.fProjectDir)
         import init_project
 

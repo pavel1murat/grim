@@ -108,11 +108,12 @@ class PrintConfig:
         #------------------------------------------------------------------------------
         # define directory from where to load the init_project and perform initialization
         #------------------------------------------------------------------------------
+        sys.path.append(self.fProject+'/datasets/mixing') ; 
         sys.path.append(self.fProjectDir) ; 
         self.Print (name,1,'self.fProjectDir = %s'%self.fProjectDir);
         import init_project
         self.fConfig = init_project.Project(); 
-        # at this point the project is initializad and one may want to print it
+        # at this point the project is initialized and one may print it
         
 #------------------------------------------------------------------------------
 # print family 
