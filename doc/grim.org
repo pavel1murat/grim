@@ -39,7 +39,7 @@ getToken
 
 
 * ------------------------------------------------------------------------------
-* individual scripts in alphabetic order                                     
+* individual scripts in an alphabetic order                                  
 ** [[file:../scripts/build_tarball.py][grim/scripts/build_tarball.py]]         : interface to Rob's gridexport                                                 
 ** [[file:../scripts/check_completed_job.py][grim/scripts/check_completed_job.py]]   : checks status of the completed grid job, reports failed segments              
 
@@ -122,9 +122,9 @@ ONLINE_AND_NEARLINE
 ** [[file:../scripts/grid_time_ana.C][grim/scripts/grid_time_ana.C]]          : read data produced by parse_grid_logs.rb , plot histograms                    
 ** [[file:../scripts/grid_monitor.py][grim/scripts/grid_monitor.py]]          : displays and updates status of the jobs submitted by *submit_job.py*          
 
-    grim/scripts/grid_monitor.py --project=grim [--delete=list] [--verbose=1]
+    grim/scripts/grid_monitor.py --project=su2020 [--delete=list] [--verbose=1]
 
-    - project: grim
+    - project: su2020
     - delete : delete a list of comma-separated grid jobs, cleaning up the report. example:
 #+begin_src
 grim/scripts/grid_monitor.py --project=pbar2m --delete=37547802@jobsub03.fnal.gov,37548352,37548579

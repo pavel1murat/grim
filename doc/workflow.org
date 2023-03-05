@@ -8,25 +8,25 @@
 # - a project includes generation of one or several dataset families and definitions 
 #   of jobs to produce the datasets
 #
-# - a dataset family stands for several datasets generated together
-#   for example, generation and reconstruction of MC CE dataset, 
-#   involves two datasets: dig and mcs
+# - 'dataset family' stands for several datasets related datasets, for example 
+#   one dataset being an input for generation of another one
+#   example 1: 'raw data' and 'reco' datasets containing the same events
+#   example 2: stage 1 and stage 2 Mu2e beam tracing
 #
-# another example: tracing of the beam from the production to the stopping target 
-# may involve two, three or more stages
+#   in general, tracing the beam from the production to the stopping target 
+#   may involve two, three or more stages
 #
 # datasets produced at different stages, together, comprise a dataset family
 #
 # for a given dataset family, configurations of all respective jobs are defined 
-# in a file named $project/datasets/$family/init_project.py
-#
+# in a $project/datasets/$family/init_project.py file.
 # ------------------------------------------------------------------------------
 * 0.0 [[file:init_project.org][format of init_project.py]]
 * ------------------------------------------------------------------------------
 * steps of the workflow
 * ------------------------------------------------------------------------------
 * 0.1) clone offline code from git, compile it
-* 0.2) create *./.grid_config* configuration file                            
+* 0.2) create _./.grid_config_ configuration file                            
 
   - it is created in the working (muse) directory for your project.
   - Below, $project stands for the project name
@@ -63,6 +63,9 @@
    copy tarball (as mu2epro), do teh following:
 
    grim/scripts/copy_user_tarball tarball
+
+   Comment: using optimized libraries for grid submission saves a factor of x2-3
+   in execution time.
 	  
 * 1.0) generate the FCL tarball                                              
 
@@ -89,13 +92,13 @@
 #+end_src
    to submit a grid job
 
-* 3.0) monitor the status of the submitted job(s) by running *grid_monitor*  
+* 3.0) monitor status of submitted job(s) by running _grid_monitor.py_       
 
   grim/scripts/grid_monitor.py --project=$project
 
   When a job finishes, *grid_monitor* changes status of the job from 'running' to 'finished'
 
-* 4.0) run *check_completed_job.py* to identify failed segments :            
+* 4.0) run _check_completed_job.py_ to identify failed segments :            
 
   grim/scripts/check_completed_job.py --project=<project> --grid_id=xxxxxxxx
 

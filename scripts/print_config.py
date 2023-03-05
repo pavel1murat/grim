@@ -7,7 +7,7 @@
 # call: grim/scripts/print_config.py --project=su2020 --fid=bmum3 
 #   project  : project name
 #   fid      : dataset family ID
-#   dsid     : obsolete for [dataset family ID]
+#   dsid     : obsolete, use --fid instead
 #-------------------------------------------------------------------------------------------------
 
 import subprocess, shutil, glob, random, json
