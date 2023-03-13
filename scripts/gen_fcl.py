@@ -11,7 +11,8 @@
 #   stage    : stage of the job (sometimes Mu2e uses multi-stage generation)
 #   job      : 'sim' or 'stn' , more coming
 #   pileup   : default: 'b0'
-#   recover  : text string labeling the recovery step
+#   recover  : ID of the grid job to recover. Builds the tarball containing only FCLs of the segments to be
+#              resubmitted. job_submit.py has to be called with --recover=grid_id parameter as well
 #              it is appended to the FCL tarball and the directory containing the FCL files for recovery jobs 
 #              that directory is supposed to contain only FCL files for segments to be resubmitted
 #-------------------------------------------------------------------------------------------------
@@ -436,9 +437,10 @@ class Tool:
             self.Print(name,1,'n_input_files : %i'%nfiles);
 
         else:
-            #------------------------------------------------------------------------------
-            # generator , gen_fcl seems to be capable to generate multiple filesets
-            #------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+# generator input. gen_fcl seems to be capable to generate multiple filesets
+# however, now generators read input files ....
+#------------------------------------------------------------------------------
             nfiles = job.fNInputFiles
 
             if (self.fFileset):
@@ -454,7 +456,7 @@ class Tool:
         # cmd = 'setup mu2etools v3_05_01; export FHICL_FILE_PATH=$MUSE_WORK_DIR; '
         cmd = 'setup mu2etools; export FHICL_FILE_PATH=$MUSE_WORK_DIR:$MUSE_BUILD_DIR; ' 
         cmd = cmd+'generate_fcl --description='+desc+' --dsconf='+dsconf+' --embed '+base_fcl;
-        # cmd = cmd+' --max-seed=50'
+        cmd = cmd+' --ignore-source'
 
         if (self.fFirstSubrun): cmd = cmd+' --first-subrun=%i'%self.fFirstSubrun;
 
