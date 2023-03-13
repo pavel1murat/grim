@@ -128,12 +128,13 @@ class Job:
     def input_dsid(self):
         return self.input_dataset().id();
 
-                                    # 5 characters of the input dataset ID
+                                    # 7 characters of the input dataset ID
     def input_dsid_stub(self):
-        return self.input_dsid()[0:5];
+        return self.input_dsid()[0:7];
 
     def input_stream(self):
-        return self.input_dsid()[7:8];
+        print("Job::input_stream called, dont know what it should be doing\n");
+        return self.input_dsid()[8:9];
 
     def max_memory(self):
         return self.fMaxMemory;
