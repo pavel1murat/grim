@@ -134,11 +134,15 @@ class Tool:
 
             tarball_bn  = self.fProject+'.code.'+os.getenv('USER')+'.'+last_offline_git_commit+'.tbz';
 
-            grid_dir     = '/mu2e/data/users/'+self.fUser+'/grid/'+self.fProject
+            pattern         = self.fProject+'.code_tarball_dir'
+            src_tarball_dir = 'cat .grid_config | grep '+pattern+' | awk \'{print $2}\''
 
-            if (not os.path.exists(grid_dir)): os.mkdir(grid_dir)
+            if (src_tarball_dir == '') : src_tarball_dir = '/mu2e/data/users/'+self.fUser+'/grid/'+self.fProject;
+            src_tarball_dir     = '/mu2e/data/users/'+self.fUser+src_tarball_dir+self.fProject
+
+            if (not os.path.exists(grid_dir)): os.mkdir(src_tarball_dir)
             
-            grid_tarball = grid_dir+'/'+tarball_bn;
+            grid_tarball = src_tarball_dir+'/'+tarball_bn;
 
             if os.path.exists(grid_tarball): os.remove(grid_tarball);
             
