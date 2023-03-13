@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 #
 # call examples: 
-#               grim/scripts/submit_job.py --project=su2020 --dsid=cele0 --stage=s4 --job=sim [--doit=[yes/d]] [--fileset=...]
+#               grim/scripts/submit_job.py --project=su2020 --dsid=cele0 --stage=s4 --job=sim [--doit=[yes/d]] \
+#                                         [--fileset=...] [--recover=grid_id]
 #
-# --doit=d         : 'dry_run' mode of mu2eprodsys (this is the default)
-# --doit=xrd_debug : turns on XROOTD client debugging and adds a lot of printout
+# --fileset=name    : fileset name, included into the name of the original tarball
+# --recover=grid_id : grid ID of the job to be recovered. The FCL tarball of the recovery job has that in the name
+# --doit=d          : 'dry_run' mode of mu2eprodsys (default)
+# --doit=xrd_debug  : turns on XROOTD client debugging and adds a lot of printout
 #-------------------------------------------------------------------------------------------------
 
 import subprocess, shutil, datetime
@@ -18,7 +21,7 @@ class Tool:
         self.fProject       = None
         self.fProjectDir    = None
         self.fFamilyID      = None
-        self.fInputDsid     = 'xxx_xxxx'  # just to make it up 
+        self.fInputDsID     = 'xxx_xxxx'  # just to make it up 
         self.fDoit          = 'd'
         self.fStageName     = "undefined" # stage name
         self.fStage         = None;       # configuraton of the stage
@@ -83,8 +86,8 @@ class Tool:
             elif key == '--doit':
                 self.fDoit = val
             elif key == '--dsid':
-                self.fDsID     = val                   # 'cele0b2s51r02'
-                self.fFamilyID = self.FamilyID(val);   # 'cele0b2'
+                self.fInputDsID = val                   # 'cele0b2s51r02'
+                self.fFamilyID  = self.FamilyID(val);   # 'cele0b2'
             elif key == '--job':
                 self.fJType = val
             elif key == '--fileset':
@@ -104,7 +107,7 @@ class Tool:
 
             self.fProject   = dict['project'  ]
             self.fFamilyID  = dict['family_id']
-            self.fInputDsid = dict['idsid'    ]
+            self.fInputDsID = dict['idsid'    ]
             self.fStageName = dict['stage'    ]
             self.fJType     = dict['job_name' ]
             self.fFileset   = dict['fileset'  ]
@@ -116,7 +119,7 @@ class Tool:
         self.Print(name,1,'Verbose      = %s' % self.fVerbose)
         self.Print(name,1,'Doit         = %s' % self.fDoit)
         self.Print(name,1,'FamilyID     = %s' % self.fFamilyID)
-        self.Print(name,1,'InputDsid    = %s' % self.fInputDsid)
+        self.Print(name,1,'InputDsID    = %s' % self.fInputDsID)
         self.Print(name,1,'ProjectDir   = %s' % self.fProjectDir)
         self.Print(name,1,'Recover      = %s' % self.fRecover)
         self.Print(name,1,'Fileset      = %s' % self.fFileset)
@@ -141,7 +144,7 @@ class Tool:
         self.fConfig = init_project.Project(); # init_project.init(self.fConfig)
 
         self.fStage         = self.fConfig.fStage[self.fStageName]
-        self.fJob           = self.fStage.job(self.fDsID,self.fJType);
+        self.fJob           = self.fStage.job(self.fInputDsID,self.fJType);
 #------------------------------------------------------------------------------
 # check log files. asume they are copied into the output area
 #------------------------------------------------------------------------------
@@ -297,7 +300,7 @@ if (__name__ == '__main__'):
     x.InitProject()
 
     stage = x.fStage;
-    job   = stage.job(x.fDsID,x.fJType);
+    job   = stage.job(x.fInputDsID,x.fJType);
 
     x.submit_grid_job(stage,job)
 
