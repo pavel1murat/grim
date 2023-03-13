@@ -31,14 +31,17 @@ if [ ".$5" != "." ] ; then doit=$5 ; else doit='d' ; fi
 
 expected_job_time=8h
 if [ $time != "." ] ; then expected_job_time=$time ; fi
-
-tarball_bn=`cat .grid_config | grep $project.code_tarball | awk '{print $2}'`
 #------------------------------------------------------------------------------
 # code and FCL tarballs are (can be) located in different directories
 #------------------------------------------------------------------------------
  fcl_tarball_dir=/pnfs/mu2e/scratch/users/$USER/fcl/$project
-grid_tarball_dir=/mu2e/data/users/$USER/grid/$project
-    code_tarball=$grid_tarball_dir/$tarball_bn
+
+ code_tarball_bn=`cat .grid_config | grep $project.code_tarball     | awk '{print $2}' | grep tbz`
+code_tarball_dir=`cat .grid_config | grep $project.code_tarball_dir | awk '{print $2}'`
+
+if [ ".$code_tarball_dir" == '.' ] ; then code_tarball_dir=/mu2e/data/users/$USER/grid/$project; fi
+
+code_tarball=$code_tarball_dir/$project/$code_tarball_bn
 
 if [ $USER == "mu2epro" ] ; then user_stub="mu2e" ; 
 else                             user_stub=$USER  ;   fi
