@@ -36,8 +36,6 @@ getToken
              'CC' - encodes the job configuration, by default : '00'
 
 - the dataset family name - the first 7 characters, common for all datasets of a given family (physics+pileup)
-
-
 * ------------------------------------------------------------------------------
 * individual scripts in an alphabetic order                                  
 ** [[file:../scripts/build_tarball.py][grim/scripts/build_tarball.py]]         : interface to Rob's gridexport                                                 

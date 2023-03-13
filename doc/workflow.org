@@ -110,7 +110,13 @@
    
   where <grid_id> is a GRID ID of the initial job which needs to be recovered. 
 
-* 4.1) if there were failed segments, submit a recovery job                  
+* 4.1) if there were failed segments, try to recover, if needed              
+
+  a) generate an FCL tarball for the recovery job 
+
+  grim/scripts/gen_fcl.py --project=<project> --recover=<grid_id>
+
+  b) submit a recovery job                  
 
   grim/scripts/submit_job.py --project=<project> --recover=<grid_id>
 
