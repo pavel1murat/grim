@@ -19,21 +19,21 @@ getToken
   However, one can descrinbe a fileset (a set of files) corresponging to a dataset
   after that all grim tools can be used with the '--fileset' command line parameter
 * dataset naming conventions:                                                
-- all dataset names look like _DDDDDbXsYZrUVCC_ with the lower case characters 
-  having a special meaning and being fixed, and the upper case characters - 
+- all dataset names have a form of 'DDDDDbXsYZrUVCC'. The lower case characters 
+  have a special meaning and are fixed, and the upper case characters - 
   to be substituted
 
-  :DDDDD:    5 characters reserved for the physics part of the dataset ID, 
-             for example, 'cele0' for conversion electrons
-  :bX:       'X' in 'bX' - encodes the pileup level, 'b0' means no pileup, 
-             'b1' - one batch mode pileup, etc
-  :sYZ:      dataset produced at stage 'Y', stages are numbered starting from 1. 
-             Stage 'Y' produces N output datasets, 'Z' encodes the dataset index 
-             running from 1 to N. Z=0 reserved for special cases.
-  :rUVCC:    encodes information anout the code and calibrations versions and the job configuration
-             'U' encodes calibrations :  0:perfect, 1:best, 2:startup
-             'V' - marks the version of the reco code
-             'CC' - encodes the job configuration, by default : '00'
+-  :DDDDD:  5 characters reserved for the physics part of the dataset ID, 
+            for example, 'cele0' for conversion electrons
+-  :bX:     'X' in 'bX' - encodes the pileup level, 'b0' means no pileup, 
+            'b1' - one batch mode pileup, etc
+-  :sYZ:    dataset produced at stage 'Y', stages are numbered starting from 1. 
+            Stage 'Y' produces N output datasets, 'Z' encodes the dataset index 
+            running from 1 to N. Z=0 reserved for special cases.
+-  :rUVCC:  encodes information anout the code and calibrations versions and the job configuration
+            'U' encodes calibrations :  0:perfect, 1:best, 2:startup
+            'V' - marks the version of the reco code
+            'CC' - encodes the job configuration, by default : '00'
 
 - the dataset family name - the first 7 characters, common for all datasets of a given family (physics+pileup)
 * ------------------------------------------------------------------------------

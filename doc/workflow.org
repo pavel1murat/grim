@@ -28,30 +28,28 @@
 * 0.1) clone offline code from git, compile it
 * 0.2) create _./.grid_config_ configuration file                            
 
-  - it is created in the working (muse) directory for your project.
+#+begin_src 
+  source grim/scripts/create_project pbar2m   # project=pbar2m
+#+end_src
+
+  - it is created in the working (muse) directory of your project.
   - Below, $project stands for the project name
   - a .grid_config file could specify several projects 
 
-   the template file:../scripts/.grid_config specifies just one. Quick explanation of the 
-   configuration parameters:
+   the template file:../scripts/.grid_config specifies just one project. 
+
+   Quick explanation of the configuration parameters:
 
 - $project.base_release     : test release, the area where you build your code in _build_ subdirectory
 - $project.code_tarball_dir : location of the code tarball , default: /mu2e/data/users/$USER/grid
                               build_tarball.py puts it there for job_submit.py to pick up
 - $project.code_taball      : name of the code tarball to use
-- $tmp_dir                  : area used to keep the project book-keeping information 
-- $project.grid_output_dir  : the grid output arrives to ${$project.grid_output_dir}.$USER/workflow
+- $project.tmp_dir          : area used to keep the project book-keeping information 
+- $project.grid_output_dir  : the grid output arrives to project.grid_output_dir.$USER/workflow
 - $project.log_dir          : area used to store the log files (away from /pnfs)
 
-#+begin_src 
-  source grim/scripts/create_project pbar2m   # project=pbar2m
-#+end_src
-
-  - this needs to be done just once. A template for the configuration file 
-    can be found here: file:../scripts/.grid_config
-
-  - edit the *.grid_config* file - everything there is self-explanatory for 
-    those who ever submitted a grid job
+  - edit the .grid_config file if needed - everything there should be self-explanatory 
+    for anyone who ever submitted a grid job
 
   To add another project, do the same - edit the *.grid_config* file manually
   
