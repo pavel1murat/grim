@@ -39,7 +39,7 @@ if [ $time != "." ] ; then expected_job_time=$time ; fi
  code_tarball_bn=`cat .grid_config | grep $project.code_tarball     | awk '{print $2}' | grep tbz`
 code_tarball_dir=`cat .grid_config | grep $project.code_tarball_dir | awk '{print $2}'`
 
-if [ ".$code_tarball_dir" == '.' ] ; then code_tarball_dir=/mu2e/data/users/$USER/grid/$project; fi
+if [ ".$code_tarball_dir" == '.' ] ; then code_tarball_dir=/mu2e/data/users/$USER/grid ; fi
 
 code_tarball=$code_tarball_dir/$project/$code_tarball_bn
 
