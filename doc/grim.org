@@ -19,9 +19,8 @@ getToken
   However, one can descrinbe a fileset (a set of files) corresponging to a dataset
   after that all grim tools can be used with the '--fileset' command line parameter
 * dataset naming conventions:                                                
-- all dataset names have a form of *DDDDDbXsYZrUVCC*. The lower case characters 
-  have a special meaning and are fixed, and the upper case characters - 
-  to be substituted
+All dataset names have a form of *DDDDDbXsYZrUVCC*. The lower case characters 
+have a special meaning and are fixed. The upper case characters are to be substituted
 
 -  :DDDDD:  5 characters reserved for the physics part of the dataset ID, 
             for example, 'cele0' for conversion electrons
