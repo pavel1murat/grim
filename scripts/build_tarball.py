@@ -135,14 +135,21 @@ class Tool:
             tarball_bn  = self.fProject+'.code.'+os.getenv('USER')+'.'+last_offline_git_commit+'.tbz';
 
             pattern         = self.fProject+'.code_tarball_dir'
-            src_tarball_dir = 'cat .grid_config | grep '+pattern+' | awk \'{print $2}\''
 
-            if (src_tarball_dir == '') : src_tarball_dir = '/mu2e/data/users/'+self.fUser+'/grid/'+self.fProject;
-            src_tarball_dir     = '/mu2e/data/users/'+self.fUser+src_tarball_dir+self.fProject
+            cmd = 'cat .grid_config | grep '+pattern+' | awk \'{print $2}\''
+            p = subprocess.run(cmd,shell=True,capture_output=True,universal_newlines=True)
 
-            if (not os.path.exists(grid_dir)): os.mkdir(src_tarball_dir)
+            src_tarball_dir = None;
+            if (p.returncode == 0): src_tarball_dir = p.stdout.strip()
+            else                  : src_tarball_dir = '/mu2e/data/users/'+self.fUser+'/grid/'+self.fProject;
+           
+            src_tarball_dir     = src_tarball_dir+self.fProject
+
+            if (not os.path.exists(src_tarball_dir)): os.mkdir(src_tarball_dir)
             
             grid_tarball = src_tarball_dir+'/'+tarball_bn;
+
+            self.Print(name,1,"grid_tarball: "+grid_tarball);
 
             if os.path.exists(grid_tarball): os.remove(grid_tarball);
             
