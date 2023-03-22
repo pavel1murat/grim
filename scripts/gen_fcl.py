@@ -456,7 +456,7 @@ class Tool:
         # cmd = 'setup mu2etools v3_05_01; export FHICL_FILE_PATH=$MUSE_WORK_DIR; '
         cmd = 'setup mu2etools; export FHICL_FILE_PATH=$MUSE_WORK_DIR:$MUSE_BUILD_DIR; ' 
         cmd = cmd+'generate_fcl --description='+desc+' --dsconf='+dsconf+' --embed '+base_fcl;
-        cmd = cmd+' --ignore-source'
+        # cmd = cmd+' --ignore-source'
 
         if (self.fFirstSubrun): cmd = cmd+' --first-subrun=%i'%self.fFirstSubrun;
 
@@ -519,12 +519,15 @@ class Tool:
 
         seeds = glob.glob(pattern)
 
-        # move seeds file into the first directory
-        self.Print(name,1,'seeds file:%s'%seeds);
+        # print ("seeds: ",seeds);
 
-        shutil.move('./'+seeds[0],'000/'+seeds[0]);
-        
-        self.Print(name,1,"move_seeds DONE");
+        if (len(seeds) > 0):
+            # move seeds file into the first directory
+            self.Print(name,1,'seeds file:%s'%seeds);
+
+            shutil.move('./'+seeds[0],'000/'+seeds[0]);
+       
+            self.Print(name,1,"move_seeds DONE");
         #------------------------------------------------------------------------------
         # move fcl into a temporary FCL working firectory 
         # make sure we're not overwriting the existing directory
