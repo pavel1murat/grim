@@ -143,7 +143,7 @@ class Tool:
             if (p.returncode == 0): src_tarball_dir = p.stdout.strip()
             else                  : src_tarball_dir = '/mu2e/data/users/'+self.fUser+'/grid/'+self.fProject;
            
-            src_tarball_dir     = src_tarball_dir+self.fProject
+            src_tarball_dir     = src_tarball_dir+'/'+self.fProject
 
             if (not os.path.exists(src_tarball_dir)): os.mkdir(src_tarball_dir)
             
