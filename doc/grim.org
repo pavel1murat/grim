@@ -4,7 +4,7 @@
 # documentaion on GRIM (GRId submission and Monitoring scripts) 
 # gen_fcl.py , submit_job.py, list_pnfs_files.py, and friends
 # ------------------------------------------------------------------------------
-* grid submission prerequi1sites                                              
+* grid submission prerequisites                                              
 #+begin_src                                                                  
 kinit
 kx509
@@ -50,7 +50,7 @@ getToken
   is run on a dataset consisting of many files. 
   However, one can describe a fileset (a set of files) corresponging to a dataset
   after that all grim tools can be used with the '--fileset' command line parameter
-* dataset naming conventions:                                                
+* dataset naming conventions                                                 
 All dataset names have a form of *DDDDDbXsYZrUVCC*. The lower case characters 
 have a special meaning and are fixed. The upper case characters are to be substituted
 
@@ -66,7 +66,8 @@ have a special meaning and are fixed. The upper case characters are to be substi
             'V' - marks the version of the reco code
             'CC' - encodes the job configuration, by default : '00'
 
-- the dataset family name - the first 7 characters, common for all datasets of a given family (physics+pileup)
+- Datasets are grouped in families. The dataset family name - the first 7 characters, 
+  *physics+pileup*, is common for all datasets of a given family 
 * how to diagnose errors                                                     
   - all grim scripts have a verbose more (add --verbose=1 switch)
   - run in verbose more, see which commands are executed
