@@ -4,7 +4,7 @@
 # documentaion on GRIM (GRId submission and Monitoring scripts) 
 # gen_fcl.py , submit_job.py, list_pnfs_files.py, and friends
 # ------------------------------------------------------------------------------
-* grid submission prerequisites                                              
+* grid submission prerequi1sites                                              
 #+begin_src                                                                  
 kinit
 kx509
@@ -12,11 +12,43 @@ voms-proxy-init -noregen -rfc -voms fermilab:/fermilab/mu2e/Role=Analysis
 getToken
 #+end_src
 * ------------------------------------------------------------------------------
+* what is grim                                                               
+
+ - _grim_ is a set of grid job submission and monitoring scripts
+ - where possible, _grim_ scripts provide a uniform and consistent interface 
+   to the existing Mu2e tools (muse, generate_fcl, mu2egrid) 
+
+ - on the interface: _grim_ works with projects. Think of a project as an analysis project. 
+   Here is an example of one project which includes:
+   - generation of the proton interactions in the production target 
+   - tracing the mu- beam and mu+ beams to the stopping target with different positioning of the TS3 
+     collimator
+   - simulation of the mu- --> e- nunu and mu+ --> e+ nunu decays, hit digitization,
+     reconstruction, and ntupling
+
+   A single project requires generation of multiple datasets, related to each other
+     
+   It is assumed that the information about a project is stored in a ./$project subdirectory 
+   of a current work area. A project includes infrastructure to generate of one or several dataset 
+   families and definitions of jobs to produce the corresponding datasets
+
+- 'dataset family' stands for several datasets related datasets, for example one dataset being 
+   an input for generation of another one 
+   - example 1: 'raw data' and 'reco' datasets containing the same events
+   - example 2: stage 1 and stage 2 Mu2e beam tracing
+
+   - in general, tracing the beam from the production to the stopping target 
+     may involve two, three or more stages
+
+   - datasets produced at different stages, together, comprise a dataset family
+
+   - for a given dataset family, configurations of all respective jobs are defined 
+     in a $project/datasets/$family/init_project.py file.
 * [[file:workflow.org][workflow]]                                                                   
 * running test jobs                                                          
   test jobs are usually ran on a single file. By default, grim assumes that a job 
   is run on a dataset consisting of many files. 
-  However, one can descrinbe a fileset (a set of files) corresponging to a dataset
+  However, one can describe a fileset (a set of files) corresponging to a dataset
   after that all grim tools can be used with the '--fileset' command line parameter
 * dataset naming conventions:                                                
 All dataset names have a form of *DDDDDbXsYZrUVCC*. The lower case characters 
@@ -35,6 +67,10 @@ have a special meaning and are fixed. The upper case characters are to be substi
             'CC' - encodes the job configuration, by default : '00'
 
 - the dataset family name - the first 7 characters, common for all datasets of a given family (physics+pileup)
+* how to diagnose errors                                                     
+  - all grim scripts have a verbose more (add --verbose=1 switch)
+  - run in verbose more, see which commands are executed
+  - in most cases, it is sufficient to figure out what caused the error   
 * ------------------------------------------------------------------------------
 * individual scripts in an alphabetic order                                  
 ** [[file:../scripts/build_tarball.py][grim/scripts/build_tarball.py]]         : interface to Rob's gridexport                                                 

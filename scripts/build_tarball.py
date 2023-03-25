@@ -136,13 +136,18 @@ class Tool:
 
             pattern         = self.fProject+'.code_tarball_dir'
 
-            cmd = 'cat .grid_config | grep '+pattern+' | awk \'{print $2}\''
+            cmd = 'cat .grid_config | grep -v \'^#\' | grep '+pattern+' | awk \'{print $2}\''
             p = subprocess.run(cmd,shell=True,capture_output=True,universal_newlines=True)
 
             src_tarball_dir = None;
-            if (p.returncode == 0): src_tarball_dir = p.stdout.strip()
-            else                  : src_tarball_dir = '/mu2e/data/users/'+self.fUser+'/grid/'+self.fProject;
-           
+            if (p.returncode == 0): 
+                src_tarball_dir = p.stdout.strip()
+            else: 
+                self.Print(name,0,"ERROR: can\'t parse .grid_config for code_tarball_dir. Exiting");
+                return;
+
+            if (src_tarball_dir == ''): src_tarball_dir = '/mu2e/data/users/'+self.fUser+'/grid';
+
             src_tarball_dir     = src_tarball_dir+'/'+self.fProject
 
             if (not os.path.exists(src_tarball_dir)): os.mkdir(src_tarball_dir)

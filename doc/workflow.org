@@ -1,27 +1,10 @@
 #+startup:fold
 # ------------------------------------------------------------------------------
-# grid submission workflow
-# ------------------------
-# *grim* works with projects. It is assumed that the information related to a project 
-# is stored in a ./$project subdirectory of a current work area
-#
-# - a project includes generation of one or several dataset families and definitions 
-#   of jobs to produce the datasets
-#
-# - 'dataset family' stands for several datasets related datasets, for example 
-#   one dataset being an input for generation of another one
-#   example 1: 'raw data' and 'reco' datasets containing the same events
-#   example 2: stage 1 and stage 2 Mu2e beam tracing
-#
-#   in general, tracing the beam from the production to the stopping target 
-#   may involve two, three or more stages
-#
-# datasets produced at different stages, together, comprise a dataset family
-#
-# for a given dataset family, configurations of all respective jobs are defined 
-# in a $project/datasets/$family/init_project.py file.
-# ------------------------------------------------------------------------------
-* 0.0 [[file:init_project.org][format of init_project.py]]
+* 0.0 [[file:init_project.org][definition of the dataset family, format of init_project.py]]            
+  - each dataset family is described in a separate subdirectory: $project/datasets/$family
+  - for a given family, configuration of all jobs is specified in $project/datasets/$family/init_project.py file.
+  - $project/datasets/$family/catalog directory contains catalogs of the datasets defined locally.
+    _grim_ also works with the datasets described in SAM.
 * ------------------------------------------------------------------------------
 * steps of the workflow
 * ------------------------------------------------------------------------------
@@ -41,7 +24,7 @@
    Quick explanation of the configuration parameters:
 
 - $project.base_release     : test release, the area where you build your code in _build_ subdirectory
-- $project.code_tarball_dir : location of the code tarball , default: /mu2e/data/users/$USER/grid
+- $project.code_tarball_dir : location of the code tarball, if not specified: /mu2e/data/users/$USER/grid
                               build_tarball.py puts it there for job_submit.py to pick up
 - $project.code_taball      : name of the code tarball to use
 - $project.tmp_dir          : area used to keep the project book-keeping information 
