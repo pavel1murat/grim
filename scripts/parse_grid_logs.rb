@@ -7,7 +7,7 @@
 # --------
 # grim/scripts/parse_grid_logs.rb -p ts_warm_bore -d 711_1010 -s s1 -j job [ --fileset=000] 
 #
-# output os stored in the xxx/timing_data subdirectory , at the same level as xxx/log
+# output is stored in the xxx/timing_data subdirectory , at the same level as xxx/log
 #
 # comment: a bit kludgy, at this point, but works
 #------------------------------------------------------------------------------

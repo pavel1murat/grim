@@ -1,13 +1,21 @@
 #!/usr/bin/env python
 #
-# call examples: 
-#               grim/scripts/submit_job.py --project=su2020 --dsid=cele0 --stage=s4 --job=sim [--doit=[yes/d]] \
-#                                         [--fileset=...] [--recover=grid_id]
+# call example:
 #
-# --fileset=name    : fileset name, included into the name of the original tarball
-# --recover=grid_id : grid ID of the job to be recovered. The FCL tarball of the recovery job has that in the name
-# --doit=d          : 'dry_run' mode of mu2eprodsys (default)
-# --doit=xrd_debug  : turns on XROOTD client debugging and adds a lot of printout
+# grim/scripts/submit_job.py --project=su2020 --dsid=cele0b0s31r0000 --stage=s4 --job=sim [--doit=[yes/d]] [--fileset=...]
+#
+# --project        : project name
+# --dsid           : input dataset ID
+# --stage          : stage
+# --job            : job name, by default the job FCL is ${stage}_${job}_${familyID}.fcl
+#                    familyID = dsid[0:7]
+# --fileset        : fileset name, introduction of filesets allows to split a versy large dataset
+#                    into sevetral parts and process each part separately
+# --recover        : ID of the GRID job to be recovered
+# --doit           : by default, mu2eprodsys is called in a so-called 'dry_run' mode.
+#                    --doit=[anything different from 'd'] proceeds with the actual submission
+#                    --doit=d specifies the 'dry-run' mode
+# --doit=xrd_debug : turns on XROOTD client debugging and adds a lot of printout
 #-------------------------------------------------------------------------------------------------
 
 import subprocess, shutil, datetime

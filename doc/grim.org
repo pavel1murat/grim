@@ -1,10 +1,20 @@
 # -*- mode:org -*-
 #+startup:fold
-#
-# documentaion on GRIM (GRId submission and Monitoring scripts) 
-# gen_fcl.py , submit_job.py, list_pnfs_files.py, and friends
 # ------------------------------------------------------------------------------
-* grid submission prerequisites                                              
+# GRIM: GRId submission and Monitoring scripts
+#
+# gen_fcl.py, submit_job.py, list_pnfs_files.py, and friends
+#
+# GRIM provides a uniform interface to various existing Mu2e tools used for the
+# grid submission, makes those tools to communicate to each other
+# and significantly simplifies using GRID.
+#
+# In its present state, GRIM is not a production-level set of tools - it doesn't
+# have cron-based job submission and monitoring mechanisms needed at that level.
+#
+# it is rather intended for users and analysis groups
+# ------------------------------------------------------------------------------
+* grid job submission prerequisites                                          
 #+begin_src                                                                  
 kinit
 kx509
@@ -45,29 +55,31 @@ getToken
    - for a given dataset family, configurations of all respective jobs are defined 
      in a $project/datasets/$family/init_project.py file.
 * [[file:workflow.org][workflow]]                                                                   
+* dataset naming conventions:                                                
+- all dataset names look like _DDDDDbXsYZrUVCC_ with the lower case characters 
+  having a special meaning and being fixed, and the upper case characters - 
+  to be substituted
+
+  :DDDDD:    5 characters reserved for the physics part of the dataset ID, 
+             for example, 'cele0' for conversion electrons
+  :bX:       'X' in 'bX' - encodes the pileup level, 'b0' means no pileup, 
+             'b1' - one batch mode pileup, etc
+  :sYZ:      dataset produced at stage 'Y', stages are numbered starting from 1. 
+             Stage 'Y' produces N output datasets, 'Z' encodes the dataset index 
+             running from 1 to N. Z=0 reserved for special cases.
+  :rUVCC:    encodes information anout the code and calibrations versions and the job configuration
+             'U' encodes calibrations :  0:perfect, 1:best, 2:startup
+             'V' - marks the version of the reco code
+             'CC' - encodes the job configuration, by default : '00'
+
+- the dataset family name - the first 7 characters, common for all datasets of a given family (physics+pileup)
+
 * running test jobs                                                          
-  test jobs are usually ran on a single file. By default, grim assumes that a job 
-  is run on a dataset consisting of many files. 
-  However, one can describe a fileset (a set of files) corresponging to a dataset
-  after that all grim tools can be used with the '--fileset' command line parameter
-* dataset naming conventions                                                 
-All dataset names have a form of *DDDDDbXsYZrUVCC*. The lower case characters 
-have a special meaning and are fixed. The upper case characters are to be substituted
-
--  :DDDDD:  5 characters reserved for the physics part of the dataset ID, 
-            for example, 'cele0' for conversion electrons
--  :bX:     'X' in 'bX' - encodes the pileup level, 'b0' means no pileup, 
-            'b1' - one batch mode pileup, etc
--  :sYZ:    dataset produced at stage 'Y', stages are numbered starting from 1. 
-            Stage 'Y' produces N output datasets, 'Z' encodes the dataset index 
-            running from 1 to N. Z=0 reserved for special cases.
--  :rUVCC:  encodes information anout the code and calibrations versions and the job configuration
-            'U' encodes calibrations :  0:perfect, 1:best, 2:startup
-            'V' - marks the version of the reco code
-            'CC' - encodes the job configuration, by default : '00'
-
-- Datasets are grouped in families. The dataset family name - the first 7 characters, 
-  *physics+pileup*, is common for all datasets of a given family 
+  test jobs are usually ran on a single file as input. By default, grim assumes
+  that a job is run on a dataset consisting of many files. However, one can describe
+  a dataset or a fileset (a set of files) containing just one file.
+  After that, all grim tools could be used, either with default parameters
+  or with the '--fileset' command line parameter
 * how to diagnose errors                                                     
   - all grim scripts have a verbose more (add --verbose=1 switch)
   - run in verbose more, see which commands are executed
