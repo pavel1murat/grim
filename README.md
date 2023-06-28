@@ -1,3 +1,3 @@
 # grim
 grid submission scripts
-see 
+see https://github.com/pavel1murat/grim/blob/main/doc/grim.org 
