@@ -16,10 +16,12 @@
 #              it is appended to the FCL tarball and the directory containing the FCL files for recovery jobs 
 #              that directory is supposed to contain only FCL files for segments to be resubmitted
 #-------------------------------------------------------------------------------------------------
-
 import subprocess, shutil, glob, random, json
 import sys, string, getopt, glob, os, time, re, array
 
+from inspect import currentframe, getframeinfo
+
+frameinfo = getframeinfo(currentframe())
 #------------------------------------------------------------------------------
 class Tool:
 
@@ -155,10 +157,9 @@ class Tool:
 #------------------------------------------------------------------------------
     def InitProject(self):
         name = 'InitProject'
-
-        #------------------------------------------------------------------------------
-        # efine directory from where to load the init_project and perform initialization
-        #------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+# define directory from where to load init_project.py and perform initialization
+#------------------------------------------------------------------------------
         sys.path.append(self.fProject+'/datasets/mixing') ; 
         sys.path.append(self.fProjectDir) ; 
         self.Print (name,1,'self.fProjectDir = %s'%self.fProjectDir);
@@ -166,6 +167,9 @@ class Tool:
         self.fConfig = init_project.Project(); # init_project.init(self.fConfig)
 
         self.fStage  = self.fConfig.fStage[self.fStageName];
+
+        # print(frameinfo.filename, "line:",frameinfo.lineno,"dsid:",self.fDsID," job:",self.fJType);
+
         self.fJob    = self.fStage.job(self.fDsID,self.fJType);
 
         self.fIDsID  = self.fJob.input_dataset().id();

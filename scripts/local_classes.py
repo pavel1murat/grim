@@ -195,7 +195,9 @@ class Stage:
             self.fJob['undefined'][name] = job;
             
                 
-
+#------------------------------------------------------------------------------
+# define a new job with a given 'name' and input DSID = 'idsid'
+#------------------------------------------------------------------------------
     def new_job(self, name, idsid = None):
         ids = self.fProject.dataset(idsid);
 
@@ -207,7 +209,21 @@ class Stage:
 
         return job
 
+#------------------------------------------------------------------------------
+# return job with a given name and an input dataset id 
+# TODO: isn't everything defined just by the job name? 
+#------------------------------------------------------------------------------
     def job(self,idsid,name):
         # print("stage::job: name,idsid:",name,idsid);
         # print("self.fJob:",self.fJob);
-        return self.fJob[idsid][name];
+        try:
+            return self.fJob[idsid][name];
+        except:
+            print("ERROR in Stage::job idsid=",idsid," job name=",name); 
+            self.print();
+            return None;
+
+    def print(self) :
+        print("----------- Stage printout: name=",self.fName);
+        print("fInputDataset = ",self.fInputDataset);
+        print("fJob          = ",self.fJob);
