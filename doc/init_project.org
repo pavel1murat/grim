@@ -12,15 +12,15 @@
 
 - definition of the input dataset:
 
- job.fInputDataset = Dataset('dig.mu2e.bmum1s52b0.pbar2m.art','bmum1s52b0','local')
+ job.fInputDataset = Dataset('dig.mu2e.bmum1b0s52r0000.pbar2m.art','bmum1b0s52r0000','local')
 
   parameters:
 
-  #1 : defname, full dataset definition name
-  #2 : dsid, short dataset definition, still uniquely identifying the dataset
-  #3 : location of the dataset catalog:
-  - 'local' - in $project/datasets/$family/catalog/$defname.files
-  - 'sam'   - in SAM 
+  - 1 : defname, full dataset definition name
+  - 2 : dsid, short dataset definition, still uniquely identifying the dataset
+  - 3 : parameter defining the location of the dataset catalog:
+    - 'local':  the files are listed in $project/datasets/$family/catalog/$defname.files
+    - 'sam'   - the dataset catalog resides in the DH system (today it is SAM)
 * ------------------------------------------------------------------------------
 * back to file:workflow.org
 * ------------------------------------------------------------------------------
