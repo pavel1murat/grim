@@ -1,26 +1,38 @@
 #+startup:fold
+* init_project.py 
 
-
-- a Mu2e job is defined by its input dataset and the configuration (FHICL) file
-
-- generation may consists of several stages, each stage may have several jobs, for example 
+- generation of a Mu2e dataset may require several stages, and each stage may have several jobs.
+  For example 
 
   - stage 1:
-  - job 1: generation of proton interaction in the production target and tracing the beam down to TS3
-  - job 2: concatenation of the job 1 output
-  - job 3: ntupling of the output of stage 1
+    - job 1: generation of proton interaction in the production target and tracing the beam down to TS3
+    - job 2: concatenation of the job 1 output
+    - job 3: ntupling of the stage 1 output
+
+- a Mu2e job is therefore defined by its input dataset and the configuration (FHICL) file
+
+  For each dataset family, all grid jobs for all stages are defined 
+  in a file _$project/datasets/$family/init_project.py_ 
 
 - definition of the input dataset:
 
- job.fInputDataset = Dataset('dig.mu2e.bmum1b0s52r0000.pbar2m.art','bmum1b0s52r0000','local')
+ job.fInputDataset = Dataset(defname,dsid,location)
 
   parameters:
 
-  - 1 : defname, full dataset definition name
-  - 2 : dsid, short dataset definition, still uniquely identifying the dataset
-  - 3 : parameter defining the location of the dataset catalog:
-    - 'local':  the files are listed in $project/datasets/$family/catalog/$defname.files
-    - 'sam'   - the dataset catalog resides in the DH system (today it is SAM)
+  - defname  : full dataset definition name, i.e. 'dig.mu2e.bmum1s52b0.pbar2m.art'
+    - defname='generator' : dataset has no input files, the job generates events rather than 
+      reads them from an input file
+  - dsid     : short dataset definition, still uniquely identifying the dataset
+  - location : location of the dataset catalog:
+    - 'local' : the dataset catalog resides in $project/datasets/$family/catalog/$defname.files
+    - 'sam'   : the dataset catalog resides in SAM 
+
+  example: 
+
+#+begin_src 
+job.fInputDataset = Dataset('dig.mu2e.bmum1s52b0.pbar2m.art','bmum1s52b0','local')
+#+end_src 
 * ------------------------------------------------------------------------------
 * back to file:workflow.org
 * ------------------------------------------------------------------------------
