@@ -79,8 +79,10 @@ class Tool:
         
         try:
             optlist, args = getopt.getopt(sys.argv[1:], '',
-                     ['project=', 'verbose=', 'job=', 'notar', 'dsid=', 'fid=', 'fileset=', 'first-subrun=', 'stage=', 'pileup=', 'recover=' ] )
- 
+                    ['project=', 'verbose=', 'job=', 'notar', 'dsid=', 'fid=',
+                     'fileset=', 'first-subrun=', 'nseg=', 'stage=', 'pileup=',
+                     'recover=' ] )
+
         except getopt.GetoptError:
             self.Print(name,0,'%s' % sys.argv)
             self.Print(name,0,'Errors arguments did not parse')
@@ -103,6 +105,8 @@ class Tool:
                 self.fJType = val
             elif key == '--notar':
                 self.fNotar = 1
+            elif key == '--nseg':
+                self.fNSegments = int(val)
             elif key == '--pileup':
                 self.fPileup = val           # '1' or '2'
             elif key == '--recover':
@@ -145,6 +149,7 @@ class Tool:
         self.Print(name,1,'DsID       = %s' % self.fDsID      )
         self.Print(name,1,'FamilyID   = %s' % self.fFamilyID  )
         self.Print(name,1,'ProjectDir = %s' % self.fProjectDir)
+        self.Print(name,1,'NSegments  = %s' % self.fNSegments )
 
         if (self.fProject == None) :
             self.Print(name,0,'Error: Project not defined - exiting!')
@@ -371,6 +376,10 @@ class Tool:
         nsegments       = job.fNInputFiles/job.fMaxInputFilesPerSegment;
         if (nsegments*job.fMaxInputFilesPerSegment < job.fNInputFiles):
             nsegments   = nsegments+1
+        #------------------------------------------------------------------------------
+        # for testing purposes, allow to override the number of segments
+        #------------------------------------------------------------------------------
+        if (self.fNSegments != None): nsegments = self.fNSegments
 
         njobs           = int(nsegments-1/job.fMaxSegments) + 1;
         #-----------------------------------------------------------------------------------------
