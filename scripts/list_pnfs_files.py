@@ -118,7 +118,8 @@ class ListPnfsFiles:
 
         if (not os.path.exists(catalog_dir)):
             os.mkdir(catalog_dir);
-
+        #------------------------------------------------------------------------------
+        # number of output streams
         ns = len(job.fConfig.fOutputStream)
 
         self.Print(name,1,'ns=%i'%ns)
@@ -126,17 +127,19 @@ class ListPnfsFiles:
         # loop over output streams
         for i in range(0,ns):
             odsid       = job.fConfig.fOutputDsID[i];
+            self.Print(name,1,'i=%i,odsid=%s'%(i,odsid))
             # for each stream determine list of file extensions to be written
             extensions = job.fConfig.fOutputFormat[i].split(':')
-
             # loop over extensions
             for ext in extensions:
-
                 # maintain backward compatibility
                 # 'fileset' catalogs have '#{fileset_name}' appended (use Ruby notations :))
                 # catalog_fn  = catalog_dir+'/'+job.fConfig.fOutputFnPattern[i]+'.'+self.fProject+'.'+ext+'.files'
-                catalog_fn  = catalog_dir+'/'+job.fConfig.fOutputFnPattern[i]+'.'+ext+'.files'
 
+                self.Print(name,1,'ext=%s job.fConfig.fOutputFnPattern[i]:%s'%(ext,job.fConfig.fOutputFnPattern[i]))
+                
+                catalog_fn  = catalog_dir+'/'+job.fConfig.fOutputFnPattern[i]+'.'+ext+'.files'
+                self.Print(name,1,'ext=%s catalog_fn:%s'%(ext,catalog_fn))
                 if (job.fileset()): catalog_fn  = catalog_fn+'.'+job.fileset();
     
                 print('i, odsid, catalog_fn=',i,odsid,catalog_fn)

@@ -254,7 +254,8 @@ class Tool:
                     os.mkdir(job_status_dir);
 
                 job_stub        = self.fProject+'.'+job.input_dsid()+'.'+stage.name()+'_'+job.name();
-                status_bn       = format("%8s"%jobid) ;
+                # status_bn       = format("%8s"%jobid) ;
+                status_bn       = jobid ;
                 status_fn       = job_status_dir+'/'+status_bn;
                 t               = datetime.datetime.now()
 

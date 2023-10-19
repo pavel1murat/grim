@@ -47,6 +47,7 @@ class Tool:
         #        self.fFclTarballDir = '/mu2e/data/users/'+os.getenv('USER')+'/grid';
         self.fFclTarballDir = '/pnfs/mu2e/scratch/users/'+os.getenv('USER')+'/fcl';
         self.fNotar         = None;
+        self.fNSegments     = None;
 
         self.fOwner         = os.getenv('USER');
         if (self.fOwner == 'mu2epro'): self.fOwner = 'mu2e';
