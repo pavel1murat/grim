@@ -28,15 +28,18 @@ getToken
  - where possible, _grim_ scripts provide a uniform and consistent interface 
    to the existing Mu2e tools (muse, generate_fcl, mu2egrid) 
 
- - on the interface: _grim_ works with projects. Think of a project as an analysis project. 
-   Here is an example of one project which includes:
+ - on the interface: _grim_ works with projects. 
+   One can think of a grim project as of the dataset generation for an analysis project.
+   For example, a project may include:
    - generation of the proton interactions in the production target 
-   - tracing the mu- beam and mu+ beams to the stopping target with different positioning of the TS3 
-     collimator
-   - simulation of the mu- --> e- nunu and mu+ --> e+ nunu decays, hit digitization,
-     reconstruction, and ntupling
+   - tracing the mu- beam and mu+ beams to the stopping target with different positioning 
+     of the TS3 collimator
+   - simulation of the mu- --> e- nunu and mu+ --> e+ nunu decays, 
+   - hit digitization,
+   - reconstruction 
+   - ntupling
 
-   A single project requires generation of multiple datasets, related to each other
+   Thus a single project may require generation of multiple datasets related to each other
      
    It is assumed that the information about a project is stored in a ./$project subdirectory 
    of a current work area. A project includes infrastructure to generate of one or several dataset 
@@ -55,10 +58,10 @@ getToken
    - for a given dataset family, configurations of all respective jobs are defined 
      in a $project/datasets/$family/init_project.py file.
 * [[file:workflow.org][workflow]]                                                                   
-* dataset naming conventions:                                                
+* dataset naming conventions                                                 
 - all dataset names look like _DDDDDbXsYZrUVCC_ with the lower case characters 
-  having a special meaning and being fixed, and the upper case characters - 
-  to be substituted
+  having a special meaning and being fixed, and the upper case characters will
+  be substituted as follows:
 
   :DDDDD:    5 characters reserved for the physics part of the dataset ID, 
              for example, 'cele0' for conversion electrons
@@ -68,9 +71,11 @@ getToken
              Stage 'Y' produces N output datasets, 'Z' encodes the dataset index 
              running from 1 to N. Z=0 reserved for special cases.
   :rUVCC:    encodes information anout the code and calibrations versions and the job configuration
-             'U' encodes calibrations :  0:perfect, 1:best, 2:startup
-             'V' - marks the version of the reco code
-             'CC' - encodes the job configuration, by default : '00'
+             - 'U' encodes calibrations :  0:perfect, 1:best, 2:startup
+             - 'V' - marks the version of the reco code. It is assumed that this is a user-defined 
+               versioning, with major versions captured in other parts of the filename
+             - 'CC' - encodes the job configuration, by default : '00'. Defining the job configuration 
+               is entirely up to the user. Default: r0000
 
 - the dataset family name - the first 7 characters, common for all datasets of a given family (physics+pileup)
 
@@ -134,15 +139,15 @@ ONLINE_AND_NEARLINE
 
 ** [[file:../scripts/copy_log_files.py][grim/scripts/copy_log_files.py]]        : copy log files of a grid job to /mu2e/data/users/$USER/$project               
 
-** [[file:../scripts/clone.sh][grim/scripts/clone.sh]]                 : create template files to generate new dataset family                          
+** [[file:../scripts/clone_dataset_family.sh][grim/scripts/clone_dataset_family.sh]]  : create template files to generate new dataset family                          
 
-   - call signature:  grim/scripts/clone.sh project family1 family2
+   - call signature:  grim/scripts/clone_dataset_family.sh project family1 family2
 
      - project: project 
      - family1: existing family definition (in subdirectory $prokect/$family1)
      - family2: new family definition template, to be edited 
 
-   - example: grim/scripts/clone.sh  grim  rmci0 rmci1
+   - example: grim/scripts/clone_dataset_family.sh pbar2m bmum0b0 bmumcb0
 
 ** [[file:../scripts/gen_fcl.py][grim/scripts/gen_fcl.py]]               : interface to Andrei's generate_fcl                                            
 

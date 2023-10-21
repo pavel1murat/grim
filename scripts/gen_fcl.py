@@ -4,7 +4,7 @@
 # 
 # setup Mu2e offline before calling
 #
-# call: grim/scripts/gen_fcl.py --project=su2020 --dsid=bmum3 --stage=s2  --job=sim [--recover=grid_id] [--fileset=xxxx]
+# call: grim/scripts/gen_fcl.py --project=su2020 --dsid=bmum3 --stage=s2  --job=sim [--recover=grid_id] [--fileset=xxxx] [--nseg=n]
 # 
 #   project  : project name
 #   idsid    : input dataset id
@@ -15,6 +15,7 @@
 #              resubmitted. job_submit.py has to be called with --recover=grid_id parameter as well
 #              it is appended to the FCL tarball and the directory containing the FCL files for recovery jobs 
 #              that directory is supposed to contain only FCL files for segments to be resubmitted
+#   nseg     : for testing purposes, generate small number of segments, different from the default
 #-------------------------------------------------------------------------------------------------
 import subprocess, shutil, glob, random, json
 import sys, string, getopt, glob, os, time, re, array
@@ -41,6 +42,7 @@ class Tool:
         self.fPileup        = '0';       # no pileup 
         self.fRecover       = None;
         self.fFileset       = None;
+        self.fNSegments     = None;
         self.fConfig        = {}
         self.fIDsID         = None;
 

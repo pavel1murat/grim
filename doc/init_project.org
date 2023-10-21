@@ -1,8 +1,12 @@
 #+startup:fold
-* init_project.py 
+* init_project.py                                                            
 
-- generation of a Mu2e dataset may require several stages, and each stage may have several jobs.
-  For example 
+  _init_project.py_ is present in each directory corrresponding to a dataset family
+  It defines the configuration of all grid jobs for this family
+
+- a Mu2e job is defined by its input dataset and the configuration (FHICL) file
+
+- generation may consists of several stages, each stage may have several jobs, for example 
 
   - stage 1:
     - job 1: generation of proton interaction in the production target and tracing the beam down to TS3

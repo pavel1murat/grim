@@ -2,18 +2,18 @@
 #------------------------------------------------------------------------------
 # clone configuration of an existing dataset family to create a prototype configuration 
 # for a new one
-# call signatute:
-#                   clone project old_ds new_ds
+# call signature:
+#                   clone_dataset_family project old_family_id new_family_id
 # example:
-#                   clone su2020 bmum1 bmum2
+#                   clone_dataset_family pbar2m bmum0b0 bmumcb0
 #------------------------------------------------------------------------------ 
 project=$1
   odsid=$2
   ndsid=$3
    doit=$4
 
-ndir=$project/$ndsid
-odir=$project/$odsid
+ndir=$project/datasets/$ndsid
+odir=$project/datasets/$odsid
 
 if [ ".$doit" == "." ] ; then prefix=echo ; else prefix='' ; fi
 

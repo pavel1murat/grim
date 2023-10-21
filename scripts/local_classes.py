@@ -197,6 +197,7 @@ class Stage:
                 
 #------------------------------------------------------------------------------
 # define a new job with a given 'name' and input DSID = 'idsid'
+# what do we do for the generator jobs ?
 #------------------------------------------------------------------------------
     def new_job(self, name, idsid = None):
         ids = self.fProject.dataset(idsid);
