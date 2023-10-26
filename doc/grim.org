@@ -90,7 +90,7 @@ getToken
   - run in verbose more, see which commands are executed
   - in most cases, it is sufficient to figure out what caused the error   
 * ------------------------------------------------------------------------------
-* individual scripts in an alphabetic order                                  
+* individual scripts in alphabetic order                                     
 ** [[file:../scripts/build_tarball.py][grim/scripts/build_tarball.py]]         : interface to Rob's gridexport                                                 
 ** [[file:../scripts/check_completed_job.py][grim/scripts/check_completed_job.py]]   : checks status of the completed grid job, reports failed segments              
 

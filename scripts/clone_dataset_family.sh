@@ -3,7 +3,11 @@
 # clone configuration of an existing dataset family to create a prototype configuration 
 # for a new one
 # call signature:
-#                   clone_dataset_family project old_family_id new_family_id
+#                   clone_dataset_family project old_family_id new_family_id [doit]
+# parameters:
+# - doit   : need to be defined (for example, set it to  ".") to make the script 
+#            to actually execute its commands, otherwise it just prints them (this is a protection)
+#
 # example:
 #                   clone_dataset_family pbar2m bmum0b0 bmumcb0
 #------------------------------------------------------------------------------ 

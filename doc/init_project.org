@@ -33,10 +33,32 @@
     - 'sam'   : the dataset catalog resides in SAM 
 
   example: 
-
 #+begin_src 
 job.fInputDataset = Dataset('dig.mu2e.bmum1s52b0.pbar2m.art','bmum1s52b0','local')
 #+end_src 
+* FCL file names                                                             
+  for each job, the FCL file name is constructed as follows: 
+
+            ${stage_name}_${job_name}_${project_name}.fcl
+
+* defining a stage                                                           
+  - stage has just a name
+  - stage name is embedded into the name of FCL file
+  - for a multistage job, it is convenient to embed a number into the stage name - then 
+    all config files in the directory catalog get ordered naturally 
+#+begin_src 
+  s = self.new_stage('s3');
+#+end_src
+
+* defining a job                                                             
+- *job.fNInputFiles* : 
+  - if the 'input dataset' is a generator, this parameter defines 
+                       the number of segments in the submitted job
+  - for a regular input dataset, set to -1: in this case, the number of input 
+    segments is calculated based on the number of files in the input dataset 
+    and the value of *job.fMaxInputFilesPerSegment*
+- *job.fMaxInputFilesPerSegment* :
+  - max number of input files per grid job segment
 * ------------------------------------------------------------------------------
 * back to file:workflow.org
 * ------------------------------------------------------------------------------
