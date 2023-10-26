@@ -179,8 +179,11 @@ class Tool:
         # print(frameinfo.filename, "line:",frameinfo.lineno,"dsid:",self.fDsID," job:",self.fJType);
 
         self.fJob    = self.fStage.job(self.fDsID,self.fJType);
+        if (self.fJob == None):
+            return -1;
 
         self.fIDsID  = self.fJob.input_dataset().id();
+
         if (self.fIDsID == None) : self.fIDsID = self.fFamilyID;
 
         # step 1: need to generate fcl files 
@@ -191,6 +194,8 @@ class Tool:
         self.Print(name,1,'dsid          = %s' % dsid)
         self.Print(name,1,'stage         = %s' % self.fStage.name())
         self.Print(name,1,'job           = %s' % self.fJob.name())
+
+        return 0;
 
 #------------------------------------------------------------------------------
 # make FCL tarball 
@@ -596,10 +601,14 @@ if (__name__ == '__main__'):
 
     x = Tool()
     x.ParseParameters()
-    x.InitProject()
+    rc = x.InitProject()
 
-    stage = x.fStage;
-    job   = stage.job(x.fDsID,x.fJType);
-    rc    = x.gen_fcl(stage,job)
+    # print(">>> after InitProject rc = ",rc)
+
+    if (rc == 0): 
+
+        stage = x.fStage;
+        job   = stage.job(x.fDsID,x.fJType);
+        rc    = x.gen_fcl(stage,job)
 
     sys.exit(rc);

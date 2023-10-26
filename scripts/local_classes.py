@@ -220,11 +220,15 @@ class Stage:
         try:
             return self.fJob[idsid][name];
         except:
-            print("ERROR in Stage::job idsid=",idsid," job name=",name); 
+            print("ERROR in local_classes.py Stage::job : job with name:",name," idsid:",idsid," doesnt exist. Defined jobs:"); 
             self.print();
             return None;
 
     def print(self) :
         print("----------- Stage printout: name=",self.fName);
-        print("fInputDataset = ",self.fInputDataset);
-        print("fJob          = ",self.fJob);
+        # print("fInputDataset = ",self.fInputDataset);
+        # print("fJob          = ",self.fJob);
+        for key in self.fJob.keys():
+            job = self.fJob[key];
+            for jname in job.keys():
+                print("job:%-10s"%jname, "input dsid:",key);
