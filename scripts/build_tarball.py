@@ -121,8 +121,8 @@ class Tool:
             # 'Tarball: /mu2e/data/users/murat/museTarball/tmp.y5joX2M67W/Code.tar.bz2'
 
             lines       = output.decode('ascii').split('\n')
-            for i in range(len(lines)):
-                print('i, line: ',i, lines[i])
+            # for i in range(len(lines)):
+            #     print('i, line: ',i, lines[i])
 
             word        = lines[0].split();
             tarball     = word[1]
