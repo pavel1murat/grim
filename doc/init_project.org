@@ -50,15 +50,34 @@ job.fInputDataset = Dataset('dig.mu2e.bmum1s52b0.pbar2m.art','bmum1s52b0','local
   s = self.new_stage('s3');
 #+end_src
 
-* defining a job                                                             
-- *job.fNInputFiles* : 
+* parameters defining a job                                                  
+- *job.fNInputFiles*                                                         
   - if the 'input dataset' is a generator, this parameter defines 
                        the number of segments in the submitted job
   - for a regular input dataset, set to -1: in this case, the number of input 
     segments is calculated based on the number of files in the input dataset 
     and the value of *job.fMaxInputFilesPerSegment*
-- *job.fMaxInputFilesPerSegment* :
+- *job.fMaxInputFilesPerSegment*                                             
   - max number of input files per grid job segment
+- *job.fIfdh*                                                                
+  - file delivery protocol, either 'xrootd' or 'ifdh'
+- *job.fMaxMemory*                                                           
+  - max memory per segment, passed to teh grid job submitter
+- *job.fOutputStream*                                                        
+  - names of the job output streams (array)
+- *job.fOutputDsID*                                                          
+  - for each output stream, defined the output dataset ID's
+- *job.fOutputPath*                                                          
+  - for each output stream, the FCL path corresponding to it
+- *job.fOutputFnPattern*                                                     
+  - for each output stream, defines the name the output file 
+- *job.fOutputFormat*                                                        
+  - for each output stream, defines the output file format ('art', 'stn')
+- *job.fDescription*                                                         
+  - name stub fo the grid output directory
+- *job.fRequestedTime*                                                       
+  - requested time per segment, in hours. Depending on the grid node, 
+    the job time can vary by a factor of ~3. 
 * ------------------------------------------------------------------------------
 * back to file:workflow.org
 * ------------------------------------------------------------------------------

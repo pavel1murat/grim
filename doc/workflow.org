@@ -1,10 +1,11 @@
 #+startup:fold
 # ------------------------------------------------------------------------------
-* 0.0 [[file:init_project.org][definition of the dataset family, format of init_project.py]]            
+* 0.0 
   - each dataset family is described in a separate subdirectory: $project/datasets/$family
   - for a given family, configuration of all jobs is specified in $project/datasets/$family/init_project.py file.
-  - $project/datasets/$family/catalog directory contains catalogs of the datasets defined locally.
-    _grim_ also works with the datasets described in SAM.
+  - datasets catalogs could be stored locally or in the DH system (SAM)
+  - local catalogs are kept in the directory named $project/datasets/$family/catalog
+* [[file:init_project.org][init_project.py]] : definition of the workflow
 * ------------------------------------------------------------------------------
 * steps of the workflow
 * ------------------------------------------------------------------------------
