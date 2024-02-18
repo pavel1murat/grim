@@ -59,9 +59,12 @@ getToken
      in a $project/datasets/$family/init_project.py file.
 * [[file:workflow.org][workflow]]                                                                   
 * dataset naming conventions                                                 
-- all dataset names look like _DDDDDbXsYZrUVCC_ with the lower case characters 
-  having a special meaning and being fixed, and the upper case characters will
-  be substituted as follows:
+- dataset IDs (dsid's) used by GRIM have the followigng format: 
+
+          _DDDDDbXsYZrUVCC_ 
+
+  where the lower case characters have a special meaning and are fixed, 
+  and the upper case characters should be substituted as follows:
 
   :DDDDD:    5 characters reserved for the physics part of the dataset ID, 
              for example, 'cele0' for conversion electrons
@@ -79,6 +82,9 @@ getToken
                is entirely up to the user. Default: r0000
 
 - the dataset family name - the first 7 characters, common for all datasets of a given family (physics+pileup)
+- full dataset names follow the Mu2e dataset naming convention and ahve 5 dot-separated fields: 
+
+  dsname = xxx.$user.$dsid.$project.yyy
 
 * running test jobs                                                          
   test jobs are usually ran on a single file as input. By default, grim assumes
@@ -86,6 +92,10 @@ getToken
   a dataset or a fileset (a set of files) containing just one file.
   After that, all grim tools could be used, either with default parameters
   or with the '--fileset' command line parameter
+* filesets                                                                   
+  - a fileset can have any name, for example. '0001' or 'murat
+  - in a $dsid/catalog directory, a  list of files corresponding to a given fileset, 
+    is stored in a file named $dsname.$fileset
 * how to diagnose errors                                                     
   - all grim scripts have a verbose more (add --verbose=1 switch)
   - run in verbose more, see which commands are executed
