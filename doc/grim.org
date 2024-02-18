@@ -59,9 +59,9 @@ getToken
      in a $project/datasets/$family/init_project.py file.
 * [[file:workflow.org][workflow]]                                                                   
 * dataset naming conventions                                                 
-- dataset IDs (dsid's) used by GRIM have the followigng format: 
+- dataset IDs (dsid's) used by GRIM have the following format: 
 
-          _DDDDDbXsYZrUVCC_ 
+          dsid = _DDDDDbXsYZrUVCC_ 
 
   where the lower case characters have a special meaning and are fixed, 
   and the upper case characters should be substituted as follows:
