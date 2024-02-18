@@ -68,12 +68,15 @@ getToken
 
   :DDDDD:    5 characters reserved for the physics part of the dataset ID, 
              for example, 'cele0' for conversion electrons
+
   :bX:       'X' in 'bX' - encodes the pileup level, 'b0' means no pileup, 
              'b1' - one batch mode pileup, etc
+
   :sYZ:      dataset produced at stage 'Y', stages are numbered starting from 1. 
              - Stage 'Y' produces N output datasets, 
              - 'Z' encodes the output dataset index running from 1 to N. 
              - Z=0 reserved for special cases.
+
   :rUVCC:    encodes information anout the code and calibrations versions and the job configuration
              - 'U' encodes calibrations :  0:perfect, 1:best, 2:startup
              - 'V' - marks the version of the reco code. It is assumed that this is a user-defined 
