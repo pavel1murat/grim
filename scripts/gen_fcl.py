@@ -29,8 +29,8 @@ class Tool:
     def __init__(self):
         self.fProject       = None
         self.fProjectDir    = None
-        self.fFamilyID      = 'xxx_xxxx' # just to make up 
-        self.fDsID          = 'xxx_xxxx' # input dataset ID
+        self.fFamilyID      = None       # just to make up 
+        self.fDsID          = None       # input dataset ID
         self.fJob           = None       # task to be executed
         self.fStage         = None
         self.fStageName     = None
@@ -98,7 +98,7 @@ class Tool:
             if key == '--project':
                 self.fProject = val
             elif key == '--dsid':
-                self.fDsID     = val                   # 'cele0b2s51r02'
+                self.fDsID     = val                   # 'cele0b2s51r0002'
                 self.fFamilyID = self.FamilyID(val);   # 'cele0b2'
             elif key == '--fileset':
                 self.fFileset = val
@@ -172,7 +172,7 @@ class Tool:
         sys.path.append(self.fProjectDir) ; 
         self.Print (name,1,'self.fProjectDir = %s'%self.fProjectDir);
         import init_project
-        self.fConfig = init_project.Project(); # init_project.init(self.fConfig)
+        self.fConfig = init_project.Project(idsid=self.fDsID); # init_project.init(self.fConfig)
 
         self.fStage  = self.fConfig.fStage[self.fStageName];
 
