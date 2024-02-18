@@ -97,8 +97,10 @@ getToken
   or with the '--fileset' command line parameter
 * filesets                                                                   
   - a fileset can have any name, for example. '0001' or 'murat
+  - in a $dsid/catalog directory which stores local file catalogs, a list of files 
+    of a given dataset is stored in a file named $dsname.files 
   - in a $dsid/catalog directory, a  list of files corresponding to a given fileset, 
-    is stored in a file named $dsname.$fileset
+    is stored in a file named $dsname.$fileset.files
 * how to diagnose errors                                                     
   - all grim scripts have a verbose more (add --verbose=1 switch)
   - run in verbose more, see which commands are executed
@@ -284,4 +286,3 @@ s5    stn_s5b                        bmum0s5bb0     -1       1       bmum0s5bb0 
 ** [[file:../scripts/upload_grid_output.sh][grim/scripts/upload_grid_output.sh]]    : upload output of a grid job to tape
 ** [[file:../scripts/validate_dcache_files.sh][grim/scripts/validate_dcache_files.sh]] : extracts inputs defind in a given FCL file, checks if they are readable     
 * ------------------------------------------------------------------------------
-                                                                                                                                                             
