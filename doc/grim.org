@@ -1,4 +1,3 @@
-# -*- mode:org -*-
 #+startup:fold
 # ------------------------------------------------------------------------------
 # GRIM: GRId submission and Monitoring scripts
