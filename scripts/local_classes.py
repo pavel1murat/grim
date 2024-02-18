@@ -21,6 +21,7 @@ class Fileset:
         return self.fDimensions;
 
 #------------------------------------------------------------------------------
+# dsid is 'bpip0b0s21r0000'
 # assume that 'defname' is the SAM dataset definition name, the assumption works so far
 #------------------------------------------------------------------------------
 class Dataset:
@@ -57,6 +58,13 @@ class Dataset:
 
     def n_filesets(self):
         return len(self.fFileset);
+#------------------------------------------------------------------------------
+# output stream is a character: '1','2', etc, representing the output stream number
+# assume N(output streams per job) < 9+26 , so a stream could be represented 
+# by a single character, and capitalization ignored
+#------------------------------------------------------------------------------
+    def output_stream(self):
+        return self.fID[9];
 
 #------------------------------------------------------------------------------
 class Job:
