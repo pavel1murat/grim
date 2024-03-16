@@ -7,7 +7,7 @@
 # call: grim/scripts/gen_fcl.py --project=su2020 --dsid=bmum3 --stage=s2  --job=sim [--recover=grid_id] [--fileset=xxxx] [--nseg=n]
 # 
 #   project  : project name
-#   idsid    : input dataset id
+#   dsid     : input dataset id
 #   stage    : stage of the job (sometimes Mu2e uses multi-stage generation)
 #   job      : 'sim' or 'stn' , more coming
 #   pileup   : default: 'b0'
