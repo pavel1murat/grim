@@ -172,7 +172,14 @@ class Tool:
         sys.path.append(self.fProjectDir) ; 
         self.Print (name,1,'self.fProjectDir = %s'%self.fProjectDir);
         import init_project
-        self.fConfig = init_project.Project(idsid=self.fDsID); # init_project.init(self.fConfig)
+
+        try: 
+            self.fConfig = init_project.Project(idsid=self.fDsID);
+        except:
+            print("ERROR: dataset dsid=%s doesnt exist, check %s/%s/init_project.py"
+                  % (self.fDsID,self.fProject,self.fFamilyID))
+            return -1;
+            
 
         self.fStage  = self.fConfig.fStage[self.fStageName];
 

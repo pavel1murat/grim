@@ -240,3 +240,36 @@ class Stage:
             job = self.fJob[key];
             for jname in job.keys():
                 print("job:%-10s"%jname, "input dsid:",key);
+
+#------------------------------------------------------------------------------
+class ProjectBase:
+
+    def __init__(self, project = 'undefined', family_id='undefined',idsid=None):
+        self.fProjectName        = project;
+        self.fFamilyID           = family_id;
+        self.fStage              = {}
+        self.fDataset            = {};
+        self.fInputDataset          = None;
+
+#------------------------------------------------------------------------------
+# no need to have config files, can do initialization in python directly
+#------------------------------------------------------------------------------
+    def new_stage(self,name):
+        self.fStage[name]            = Stage(name,self);
+        return self.fStage[name]
+
+    def dataset(self,dsid):
+        return self.fDataset[dsid];
+
+    def add_dataset(self,ds):
+        self.fDataset[ds.id()] = ds;
+#------------------------------------------------------------------------------
+# returns the name of the FCL file corresponding to the job - to be used by gen_fcl
+#------------------------------------------------------------------------------
+    def base_fcl(self,job,fcl_name):
+        fmid = self.fFamilyID;              # familyID
+        return self.fProjectName+'/datasets/'+fmid+'/'+job.stage().name()+'_'+fcl_name+'_'+fmid+'.fcl'
+
+    def job_description(self,job):
+        return self.fProjectName+'.'+job.input_dataset().id()+'.'+job.stage().name()+'_'+job.name()
+
