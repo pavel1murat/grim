@@ -498,11 +498,11 @@ class Tool:
                 cmd = cmd+' --njobs=%i'%nsegments;
                 if (run_number) : cmd = cmd + ' --run-number=%i'%run_number;
         else:
-            #------------------------------------------------------------------------------
-            # case of resampling: assume 1 file per segment to resample
-            # if fileset is defined, assume 1000 segments per fileset and define first subrun
-            #------------------------------------------------------------------------------
-            # nsegments=`cat $inputs | wc -l`
+#------------------------------------------------------------------------------
+# case of resampling: assume 1 file per segment to resample
+# if fileset is defined, assume 1000 segments per fileset and define first subrun
+#-----------v------------------------------------------------------------------
+               # nsegments=`cat $inputs | wc -l`
             
             if (run_number) : cmd = cmd+' --run-number='+'%i'%run_number;
             
@@ -511,7 +511,7 @@ class Tool:
 
             cmd = cmd+' --events=%i'%job.fNEventsPerSegment;
             cmd = cmd+' --njobs=%i'%nfiles;
-            cmd = cmd+' --auxinput=1:physics.filters.TargetStopResampler.fileNames:'+input_file_list;
+            cmd = cmd+' --auxinput=1:physics.filters.'+job.fResamplingModuleLabel+'.fileNames:'+input_file_list;
 
         if (job.fAuxInputs):
             #------------------------------------------------------------------------------
