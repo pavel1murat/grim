@@ -249,7 +249,8 @@ class ProjectBase:
         self.fFamilyID           = family_id;
         self.fStage              = {}
         self.fDataset            = {};
-        self.fInputDataset          = None;
+        self.fIDsID              = idsid;
+        self.fInputDataset       = None;
 
 #------------------------------------------------------------------------------
 # no need to have config files, can do initialization in python directly
