@@ -67,6 +67,8 @@ class Dataset:
         return self.fID[9];
 
 #------------------------------------------------------------------------------
+# 'name' is the job name and, simultaneously, the name of the FCL file
+#------------------------------------------------------------------------------
 class Job:
 
     def __init__(self, name, stage = None, input_dataset = None):
@@ -86,7 +88,10 @@ class Job:
         self.fRecoVersion             = '00'
 
         self.fAuxInputs               = None
-        self.fBaseFcl                 = 'undefined.fcl'
+
+        self.fBaseFcl                 = stage.project().name()+'/datasets/'+self.family_id()+'/' + \
+                                        stage.name()+'_'+name+'_'+self.family_id()+'.fcl'
+
         self.fMaxInputFilesPerSegment =  1
         self.fMaxSegments             = 500
         self.fNEventsPerSegment       = 10
@@ -123,6 +128,9 @@ class Job:
 
     def description(self):
         return self.fDescription
+
+    def family_id(self):
+        return self.input_dsid()[0:7];
 
     def grid_id(self):
         return self.fGridID;
@@ -201,20 +209,19 @@ class Stage:
             self.fJob[idsid][name] = job;
         else:
             self.fJob['undefined'][name] = job;
-            
                 
 #------------------------------------------------------------------------------
 # define a new job with a given 'name' and input DSID = 'idsid'
 # what do we do for the generator jobs ?
 #------------------------------------------------------------------------------
-    def new_job(self, name, idsid = None):
-        ids = self.fProject.dataset(idsid);
+    def new_job(self, job_name, idsid = None):
+        input_ds = self.fProject.dataset(idsid);
 
-        job = Job(name,self,ids);
+        job = Job(job_name,self,input_ds);
         if ((idsid in self.fJob.keys()) == False): 
             self.fJob[idsid] = {}
 
-        self.fJob[idsid][name] = job;
+        self.fJob[idsid][job_name] = job;
 
         return job
 
@@ -240,6 +247,9 @@ class Stage:
             job = self.fJob[key];
             for jname in job.keys():
                 print("job:%-10s"%jname, "input dsid:",key);
+
+    def project(self):
+        return self.fProject;
 
 #------------------------------------------------------------------------------
 class ProjectBase:

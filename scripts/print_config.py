@@ -140,7 +140,7 @@ class PrintConfig:
                     print('      %10s  %20s  %20s'%(job.output_dsid(0),job.output_fn_pattern(0),job.base_fcl()));
                     if (nos > 1):
                         for os in range(1,nos):
-                            print('%67s  %10s %20s'%('',job.output_dsid(os),job.output_fn_pattern(os)));
+                            print('%67s %10s  %20s'%('',job.output_dsid(os),job.output_fn_pattern(os)));
             print(line);
         return 0;
 
