@@ -274,3 +274,5 @@ class ProjectBase:
     def job_description(self,job):
         return self.fProjectName+'.'+job.input_dataset().id()+'.'+job.stage().name()+'_'+job.name()
 
+    def name(self):
+        return self.fProjectName;
