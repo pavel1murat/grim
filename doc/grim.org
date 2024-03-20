@@ -23,16 +23,14 @@ getToken
 * ------------------------------------------------------------------------------
 * what is grim                                                               
 
- - _grim_ is a set of grid job submission and monitoring scripts for generating analysis datasets
-   by phy
+ - _grim_ is a set of grid job submission and monitoring scripts for generating 
+    analysis datasets by physics groups and individual users working on their analyses
+
  - where possible, _grim_ scripts provide a uniform and consistent interface 
    to the existing Mu2e tools (muse, generate_fcl, mu2egrid) 
 
-* grim projects 
-
-**   _grim_ works with projects. 
-
-   Think of a grim project as of the dataset generation for an analysis.
+* grim project                                                               
+   A a grim project describes a task of generating multiple datasets for an analysis.
 
    For example, a project may include:
    - generation of the proton interactions in the production target 
@@ -43,39 +41,41 @@ getToken
    - reconstruction 
    - ntupling
 
-   Thus a single project may require producing multiple datasets, some - independent, 
-   some - related to each other
+   Within the same project, different datasets could be independent or related to each other datasets,
+   with some datasets serving as an input for generating other datasets
      
-   It is assumed that the information about a project is stored in a ./$project subdirectory 
-   of a current work area. A project includes infrastructure to generate of one or several dataset 
-   families and definitions of jobs to produce the corresponding datasets
-
-- a group of related datasets is called a 'dataset family'. 
-
-   For example, one dataset one dataset could be an input for generating another one 
-
    - example 1: 'raw data' and 'reco' datasets containing the same events
    - example 2: stage 1 and stage 2 Mu2e muon or pion beam tracing
 
    - in general, tracing the beam from the production target to the stopping target 
      may involve two, three, or even more stages
 
+   a group of related datasets is called a 'dataset family'. 
+
    - for a given dataset family, configurations of all respective jobs are defined 
      in a $project/datasets/$family/init_project.py file.
-** stages 
 
-- a project may have multiple stages. Stages are named. It is convenient to name stages 's1', 's2', etc,
-  in this case the FCL files in the directory catalog are ordered automatically
+   It is assumed that the information about a project is stored in a ./$project subdirectory 
+   of a current work area. A project includes infrastructure to generate of one or several dataset 
+   families and definitions of jobs to produce the corresponding datasets
 
-- each stage may have several jobs associated with it, for example a reconstruction job 
-  and a job ntupling the reconstruction output naturally belong to the same stage
+** project stages                                                            
 
-** grim jobs
+- a project may include multiple stages. 
+- Stages are named. It is convenient to name stages 's1', 's2', etc,
+  - in this case the FCL files in the directory catalog are ordered automatically
+
+- a stage may have one or several jobs associated with it. For example, it is convenient 
+  to associate a reconstruction job and a job ntupling the reconstruction with the same stage, 
+  
+  - ntupling doesn't change the event content of the output
+  - it is helpful to have the same dataset ID for ntuple dataset and the the ntupled dataset
+** grim jobs                                                                 
 
 - each job is configured by an FCL file stored in the *$project/datasets/$family_id* directory
 
 - jobs are named, for a job name = *jobname* , the name of the corresponding FCL file 
-  is *${stage_name}_${jobname}_${family_id}.fcl*
+  is *${stage_name}_${jobname}_${family_id}.fcl*. grim relies on that.
 
 * [[file:workflow.org][workflow]]                                                                   
 * dataset naming conventions                                                 
