@@ -170,7 +170,7 @@ class Tool:
 #------------------------------------------------------------------------------
         sys.path.append(self.fProject+'/datasets/mixing') ; 
         sys.path.append(self.fProjectDir) ; 
-        self.Print (name,1,'self.fProjectDir = %s'%self.fProjectDir);
+        self.Print (name,1,'self.fProjectDir = %s,self.fDsID=%s'%(self.fProjectDir,self.fDsID));
         import init_project
 
         try: 
@@ -488,6 +488,7 @@ class Tool:
 
         if (self.fFirstSubrun): cmd = cmd+' --first-subrun=%i'%self.fFirstSubrun;
 
+        self.Print(name,1,'job.fResample:%s'%job.fResample);
         if (job.fResample == 'no'):
 
             if (ids.defname() != 'generator'):

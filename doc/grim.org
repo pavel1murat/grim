@@ -23,12 +23,17 @@ getToken
 * ------------------------------------------------------------------------------
 * what is grim                                                               
 
- - _grim_ is a set of grid job submission and monitoring scripts
+ - _grim_ is a set of grid job submission and monitoring scripts for generating analysis datasets
+   by phy
  - where possible, _grim_ scripts provide a uniform and consistent interface 
    to the existing Mu2e tools (muse, generate_fcl, mu2egrid) 
 
- - on the interface: _grim_ works with projects. 
-   One can think of a grim project as of the dataset generation for an analysis project.
+* grim projects 
+
+**   _grim_ works with projects. 
+
+   Think of a grim project as of the dataset generation for an analysis.
+
    For example, a project may include:
    - generation of the proton interactions in the production target 
    - tracing the mu- beam and mu+ beams to the stopping target with different positioning 
@@ -38,24 +43,40 @@ getToken
    - reconstruction 
    - ntupling
 
-   Thus a single project may require generation of multiple datasets related to each other
+   Thus a single project may require producing multiple datasets, some - independent, 
+   some - related to each other
      
    It is assumed that the information about a project is stored in a ./$project subdirectory 
    of a current work area. A project includes infrastructure to generate of one or several dataset 
    families and definitions of jobs to produce the corresponding datasets
 
-- 'dataset family' stands for several datasets related datasets, for example one dataset being 
-   an input for generation of another one 
+- a group of related datasets is called a 'dataset family'. 
+
+   For example, one dataset one dataset could be an input for generating another one 
+
    - example 1: 'raw data' and 'reco' datasets containing the same events
-   - example 2: stage 1 and stage 2 Mu2e beam tracing
+   - example 2: stage 1 and stage 2 Mu2e muon or pion beam tracing
 
-   - in general, tracing the beam from the production to the stopping target 
-     may involve two, three or more stages
-
-   - datasets produced at different stages, together, comprise a dataset family
+   - in general, tracing the beam from the production target to the stopping target 
+     may involve two, three, or even more stages
 
    - for a given dataset family, configurations of all respective jobs are defined 
      in a $project/datasets/$family/init_project.py file.
+** stages 
+
+- a project may have multiple stages. Stages are named. It is convenient to name stages 's1', 's2', etc,
+  in this case the FCL files in the directory catalog are ordered automatically
+
+- each stage may have several jobs associated with it, for example a reconstruction job 
+  and a job ntupling the reconstruction output naturally belong to the same stage
+
+** grim jobs
+
+- each job is configured by an FCL file stored in the *$project/datasets/$family_id* directory
+
+- jobs are named, for a job name = *jobname* , the name of the corresponding FCL file 
+  is *${stage_name}_${jobname}_${family_id}.fcl*
+
 * [[file:workflow.org][workflow]]                                                                   
 * dataset naming conventions                                                 
 - dataset IDs (dsid's) used by GRIM have the following format: 

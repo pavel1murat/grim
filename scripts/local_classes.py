@@ -97,10 +97,10 @@ class Job:
         self.fMaxInputFilesPerSegment =  1
         self.fMaxSegments             = 500
         self.fNEventsPerSegment       = 10
-        self.fResample                = 'no'   # yes/no
+        self.fResample                = 'no'          # yes/no
         self.fMaxMemory               = '2000MB'
         self.fRequestedTime           = '12h'
-        self.fIfdh                    = 'xrootd' # ifdh/xrootd
+        self.fIfdh                    = 'xrootd'      # ifdh/xrootd
         self.fOutputStream            = [];
         self.fOutputDsID              = [];
         self.fOutputFnPattern         = [];
@@ -216,8 +216,7 @@ class Stage:
 # define a new job with a given 'name' and input DSID = 'idsid'
 # what do we do for the generator jobs ?
 #------------------------------------------------------------------------------
-    def new_job(self, job_name, idsid = None):
-        # input_ds = self.fProject.dataset(idsid);
+    def new_job(self, job_name, idsid = "undefined"):
 
         job = Job(job_name,self,idsid)                                  # ,input_ds);
         if ((idsid in self.fJob.keys()) == False): 
@@ -256,14 +255,14 @@ class Stage:
 #------------------------------------------------------------------------------
 class ProjectBase:
 
-    def __init__(self, project = 'undefined', family_id='undefined',idsid=None):
+    def __init__(self, project = 'undefined', family_id='xxxxxbx',idsid='xxxxxbxxsxxrxxxx'):
         self.fProjectName        = project;
         self.fFamilyID           = family_id;
         self.fStage              = {}
         self.fDataset            = {};
         self.fIDsID              = idsid;
         self.fInputDataset       = None;
-
+        self.add_dataset(Dataset('undefined'                   ,'xxxxxbxsxxrxxxx','local'))
 #------------------------------------------------------------------------------
 # no need to have config files, can do initialization in python directly
 #------------------------------------------------------------------------------
@@ -287,4 +286,5 @@ class ProjectBase:
         return self.fProjectName+'.'+job.input_dataset().id()+'.'+job.stage().name()+'_'+job.name()
 
     def name(self):
-        return self.fProjectName;
+        return self.fProjectName;       
+#
