@@ -71,7 +71,7 @@ class Dataset:
 #------------------------------------------------------------------------------
 class Job:
 
-    def __init__(self, name, stage = None, input_dataset = None):
+    def __init__(self, name, stage = None, input_dsid = None):
 
         self.fName                    = name
         self.fStage                   = stage
@@ -81,7 +81,9 @@ class Job:
         self.fType                    = ''
         self.fTarball                 = '';
 
-        self.fInputDataset            = input_dataset;
+        self.fInputDsID               = input_dsid;
+        # print("Job.__init__ idsid: ",input_dsid)
+        self.fInputDataset            = stage.project().dataset(input_dsid);
         self.fInputFileset            = None;
         self.fNSegments               = None;
         self.fNInputFiles             =  1
@@ -142,7 +144,7 @@ class Job:
         return self.fInputDataset;
 
     def input_dsid(self):
-        return self.input_dataset().id();
+        return self.fInputDsID;
 
                                     # 7 characters of the input dataset ID
     def input_dsid_stub(self):
@@ -215,9 +217,9 @@ class Stage:
 # what do we do for the generator jobs ?
 #------------------------------------------------------------------------------
     def new_job(self, job_name, idsid = None):
-        input_ds = self.fProject.dataset(idsid);
+        # input_ds = self.fProject.dataset(idsid);
 
-        job = Job(job_name,self,input_ds);
+        job = Job(job_name,self,idsid)                                  # ,input_ds);
         if ((idsid in self.fJob.keys()) == False): 
             self.fJob[idsid] = {}
 

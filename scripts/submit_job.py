@@ -149,7 +149,7 @@ class Tool:
 
         #------------------------------------------------------------------------------
         # read project config file
-        self.fConfig = init_project.Project(); # init_project.init(self.fConfig)
+        self.fConfig = init_project.Project(self.fInputDsID); # init_project.init(self.fConfig)
 
         self.fStage         = self.fConfig.fStage[self.fStageName]
         self.fJob           = self.fStage.job(self.fInputDsID,self.fJType);

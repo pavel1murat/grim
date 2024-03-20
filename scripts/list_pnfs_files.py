@@ -90,6 +90,8 @@ class ListPnfsFiles:
         return 0
 
 #------------------------------------------------------------------------------
+# job is of a GridJob type
+#------------------------------------------------------------------------------
     def InitProject(self,job):
         name = 'InitProject'
         
@@ -101,7 +103,7 @@ class ListPnfsFiles:
 #------------------------------------------------------------------------------
 # read project config file and cache project/state/job configuration
 #------------------------------------------------------------------------------
-        job.fProjectConfig = init_project.Project();
+        job.fProjectConfig = init_project.Project(job.input_dsid());
         job.fStageConfig   = job.fProjectConfig.fStage[job.stage_name()];
         job.fConfig        = job.fStageConfig.job(job.input_dsid(),job.name());
 #------------------------------------------------------------------------------

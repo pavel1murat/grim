@@ -156,10 +156,10 @@ class Tool:
         self.Print(name,1,'ProjectDir   = %s' % self.fProjectDir  )
 
         import init_project
-        #------------------------------------------------------------------------------
-        # read project config file
-        #------------------------------------------------------------------------------
-        self.fConfig         = init_project.Project(); 
+#------------------------------------------------------------------------------
+# read project config file
+#------------------------------------------------------------------------------
+        self.fConfig         = init_project.Project(self.fDsid); 
 
         self.fStage          = self.fConfig.fStage[self.fStageName];
         self.fJob            = copy.deepcopy(self.fStage.job(self.fDsid,self.fJType));
@@ -248,20 +248,19 @@ class Tool:
                     dst = next_fcl_dir+'/'+os.path.basename(fcl_list[i]);
                     shutil.copyfile(fcl_list[i], dst)
                 continue
-            #------------------------------------------------------------------------------
-            # directory exists, look at the log file
-
+#------------------------------------------------------------------------------
+# directory exists, look at the log file
+#-----------v------------------------------------------------------------------
             logs = glob.glob(dd+'/'+'*.log')
             if (len(logs) != 1):
                 print('>> segment %5i: ERROR'%i,' no log file, fcl: ',fcl_list[i])
 
                 self.handle_failed_segment(dd,job,next_fcl_dir,fcl_list[i])
                 continue;
-
-            #------------------------------------------------------------------------------
-            # this is what one expects - one log file per segment subdirectory. 
-            # 1. check ART return code
-
+#------------------------------------------------------------------------------
+# this is what one expects - one log file per segment subdirectory. 
+# 1. check ART return code
+#-----------v------------------------------------------------------------------
             logfile = logs[0]
             cmd = 'cat '+logfile+' | grep "Art has completed"'
             self.Print(name,1,'executing cmd:%s'%cmd)
@@ -271,8 +270,9 @@ class Tool:
                 print('>> segment %5i: ERROR: no art return code'%i)
                 self.handle_failed_segment(dd,job,next_fcl_dir,fcl_list[i]);
                 continue;
-            #------------------------------------------------------------------------------
-            # art return code present , analyze it
+#------------------------------------------------------------------------------
+# art return code present , analyze it
+#------------------------------------------------------------------------------
             split_out=out[0].split();
             rc  = split_out[8].strip('.');
             if (rc != '0'):
@@ -280,9 +280,9 @@ class Tool:
                 self.handle_failed_segment(dd,job,next_fcl_dir,fcl_list[i]);
                 continue;
 
-            #------------------------------------------------------------------------------
-            # 2. check MU2EGRID return code
-
+#------------------------------------------------------------------------------
+# 2. check MU2EGRID return code
+#-----------v------------------------------------------------------------------
             cmd = 'cat '+logfile+' | grep "mu2egrid exit status" | awk \'{print $4}\''
             self.Print(name,1,'executing cmd:%s'%cmd)
             out=os.popen(cmd).readlines()
@@ -297,16 +297,17 @@ class Tool:
                     print('>> segment %5i: ERROR: mu2eprodsys return code not 0'%i)
                     self.handle_failed_segment(dd,job,next_fcl_dir,fcl_list[i]);
                     continue;
-            #------------------------------------------------------------------------------
-            # mu2egrid return code = 0
+#------------------------------------------------------------------------------
+# mu2egrid return code = 0
 
-            #------------------------------------------------------------------------------
-            # seemingly, success. need to check for presence of all output files though
-            #                        print('>> segment %5i:      '%i,' rc = ',rc)
-
+#------------------------------------------------------------------------------
+# seemingly, success. need to check for presence of all output files though
+#                        print('>> segment %5i:      '%i,' rc = ',rc)
+#-----------v------------------------------------------------------------------
             error = 0
 
             if (self.fOutputCheck != 0):
+                # print ("job.fOutputStream",job.fOutputStream)
                 nos = len(job.fOutputStream)        # number of output streams
                 for stream in range(0,nos):
                     odsid    = job.fOutputDsID[stream]
@@ -324,10 +325,9 @@ class Tool:
                     print('>> segment %5i: OK'%i)
             else:
                 self.handle_failed_segment(dd,job,next_fcl_dir,fcl_list[i]);
-
-        #------------------------------------------------------------------------------
-        # check completed, move status file to tmp/$project/completed
-        #------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+# check completed, move status file to tmp/$project/completed
+#------------------------------------------------------------------------------
         self.fGridJob.fNSuccess = nsuccess;
 
         self.fGridJob.fStatus |= grid_job.kStatusCheckedBit ;
