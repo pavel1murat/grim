@@ -397,6 +397,7 @@ class Tool:
         if (self.fNSegments != None): nsegments = self.fNSegments
 
         njobs           = int(nsegments-1/job.fMaxSegments) + 1;
+        self.Print(name,1,'nsegments:%s njobs:%s'%(self.fNSegments,njobs))
         #-----------------------------------------------------------------------------------------
         # check if a subdirectory named '000' exist locally, if it does, rename it, 
         # as generate_fcl creates and uses subdirectory with the name of '000'
@@ -509,6 +510,8 @@ class Tool:
             
             if (self.fFirstSubrun):
                 cmd = cmd+' --first-subrun=%i'%self.fFirstSubrun
+
+            if (self.fNSegments and (self.fNSegments < nfiles)): nfiles = self.fNSegments;
 
             cmd = cmd+' --events=%i'%job.fNEventsPerSegment;
             cmd = cmd+' --njobs=%i'%nfiles;
