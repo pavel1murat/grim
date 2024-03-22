@@ -140,7 +140,7 @@ class ListPnfsFiles:
 
                 self.Print(name,1,'ext=%s job.fConfig.fOutputFnPattern[i]:%s'%(ext,job.fConfig.fOutputFnPattern[i]))
                 
-                catalog_fn  = catalog_dir+'/'+job.fConfig.fOutputFnPattern[i]+'.'+ext+'.files'
+                catalog_fn  = catalog_dir+'/'+job.fConfig.fOutputFnPattern[i]+'.'+job.fProjectConfig.name()+'.'+ext+'.files'
                 self.Print(name,1,'ext=%s catalog_fn:%s'%(ext,catalog_fn))
                 if (job.fileset()): catalog_fn  = catalog_fn+'.'+job.fileset();
     

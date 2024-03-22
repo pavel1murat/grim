@@ -129,6 +129,9 @@ class Job:
         return self.fBaseFcl
 
     def description(self):
+        return self.stage().project().name()+'.'+self.input_dataset().id()+'.'+self.stage().name()+'_'+self.name()
+
+    def old_description(self):
         return self.fDescription
 
     def family_id(self):
@@ -287,5 +290,9 @@ class ProjectBase:
         return self.fProjectName+'.'+job.input_dataset().id()+'.'+job.stage().name()+'_'+job.name()
 
     def name(self):
-        return self.fProjectName;       
+        return self.fProjectName;
+
+    def print_datasets(self):
+        for ds in self.fDataset:
+            print("dsid:",ds.id())
 #
