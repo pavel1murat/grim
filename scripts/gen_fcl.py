@@ -173,12 +173,12 @@ class Tool:
         self.Print (name,1,'self.fProjectDir = %s,self.fDsID=%s'%(self.fProjectDir,self.fDsID));
         import init_project
 
-        try: 
-            self.fConfig = init_project.Project(idsid=self.fDsID);
-        except:
-            print("ERROR: dataset dsid=%s doesnt exist, check %s/%s/init_project.py"
-                  % (self.fDsID,self.fProject,self.fFamilyID))
-            return -1;
+#        try: 
+        self.fConfig = init_project.Project(idsid=self.fDsID);
+#        except:
+#            print("ERROR: project initialization failed for project=%s family=%s, check %s/%s/init_project.py"
+#                  % (self.fProject,self.fFamilyID,self.fProject,self.fFamilyID))
+#            return -1;
             
 
         self.fStage  = self.fConfig.fStage[self.fStageName];

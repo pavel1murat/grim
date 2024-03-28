@@ -8,4 +8,6 @@ project=$1
    idir=/exp/mu2e/data/projects/$project/datasets/$idsid
    odir=/pnfs/mu2e/scratch/users/$USER/datasets/$project
 
+if [[ ! -d $odir ]] ; then mkdir -p $odir ; fi
+
 rsync -vrutlog $idir $odir

@@ -263,20 +263,28 @@ class ProjectBase:
         self.fFamilyID           = family_id;
         self.fStage              = {}
         self.fDataset            = {};
-        self.fIDsID              = idsid;
-        self.fInputDataset       = None;
+#------------------------------------------------------------------------------
+# initialize datasets, the 'undefined' one is provided by default, init_dataset
+# function should be defined in the derived class
+#------------------------------------------------------------------------------
         self.add_dataset(Dataset('undefined'                   ,'xxxxxbxsxxrxxxx','local'))
+        self.fIDsID              = idsid;             # dont move from here fro a while...
+        self.init_datasets()
+#------------------------------------------------------------------------------
+# a job always has an input dataset, but...
+#------------------------------------------------------------------------------
+        self.fInputDataset       = None;
+        try:
+            # print("ProjectBase.__init__ : idsid=",idsid)
+            if (self.fIDsID) : self.fInputDataset = self.dataset(self.fIDsID);
+        except:
+            print("ERROR: input dataset is not defined")
+
+        return
+
 #------------------------------------------------------------------------------
 # no need to have config files, can do initialization in python directly
 #------------------------------------------------------------------------------
-    def new_stage(self,name):
-        self.fStage[name]            = Stage(name,self);
-        return self.fStage[name]
-
-    def dataset(self,dsid):
-        # print("dsid = ",dsid)
-        return self.fDataset[dsid];
-
     def add_dataset(self,ds):
         self.fDataset[ds.id()] = ds;
 #------------------------------------------------------------------------------
@@ -286,13 +294,28 @@ class ProjectBase:
         fmid = self.fFamilyID;              # familyID
         return self.fProjectName+'/datasets/'+fmid+'/'+job.stage().name()+'_'+fcl_name+'_'+fmid+'.fcl'
 
+    def dataset(self,dsid):
+        # print("dsid = ",dsid)
+        return self.fDataset[dsid];
+
+    def family_id(self):
+        return self.fFamilyID;
+
+    def init_datasets(self):
+        print("ERROR in ProjectBase::init_datasets : the function should be defined in the derived class")
+
     def job_description(self,job):
         return self.fProjectName+'.'+job.input_dataset().id()+'.'+job.stage().name()+'_'+job.name()
 
     def name(self):
         return self.fProjectName;
 
+    def new_stage(self,name):
+        self.fStage[name]            = Stage(name,self);
+        return self.fStage[name]
+
     def print_datasets(self):
-        for ds in self.fDataset:
-            print("dsid:",ds.id())
+        print("ProjectBase.print_datasets");
+        for ds in self.fDataset.keys():
+            print("dsid:",ds,self.fDataset[ds])
 #
