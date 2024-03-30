@@ -41,17 +41,22 @@
   has been built (see next step).
 
 * 0.3) build the code tarball                                                
-  
+
+   make sure [[file:aaa_gridexport_exclude.org][$project/AAA_GRIDEXPORT_EXCLUDE.txt]] file exists, if not create an empty one, then run
+#+begin_src
    grim/scripts/build_tarball.py --project=$project
+#+end_src
 
-   the code tarball is automatically copied to /mu2e/data/users/$USER/grid/$project
+   In case of success, the created code tarball will be automatically copied to the location 
+   defined by $project.code_tarball_dir  (see description of the .grid_config)
+
    after the tarball is built, update .grid_config file to specify the tarball name there
-   It is needed for grim/scripts/submit_job.py to find the code tarball 
+   It is needed so [[file:../scripts/submit_job.py][grim/scripts/submit_job.py]] could find it
 
-   note: if /mu2e/data/users/$USER/grid/$project directory doesnt exist, just create it
+   note: if the directory defined by $project.code_tarball_dir doesnt exist, just create it
    
    if the tarball is built under personal account and you're running as mu2epro, 
-   copy tarball (as mu2epro), do teh following:
+   copy tarball (as mu2epro): 
 
    grim/scripts/copy_user_tarball tarball
 

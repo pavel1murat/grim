@@ -1,0 +1,13 @@
+#+startup:fold
+
+AAA_GRIDEXPORT_EXCLUDE.txt file defines a list of files to be excluded when building the grid code tarball
+An example:
+#+begin_src
+libmu2e_Analyses*.*
+libmu2e_BFieldTest_BFieldSymmetry_module.so
+libmu2e_BFieldTest_BFieldTest_module.so
+libmu2e_CaloDiag*.*
+#+end_src
+*------------------------------------------------------------------------------
+* back to [[file:workflow.org]]
+* ------------------------------------------------------------------------------
