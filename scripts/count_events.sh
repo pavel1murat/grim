@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-# count_events.sh project stage job idsid [fileset]
+# count_events.sh project stage job idsid stream [fileset]
 
 project=$1
   stage=$2
@@ -9,7 +9,7 @@ project=$1
 fileset=$6
 
 dir=/exp/mu2e/data/projects/$project/log/$idsid.${stage}_${job}
-if [ -n $fileset ] ; then
+if [ ".$fileset" != "." ] ; then
     dir=/exp/mu2e/data/projects/$project/log/$idsid.${fileset}.${stage}_${job}
 fi
 

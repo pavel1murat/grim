@@ -225,11 +225,17 @@ class Tool:
             print(process.stderr.split('\n'));
 #------------------------------------------------------------------------------
 # move tarball with the fcl files for the simulation jobs to PNFS
+# make sure that the directory exists, create if it doesn't
 #------------------------------------------------------------------------------
-        tar_on_pnfs = self.fFclTarballDir+'/'+self.fProject+'/'+os.path.basename(tarball)
+        pnfs_dir = self.fFclTarballDir+'/'+self.fProject;
+        if (not os.path.exists(pnfs_dir)):
+            print('>>> WARNING: directory '+pnfs_dir+' doesn\'t exist, CREATING !')
+            os.mkdir(pnfs_dir);
+
+        tar_on_pnfs = pnfs_dir+'/'+os.path.basename(tarball)
 
         if (os.path.exists(tar_on_pnfs)):
-            print('WARNING: '+tar_on_pnfs+' already exists, OVERWRITING !')
+            print('>>> WARNING: file '+tar_on_pnfs+' already exists, OVERWRITING !')
             os.remove(tar_on_pnfs);
 
         self.Print(name,1,'copy %s  to %s'%(tarball,tar_on_pnfs));
@@ -581,7 +587,7 @@ class Tool:
         if (ndir == 1):
 
             if (os.path.exists(fcldir)):
-                print(' WARNING: directory '+fcldir+' already exists, REMOVING and RECREATING !');
+                print('>>> WARNING: directory '+fcldir+' already exists, REMOVING and RECREATING !');
                 shutil.rmtree(fcldir)
 
             shutil.move('000',fcldir)
@@ -596,7 +602,7 @@ class Tool:
                 fcldir=os.getcwd()+'/tmp/'+self.fProject+'/fcl/'+self.fIDsID+'.'+stage.name()+'_'+job.name()+".%03i"%idir;
 
                 if (os.path.exists(fcldir)):
-                    print(' WARNING: directory '+fcldir+' already exists, REMOVING and RECREATING !');
+                    print('>>> WARNING: directory '+fcldir+' already exists, REMOVING and RECREATING !');
                     shutil.rmtree(fcldir)
 
                 shutil.move("%03i"%idir,fcldir)
