@@ -111,10 +111,13 @@ getToken
 
 * running test jobs                                                          
   test jobs are usually ran on a single file as input. By default, grim assumes
-  that a job is run on a dataset consisting of many files. However, one can describe
-  a dataset or a fileset (a set of files) containing just one file.
-  After that, all grim tools could be used, either with default parameters
-  or with the '--fileset' command line parameter
+  that a job is run on a dataset consisting of many files. 
+
+  Use 'gen_fcl.py --project=$project --nseg=2' to generate FCL's for a short test job with two segments
+
+  Alternatively, one can describe a dataset or a fileset (a set of files) containing just one file.
+  After that, all grim tools could be used, either with default parameters 
+  or with the '--fileset' command line parameter of gen_fcl.py
 * filesets                                                                   
   - a fileset can have any name, for example. '0001' or 'murat
   - in a $dsid/catalog directory which stores local file catalogs, a list of files 
@@ -125,6 +128,17 @@ getToken
   - all grim scripts have a verbose more (add --verbose=1 switch)
   - run in verbose more, see which commands are executed
   - in most cases, it is sufficient to figure out what caused the error   
+* job status bits                                                            
+|-----+-----------------------------------------+------------------------|
+| bit | meaning                                 | set by                 |
+|-----+-----------------------------------------+------------------------|
+| 0x0 | job is running                          |                        |
+| 0x1 | job completed                           |                        |
+| 0x2 | job status checked                      | check_completed_job.py |
+| 0x4 | catalogs of the output datasets created | list_pnfs_files.py     |
+| 0x8 | log files saved to the local disk       | copy_log_files.py      |
+|-----+-----------------------------------------+------------------------|
+
 * ------------------------------------------------------------------------------
 * individual scripts in alphabetic order                                     
 ** [[file:../scripts/build_tarball.py][grim/scripts/build_tarball.py]]         : interface to Rob's gridexport                                                 

@@ -1,6 +1,7 @@
 #+startup:fold
 
-AAA_GRIDEXPORT_EXCLUDE.txt file defines a list of files to be excluded when building the grid code tarball
+AAA_GRIDEXPORT_EXCLUDE.txt file defines a list of files to be excluded when building the grid code tarball.
+It is used by grim and allowd to significantly reduce the code tarball size
 An example:
 #+begin_src
 libmu2e_Analyses*.*

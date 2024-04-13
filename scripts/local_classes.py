@@ -20,13 +20,19 @@ class Fileset:
     def dimensions(self):
         return self.fDimensions;
 
-#------------------------------------------------------------------------------
-# dsid is 'bpip0b0s21r0000'
-# assume that 'defname' is the SAM dataset definition name, the assumption works so far
-#------------------------------------------------------------------------------
 class Dataset:
 
     def __init__(self, defname, dsid, catalog):
+#------------------------------------------------------------------------------
+#  - defname  : the dataset definition, SAM-style, i.e. 'sim.mu2e.bpip4b0s11r0000.pipenu.art'
+#      defname='generator' : dataset has no input files, the corresponding job generates events 
+#      rather than reads them from an input file
+#  - dsid     : short dataset definition, still uniquely identifying the dataset, 
+#      dsid should als be defined for the defname='generator'
+#  - location : location of the dataset catalog:
+#      'local' : the dataset catalog resides in $project/datasets/$family/catalog/$defname.files
+#      'sam'   : the dataset catalog resides in SAM 
+#------------------------------------------------------------------------------
         self.fDefName                 = defname     # SAM dataset definition
 
         if (dsid != ''): self.fID     = dsid

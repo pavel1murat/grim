@@ -1,15 +1,16 @@
 #!/usr/bin/env ruby
 #------------------------------------------------------------------------------
 # parse log files and create an ascii file with the GRID job timing data 
-# to be processed by su2020/scripts/grid_time_ana.C
+# to be processed by grim/scripts/grid_time_ana.C
 #
 # example: 
 # --------
-# grim/scripts/parse_grid_logs.rb -p ts_warm_bore -d 711_1010 -s s1 -j job [ --fileset=000] 
+# grim/scripts/parse_grid_logs.rb -p ts_warm_bore -d bmup5b0s11r000 -s s1 -j job [ --fileset=000] 
 #
-# output is stored in the xxx/timing_data subdirectory , at the same level as xxx/log
+# output is stored in the ... $project/log/$dsid.$s_$job/timing_data directory
 #
-# comment: a bit kludgy, at this point, but works
+# comment: a bit kludgy at this point, but works
+# TODO:    get top log directory from .grid_config
 #------------------------------------------------------------------------------
 # puts "starting---"
 
@@ -67,7 +68,7 @@ end
 #------------------------------------------------------------------------------
 def run(dsid)
   user = $user ; if (user == $nil) then user = ENV["USER"] ; end
-  idir = $idir ; if (idir == $nil) then idir = "/mu2e/data/users/"+user+'/'+$project; end
+  idir = $idir ; if (idir == $nil) then idir = "/exp/mu2e/data/projects/"+$project+'/log'; end
 
   idir = idir+"/"+$dsid+"."+$stage+'_'+$job ;
 
@@ -89,8 +90,8 @@ def run(dsid)
 #------------------------------------------------------------------------------
   of.printf ("jobid/I:node_name/C:cpu_id/C:bogomips/F:dsid/C:vmpeak/F:vmhwm/F:tstage/I:totcpu/I:totwall/I:tfull/F:tistn/F:tkffpar/F:tkffdar/F\n");
 
-  for fn in Dir.glob("#{idir}/log/*.log") do
-    #    puts "-----------------"+fn
+  for fn in Dir.glob("#{idir}/*.log") do
+    # puts "-----------------"+fn
 
     f = File.open(fn);
 

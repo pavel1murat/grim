@@ -1,6 +1,6 @@
 #+startup:fold
 # ------------------------------------------------------------------------------
-* 0.0 
+* 0.0                                                                        
   - each dataset family is described in a separate subdirectory: $project/datasets/$family
   - for a given family, configuration of all jobs is specified in $project/datasets/$family/init_project.py file.
   - datasets catalogs could be stored locally or in the DH system (SAM)
@@ -75,7 +75,7 @@
    again, if the directory doesn't exist, create it manually.
    note that 
 
-* 1.1) test the tarballs locally                                             
+* 1.1) test tarballs locally                                                 
 
 - create a new directory, /mu2e/data/users/$USER/grid could be a good name
 - untar the code tarball in a new shell to there
@@ -84,18 +84,18 @@
   by generate_fcl - find it in the tmp/$project/fcl/ subdirectory
   of your working area.
 
-* 2.0) submit the grid job                                                   
+* 2.0) submit a grid job                                                     
    
 #+begin_src                       
    grim/scripts/submit_job.py  [parameters]
 #+end_src
-   to submit a grid job. Parameters are described 
+   to submit a grid job. submit_job.py parameters are described in the [[file:../scripts/submit_job.py][source_file]]
 
 * 3.0) monitor status of submitted job(s) by running _grid_monitor.py_       
 
   grim/scripts/grid_monitor.py --project=$project
 
-  When a job finishes, *grid_monitor* changes status of the job from 'running' to 'finished'
+  When a job finishes, *grid_monitor* changes its status from 'running' (0x0) to 'finished' (0x1)
 
 * 4.0) run _check_completed_job.py_ to identify failed segments :            
 
@@ -123,13 +123,19 @@
 
   grim/scripts/list_pnfs_files.py --project=<project> --grid_id=<grid_id>
 
-* 4.3) save log files of a successfully completed job:                       
+* 4.3) save log files of a successfully completed job                        
 
        grim/scripts/copy_log_files.py --grid_id=<grid_id>
 
       do all that only after running grid_monitor.py - the scripts operate only on completed jobs, 
       which status files are available in tmp/$project/completed_jobs
 
+* 4.4) produce time distribution of the completed job segments               
+
+       grim/scripts/parse_grid_logs.rb -p ts_warm_bore -d bmup5b0s11r000 -s s1 -j job [ --fileset=000] 
+
+       - read comments on top of the script, then interactively use [[file:../scripts/grid_time_ana.C][grim/scripts/grid_time_ana.C]] 
+       - it is a three-liner, just give it proper input file
 * 5.0) proceed with the next stage
 * ------------------------------------------------------------------------------
 * pileup generation                                                          

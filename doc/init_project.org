@@ -1,30 +1,33 @@
 #+startup:fold
 * init_project.py                                                            
 
-  _init_project.py_ is present in each directory corrresponding to a dataset family
-  It defines the configuration of all grid jobs for this family
-
-- a Mu2e job is defined by its input dataset and the configuration (FHICL) file
-
-- generation may consists of several stages, each stage may have several jobs, for example 
+- the dataset generation may consists of several stages, and each stage may include several jobs.
+  For example 
 
   - stage 1:
-    - job 1: generation of proton interaction in the production target and tracing the beam down to TS3
+    - job 1: generation of proton interaction in the production target and tracing the beam down to the TS3 exit
     - job 2: concatenation of the job 1 output
     - job 3: ntupling of the stage 1 output
 
-- a Mu2e job is therefore defined by its input dataset and the configuration (FHICL) file
+- For each dataset family, all grid jobs for all stages are defined 
+  in a file _$project/datasets/$family/init_project.py_ which defined a single grid project
 
-  For each dataset family, all grid jobs for all stages are defined 
-  in a file _$project/datasets/$family/init_project.py_ 
+- a Mu2e job is defined by its input dataset and the configuration (FHICL) file 
 
-- definition of the input dataset:
+- project datasets are defined in a _Project.init_datasets_ function. Example:
 
- job.fInputDataset = Dataset(defname,dsid,location)
+#+begin_src
+class Project(ProjectBase):
 
+    def init_datasets(self):
+        self.add_dataset(Dataset('sim.mu2e.bpip4b0s11r0000.pipenu.art','bpip4b0s11r0000','local'))
+        return
+#+end_src
+
+  the interface is defined in the definition of the [[file:../scripts/local_classes.py::/class\ Dataset/][Dataset]] class 
   parameters:
 
-  - defname  : full dataset definition name, i.e. 'dig.mu2e.bmum1s52b0.pbar2m.art'
+  - defname  : full dataset definition, i.e. 'sim.mu2e.bpip4b0s11r0000.pipenu.art'
     - defname='generator' : dataset has no input files, the job generates events rather than 
       reads them from an input file
   - dsid     : short dataset definition, still uniquely identifying the dataset
@@ -32,10 +35,6 @@
     - 'local' : the dataset catalog resides in $project/datasets/$family/catalog/$defname.files
     - 'sam'   : the dataset catalog resides in SAM 
 
-  example: 
-#+begin_src 
-job.fInputDataset = Dataset('dig.mu2e.bmum1s52b0.pbar2m.art','bmum1s52b0','local')
-#+end_src 
 * FCL file names                                                             
   for each job, the FCL file name is constructed as follows: 
 
