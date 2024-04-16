@@ -4,18 +4,21 @@
 # 
 # setup Mu2e offline before calling
 #
-# call: grim/scripts/gen_fcl.py --project=su2020 --dsid=bmum3 --stage=s2  --job=sim [--recover=grid_id] [--fileset=xxxx] [--nseg=n]
+# call: grim/scripts/gen_fcl.py --project=su2020 --dsid=bmum3 --stage=s2  --job=sim \
+#                               [--first-subrun=xxxxx]  [--recover=grid_id] [--fileset=xxxx] [--nseg=n]
 # 
-#   project  : project name
-#   dsid     : input dataset id
-#   stage    : stage of the job (sometimes Mu2e uses multi-stage generation)
-#   job      : 'sim' or 'stn' , more coming
-#   pileup   : default: 'b0'
-#   recover  : ID of the grid job to recover. Builds the tarball containing only FCLs of the segments to be
-#              resubmitted. job_submit.py has to be called with --recover=grid_id parameter as well
-#              it is appended to the FCL tarball and the directory containing the FCL files for recovery jobs 
-#              that directory is supposed to contain only FCL files for segments to be resubmitted
-#   nseg     : for testing purposes, generate small number of segments, different from the default
+#   project      : project name
+#   dsid         : input dataset id 
+#   first-subrun : need this parameter to generate FCLs for large datasets with more than one 
+#                  input fileset (limited at 1000 segments)
+#   stage        : stage of the job (sometimes Mu2e uses multi-stage generation)
+#   job          : 'sim' or 'stn' , more coming
+#   pileup       : default: 'b0'
+#   recover      : ID of the grid job to recover. Builds the tarball containing only FCLs of the segments to be
+#                  resubmitted. job_submit.py has to be called with --recover=grid_id parameter as well
+#                  it is appended to the FCL tarball and the directory containing the FCL files for recovery jobs 
+#                  that directory is supposed to contain only FCL files for segments to be resubmitted
+#   nseg         : for testing purposes, generate small number of segments, different from the default
 #-------------------------------------------------------------------------------------------------
 import subprocess, shutil, glob, random, json
 import sys, string, getopt, glob, os, time, re, array
@@ -126,7 +129,7 @@ class Tool:
 
         if (self.fRecover):
             self.fGridID    = self.fRecover;
-            fn              = 'tmp/'+self.fProject+'/grid_job_status/'+self.fGridID;
+            fn              = 'tmp/'+self.fProject+'/grid_job_status/'+self.fGridID.split('@')[0];
             dict            = json.loads(open(fn).read())
 
             self.fProject   = dict['project' ]
