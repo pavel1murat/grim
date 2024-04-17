@@ -101,7 +101,7 @@ class Tool:
             elif key == '--fileset':
                 self.fFileset = val
             elif key == '--recover':
-                self.fRecover = val  # this is ID of the job being recovered
+                self.fRecover = val.split('@')[0]  # this is ID of the job being recovered
             elif key == '--stage':
                 self.fStageName = val
             elif key == '--verbose':
