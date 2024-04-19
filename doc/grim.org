@@ -152,6 +152,21 @@ getToken
 | 0x8 | log files saved to the local disk       | copy_log_files.py      |
 |-----+-----------------------------------------+------------------------|
 
+* job recovery                                                               
+If several segments of a completed job have failed and need to be recovered, 
+the recovery procedure looks as follows:
+
+1. build an fcl tarball: (everything in [] is optional)
+
+ grim/scripts/gen_fcl.py --project=$project --grid_id=xxxx[@jobsubxx.fnal.gov]
+
+ this assumes that the status of the completed job has checked by running 
+ [[file:../scripts/check_completed_job.py][grim/scripts/check_completed_job.py]] 
+
+2. submit a recovery job:
+
+ grim/scripts/gen_fcl.py --project=$project --recovery=grid_id=xxxx[@jobsubxx.fnal.gov]
+
 * ------------------------------------------------------------------------------
 * individual scripts in alphabetic order                                     
 ** [[file:../scripts/build_tarball.py][grim/scripts/build_tarball.py]]         : interface to Rob's gridexport                                                 
@@ -249,7 +264,6 @@ grim/scripts/grid_monitor.py --project=pbar2m --delete=37547802@jobsub03.fnal.go
    temporary files in $PWD/tmp/grim
    
 ** [[file:../scripts/list_pnfs_files.py][grim/scripts/list_pnfs_files.py]]       : create 'catalogs' of temporary datasets to speed up the next stage submission 
-
 ** [[file:../scripts/parse_grid_logs.rb][grim/scripts/parse_grid_logs.rb]]       : parse timing information for timing etc analysis
 ** [[file:../scripts/print_config.py][grim/scripts/print_config.py]]          : print configuration of jobs for a given dataset family                        
 example of the script output:

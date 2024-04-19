@@ -1,8 +1,15 @@
 #!/usr/bin/env python
+#------------------------------------------------------------------------------
 # creates local list of output files produced by the job , places it into su2020/$dsid/catalog area
-# call: grim/scripts/list_pnfs_files.py --project=su2020 --grid_id=35469055
+#
+# call: grim/scripts/list_pnfs_files.py --project=su2020 --grid_id=35469055 [--append]
+#
+# --append : if specified, does not [recreate the catalog, but appends files to an existing 
+#            catalog (case of a recovery job)
+#            sorting the files to have the subrun number incrementing monotonically is not 
+#            implemented yet
+#
 # it is assumed that the current directory has a ".grid_status" file in it
-# see 
 #-------------------------------------------------------------------------------------------------
 
 import configparser, subprocess, shutil, json
@@ -22,7 +29,7 @@ class ListPnfsFiles:
         self.fUser          = os.getenv('USER')
         self.fRunningDir    = None;
         self.fCompletedDir  = None;
-        self.fGridID        = None;
+        self.fGridID        = None;      # could be '8053414@jobsub01.fnal.gov'
         self.fRecoveryStep  = None;
         self.fFileset       = None;    # output fileset
         self.fConfig        = None
@@ -122,12 +129,12 @@ class ListPnfsFiles:
             os.mkdir(catalog_dir);
         #------------------------------------------------------------------------------
         # number of output streams
-        ns = len(job.fConfig.fOutputStream)
+        nstreams = len(job.fConfig.fOutputStream)
 
-        self.Print(name,1,'ns=%i'%ns)
+        self.Print(name,1,'nstreams=%i'%nstreams)
         #------------------------------------------------------------------------------
         # loop over output streams
-        for i in range(0,ns):
+        for i in range(0,nstreams):
             odsid       = job.fConfig.fOutputDsID[i];
             self.Print(name,1,'i=%i,odsid=%s'%(i,odsid))
             # for each stream determine list of file extensions to be written
@@ -167,9 +174,9 @@ class ListPnfsFiles:
                                 self.Print(name,1,'base, od, odsid: %s %s %s'%(base,od,odsid))
                                 if (od == odsid) : 
                                     list_of_files.append(fn)
-                #------------------------------------------------------------------------------
-                # catalog file for a given stream
-    
+#------------------------------------------------------------------------------
+# catalog file for a given stream
+#---------------v--------------------------------------------------------------    
                 self.Print(name,1,'>>> list_of_files:%s'%format(list_of_files));
     
                 if (os.path.exists(catalog_fn)): 

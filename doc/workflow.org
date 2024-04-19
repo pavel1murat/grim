@@ -121,7 +121,9 @@
 
 * 4.2) create input for the next stage                                       
 
-  grim/scripts/list_pnfs_files.py --project=<project> --grid_id=<grid_id>
+  grim/scripts/list_pnfs_files.py --project=<project> --grid_id=<grid_id> [--append]
+
+note --append option...
 
 * 4.3) save log files of a successfully completed job                        
 

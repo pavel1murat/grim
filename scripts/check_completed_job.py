@@ -1,6 +1,13 @@
 #!/usr/bin/env python
-# interface to Andrei's generate_fcl
-# call: grim/scripts/check_completed_job.py --project=su2020 --grid_id=11122234
+# performs a check of the logfiles of the completed grid job, identifies failed segments, 
+# reports errors, and also stores separately a list of FCL files corresponding to the failed 
+# segments for a future recovery job
+#
+# call: grim/scripts/check_completed_job.py --project=su2020 --grid_id=11122234[,444555666...]
+#
+# --grid_id : a grid job ID or a comma-separated list of job ID's. 
+#             A job ID could be either a numerical ID (xxxxxxxx) , it could also be spelled in a 
+#             full form, i.e. xxxxxx@jobsubxx.fnal.gov
 #-------------------------------------------------------------------------------------------------
 
 import configparser, subprocess, shutil, json
@@ -95,7 +102,7 @@ class Tool:
             if key == '--project':
                 self.fProject = val
             elif key == '--grid_id':
-                self.fGridJobID = val.split(',')
+                self.fGridJobID = val.split(',')   # looks like it is a list ?
             elif key == '--use-running-dir':
                 self.fUseRunningDir = int(val)
             elif key == '--rename':

@@ -6,11 +6,11 @@
 #
 # --project        : project name
 # --dsid           : input dataset ID
-# --stage          : stage
+# --stage          : stage name (usually, 's1', 's2', 's3' etc)
 # --job            : job name, by default the job FCL is ${stage}_${job}_${familyID}.fcl
 #                    familyID = dsid[0:7]
-# --fileset        : fileset name, introduction of filesets allows to split a versy large dataset
-#                    into sevetral parts and process each part separately
+# --fileset        : fileset name, introduction of filesets allows to split a very large dataset
+#                    into several parts (filesets) and process each part separately
 # --recover        : ID of the GRID job to be recovered
 # --doit           : by default, mu2eprodsys is called in a so-called 'dry_run' mode.
 #                    --doit=[anything different from 'd'] proceeds with the actual submission
