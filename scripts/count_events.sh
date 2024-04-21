@@ -10,7 +10,7 @@ fileset=$6
 
 dir=/exp/mu2e/data/projects/$project/log/$idsid.${stage}_${job}
 if [ ".$fileset" != "." ] ; then
-    dir=/exp/mu2e/data/projects/$project/log/$idsid.${fileset}.${stage}_${job}
+    dir=$dir/$fileset
 fi
 
 for f in `ls $dir/*.log` ; do 

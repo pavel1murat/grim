@@ -5,7 +5,7 @@
 #
 # example: 
 # --------
-# grim/scripts/parse_grid_logs.rb -p ts_warm_bore -d bmup5b0s11r000 -s s1 -j job [ --fileset=000] 
+# grim/scripts/parse_grid_logs.rb --project=pipenu --stage=s4 --job=digi_trig --dsid=bmup4b0s36r0000 [ --fileset=000] 
 #
 # output is stored in the ... $project/log/$dsid.$s_$job/timing_data directory
 #

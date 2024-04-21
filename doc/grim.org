@@ -112,17 +112,32 @@ getToken
   dsname = xxx.$user.$dsid.$project.yyy
 
 * large datasets                                                             
-  for underlying generate_fcl a job size is limited by 1000 segments
+  for underlying generate_fcl, a single job size is limited by 1000 segments
 
   to generate FCLs for a large dataset, split it into filesets, 
   make each fileset of 1000 files (a limit per job of Andrei's generate_fcl),
   for example, 000 , 001, 002 ...
 
+  to avoid duplication of the subrun numbers in different jobs, 
   use --first-subrun=1000 for fileset=001, --first-subrun=2000 for fileset=002 etc
-  to avoid duplication of the subrun numbers in different jobs
 
-  this approach is naive and straightforward, however it is efficienty and allows 
-  to avoid introducing a complicated logic in order to handle large datasets
+  this approach is naive and straightforward, however it is efficient and 
+  avoids complicated logic needed otherwise
+
+* job recovery procedure                                                     
+If several segments of a completed job have failed and need to be recovered, 
+the recovery procedure looks as follows:
+
+1. build an fcl tarball: (everything in [] is optional)
+
+ grim/scripts/gen_fcl.py --project=$project --grid_id=xxxx[@jobsubxx.fnal.gov]
+
+ this assumes that the status of the completed job has checked by running 
+ [[file:../scripts/check_completed_job.py][grim/scripts/check_completed_job.py]] 
+
+2. submit a recovery job:
+
+ grim/scripts/gen_fcl.py --project=$project --recovery=grid_id=xxxx[@jobsubxx.fnal.gov]
 
 * running test jobs                                                          
   test jobs are usually ran on a single file as input. By default, grim assumes
@@ -153,21 +168,6 @@ getToken
 | 0x4 | catalogs of the output datasets created | list_pnfs_files.py     |
 | 0x8 | log files saved to the local disk       | copy_log_files.py      |
 |-----+-----------------------------------------+------------------------|
-
-* job recovery                                                               
-If several segments of a completed job have failed and need to be recovered, 
-the recovery procedure looks as follows:
-
-1. build an fcl tarball: (everything in [] is optional)
-
- grim/scripts/gen_fcl.py --project=$project --grid_id=xxxx[@jobsubxx.fnal.gov]
-
- this assumes that the status of the completed job has checked by running 
- [[file:../scripts/check_completed_job.py][grim/scripts/check_completed_job.py]] 
-
-2. submit a recovery job:
-
- grim/scripts/gen_fcl.py --project=$project --recovery=grid_id=xxxx[@jobsubxx.fnal.gov]
 
 * ------------------------------------------------------------------------------
 * individual scripts in alphabetic order                                     

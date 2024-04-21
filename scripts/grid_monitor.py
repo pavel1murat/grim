@@ -2,7 +2,10 @@
 #------------------------------------------------------------------------------
 # monitor grid jobs for a given project, print a table of running ones
 # supposed to be run by cron
-# call: grim/scripts/grid_monitor.py --project=project_name [--delete=list] [--verbose]
+#
+# call: grim/scripts/grid_monitor.py --project=project_name [--delete=list] [--verbose=level]
+#
+# by default, runs with verbose=1
 #------------------------------------------------------------------------------
 
 import configparser, subprocess, shutil, datetime, json
@@ -42,7 +45,7 @@ class GridMonitor:
             optlist, args = getopt.getopt(sys.argv[1:], '',
                                           ['project=', 
                                            'delete=', 
-                                           'verbose' 
+                                           'verbose=' 
                                           ]
                                          )
  
@@ -60,7 +63,7 @@ class GridMonitor:
             elif key == '--delete':
                 self.fFilesToDelete = val;
             elif key == '--verbose':
-                self.fVerbose = 1
+                self.fVerbose = int(val)
 
         return 0
 
@@ -125,6 +128,7 @@ class GridMonitor:
         for fn in glob.glob(running_dir+'/*'):
             # each file - a status file
             # print('----------- fn = ',fn)
+            self.Print(name,2, 'opening file:%s' % fn)
             job            = grid_job.GridJob(fn)
             id             = job.fGridID;
             jobs[id]       = job;

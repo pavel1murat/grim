@@ -5,7 +5,8 @@
 # setup Mu2e offline before calling
 #
 # call: grim/scripts/gen_fcl.py --project=su2020 --dsid=bmum3 --stage=s2  --job=sim \
-#                               [--first-subrun=xxxxx]  [--recover=grid_id] [--fileset=xxxx] [--nseg=n]
+#                               [--first-subrun=xxxxx]  [--recover=grid_id] [--fileset=xxxx] 
+#                               [--nseg=n] [--nevents=n]
 # 
 #   project      : project name
 #   dsid         : input dataset id 
@@ -19,6 +20,7 @@
 #                  it is appended to the FCL tarball and the directory containing the FCL files for recovery jobs 
 #                  that directory is supposed to contain only FCL files for segments to be resubmitted
 #   nseg         : for testing purposes, generate small number of segments, different from the default
+#   nevents      : for testing purposes, process small number of events per job segment
 #-------------------------------------------------------------------------------------------------
 import subprocess, shutil, glob, random, json
 import sys, string, getopt, glob, os, time, re, array
@@ -49,12 +51,11 @@ class Tool:
         self.fConfig        = {}
         self.fIDsID         = None;
 
-        #        self.fFclTarballDir = '/mu2e/data/users/'+os.getenv('USER')+'/grid';
-        self.fFclTarballDir = '/pnfs/mu2e/scratch/users/'+os.getenv('USER')+'/fcl';
-        self.fNotar         = None;
-        self.fNSegments     = None;
+        self.fFclTarballDir     = '/pnfs/mu2e/scratch/users/'+os.getenv('USER')+'/fcl';
+        self.fNotar             = None;
+        self.fNEventsPerSegment = None;
 
-        self.fOwner         = os.getenv('USER');
+        self.fOwner             = os.getenv('USER');
         if (self.fOwner == 'mu2epro'): self.fOwner = 'mu2e';
        
 
@@ -86,7 +87,7 @@ class Tool:
         try:
             optlist, args = getopt.getopt(sys.argv[1:], '',
                     ['project=', 'verbose=', 'job=', 'notar', 'dsid=', 'fid=',
-                     'fileset=', 'first-subrun=', 'nseg=', 'stage=', 'pileup=',
+                     'fileset=', 'first-subrun=', 'nevents=', 'nseg=', 'stage=', 'pileup=',
                      'recover=' ] )
 
         except getopt.GetoptError:
@@ -109,6 +110,8 @@ class Tool:
                 self.fFirstSubrun = int(val)
             elif key == '--job':
                 self.fJType = val
+            elif key == '--nevents':
+                self.fNEventsPerSegment = int(val)
             elif key == '--notar':
                 self.fNotar = 1
             elif key == '--nseg':
@@ -128,8 +131,8 @@ class Tool:
         # read job status file
 
         if (self.fRecover):
-            self.fGridID    = self.fRecover;
-            fn              = 'tmp/'+self.fProject+'/grid_job_status/'+self.fGridID.split('@')[0];
+            self.fGridID    = self.fRecover.split('@')[0];
+            fn              = 'tmp/'+self.fProject+'/grid_job_status/'+self.fGridID;
             dict            = json.loads(open(fn).read())
 
             self.fProject   = dict['project' ]
@@ -389,37 +392,38 @@ class Tool:
         if (self.fRecover):
             # in case of recovery, only need to tar up a bunch of FCL files 
             fcltop  = os.getcwd()+'/tmp/'+self.fProject+'/fcl'
-            fcldir  = fcltop+'/'+self.fIDsID+'.'+stage.name()+'_'+job.name()+'.'+self.fRecover;
-            tarfile = fcltop+'/cnf.'+self.fOwner+'.'+self.fIDsID+'.'+stage.name()+'_'+job.name()+'.'+self.fProject+'.'+self.fRecover+'.fcl.tbz'
+            fcldir  = fcltop+'/'+self.fIDsID+'.'+stage.name()+'_'+job.name()+'.'+self.fGridID;
+            tarfile = fcltop+'/cnf.'+self.fOwner+'.'+self.fIDsID+'.'+stage.name()+'_'+job.name()+'.'+self.fProject+'.'+self.fGridID+'.fcl.tbz'
             self.make_fcl_tarball(fcldir,tarfile);
             return
 
-        #------------------------------------------------------------------------------
-        # initial submission:
-        # calculate the total number of segments and the number of jobs to be submitted 
+#------------------------------------------------------------------------------
+# initial submission:
+# calculate the total number of segments and the number of jobs to be submitted 
+#-------v----------------------------------------------------------------------
         nsegments       = job.fNInputFiles/job.fMaxInputFilesPerSegment;
         if (nsegments*job.fMaxInputFilesPerSegment < job.fNInputFiles):
             nsegments   = nsegments+1
-        #------------------------------------------------------------------------------
-        # for testing purposes, allow to override the number of segments
-        #------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+# for testing purposes, allow to override the number of segments
+#-------v----------------------------------------------------------------------
         if (self.fNSegments != None): nsegments = self.fNSegments
 
         njobs           = int(nsegments-1/job.fMaxSegments) + 1;
         self.Print(name,1,'nsegments:%s njobs:%s'%(self.fNSegments,njobs))
-        #-----------------------------------------------------------------------------------------
-        # check if a subdirectory named '000' exist locally, if it does, rename it, 
-        # as generate_fcl creates and uses subdirectory with the name of '000'
-        #-----------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------
+# check if a subdirectory named '000' exist locally, if it does, rename it, 
+# as generate_fcl creates and uses subdirectory with the name of '000'
+#-------v---------------------------------------------------------------------------------
         for i in range(0,njobs):
             dname="%03i"%i
             if (os.path.exists(dname)): 
                 letters = string.ascii_lowercase
                 rs8  = ''.join(random.choice(letters) for i in range(8));
                 shutil.move(dname,dname+'.'+rs8)
-
-        #------------------------------------------------------------------------------
-        # prepare and run generate_fcl
+#------------------------------------------------------------------------------
+# prepare and run generate_fcl
+#-------v----------------------------------------------------------------------
         stage      = self.fStage;                     # stage name  (s1, s2, s3 etc)
         jtype      = self.fJType;                     # job   name  (sim, stn)
         
@@ -487,31 +491,47 @@ class Tool:
                     # so far, an assumptions that the fileset number is an integer works.
                     self.fFirstSubrun = job.fNInputFiles*int(self.fFileset)
             
-        #------------------------------------------------------------------------------
-        # define generate_fcl call parameters
-        #------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+# define generate_fcl call parameters
+#-------v----------------------------------------------------------------------
         # cmd = 'setup mu2etools v3_05_01; export FHICL_FILE_PATH=$MU2E_BASE_RELEASE; ' 
         # cmd = 'setup mu2etools v3_05_01; export FHICL_FILE_PATH=$MUSE_WORK_DIR; '
+
         cmd = 'setup mu2etools; export FHICL_FILE_PATH=$MUSE_WORK_DIR:$MUSE_BUILD_DIR; ' 
         cmd = cmd+'generate_fcl --description='+desc+' --dsconf='+dsconf+' --embed '+base_fcl;
+
         # cmd = cmd+' --ignore-source'
 
         if (self.fFirstSubrun): cmd = cmd+' --first-subrun=%i'%self.fFirstSubrun;
 
         self.Print(name,1,'job.fResample:%s'%job.fResample);
         if (job.fResample == 'no'):
+            nevents = self.fNEventsPerSegment;
 
             if (ids.defname() != 'generator'):
                 cmd = cmd+' --merge=%i'%job.fMaxInputFilesPerSegment;  # integer
                 cmd = cmd+' --inputs='+input_file_list;
+#------------------------------------------------------------------------------
+# it looks that generate_fcl gets confused when in addition to the list 
+# of input files it is given the number of segments to generate
+#------------------------------------------------------------------------------
+                # if (nsegments): cmd = cmd+' --njobs=%i'%nsegments;
             else:
-                cmd = cmd+' --events=%i'%job.fNEventsPerSegment;
+#------------------------------------------------------------------------------
+# for a generator job, job.fNEventsPerSegment should always be defined.
+# but we can redefine it for debugging
+#------------------------------------------------------------------------------
                 cmd = cmd+' --njobs=%i'%nsegments;
                 if (run_number) : cmd = cmd + ' --run-number=%i'%run_number;
+                if (nevents == None) : nevents = job.fNEventsPerSegment;
+#------------------------------------------------------------------------------
+# if nevents is defined, add it
+#-----------v------------------------------------------------------------------
+            if (nevents): cmd = cmd+' --events-per-job=%i'%nevents;
         else:
 #------------------------------------------------------------------------------
-# case of resampling: assume 1 file per segment to resample
-# if fileset is defined, assume 1000 segments per fileset and define first subrun
+# resampling: assume 1 file per segment to resample
+# if fileset is defined, assume 1000 segments per fileset max and define first subrun
 #-----------v------------------------------------------------------------------
                # nsegments=`cat $inputs | wc -l`
             
@@ -522,7 +542,10 @@ class Tool:
 
             if (self.fNSegments and (self.fNSegments < nfiles)): nfiles = self.fNSegments;
 
-            cmd = cmd+' --events=%i'%job.fNEventsPerSegment;
+            nevents = job.fNEventsPerSegment;
+            if (self.fNEventsPerSegment): 
+                cmd = cmd+' --events=%i'%self.fNEventsPerSegment;
+
             cmd = cmd+' --njobs=%i'%nfiles;
             cmd = cmd+' --auxinput=1:physics.filters.'+job.fResamplingModuleLabel+'.fileNames:'+input_file_list;
 
