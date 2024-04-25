@@ -81,11 +81,12 @@ class Tool:
         self.Print(name,2, '%s' % sys.argv)
 
         try:
-            optlist, args = getopt.getopt(sys.argv[1:], '',
+            optlist, args = getopt.getopt(sys.argv[1:], ''   ,
                                           ['project='        , 
                                            'verbose='        , 
+                                           'jobid='          , 
                                            'grid_id='        , 
-                                           'rename='          ,
+                                           'rename='         ,
                                            'output-check='   ,
                                            'use-running-dir='
                                        ] )
@@ -101,6 +102,8 @@ class Tool:
 
             if key == '--project':
                 self.fProject = val
+            elif key == '--jobid':
+                self.fGridJobID = val.split(',')   # looks like it is a list ?
             elif key == '--grid_id':
                 self.fGridJobID = val.split(',')   # looks like it is a list ?
             elif key == '--use-running-dir':

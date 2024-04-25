@@ -66,7 +66,7 @@ class ListPnfsFiles:
 
         try:
             optlist, args = getopt.getopt(sys.argv[1:], '',
-                                          ['append=', 'project=', 'verbose=', 
+                                          ['append', 'jobid=', 'project=', 'verbose=', 
                                            'grid_id=', 'use-running-dir=' ] )
  
         except getopt.GetoptError:
@@ -82,6 +82,9 @@ class ListPnfsFiles:
                 self.fProject = val
             elif key == '--append':
                 self.fAppend = 1
+            elif key == '--jobid':
+                self.fGridID = val
+                self.Print(name,1,'self.fGridID=%s'%self.fGridID)
             elif key == '--grid_id':
                 self.fGridID = val
                 self.Print(name,1,'self.fGridID=%s'%self.fGridID)

@@ -15,7 +15,8 @@
 # --doit           : by default, mu2eprodsys is called in a so-called 'dry_run' mode.
 #                    --doit=[anything different from 'd'] proceeds with the actual submission
 #                    --doit=d specifies the 'dry-run' mode
-# --doit=xrd_debug : turns on XROOTD client debugging and adds a lot of printout
+#                    --doit=v         : 'dry-run' mode plus printout of call to mu2eprodsys
+#                    --doit=xrd_debug : turns on XROOTD client debugging and adds a lot of printout
 #-------------------------------------------------------------------------------------------------
 
 import subprocess, shutil, datetime
@@ -159,7 +160,6 @@ class Tool:
     def submit_grid_job(self,stage,job):
         name = 'submit_grid_job'
 
-
         cmd = 'cat .grid_config | grep '+self.fProject+'.code_tarball | awk \'{print $2}\''
         p = subprocess.run(cmd,shell=True,capture_output=True,universal_newlines=True)
 
@@ -169,12 +169,13 @@ class Tool:
         else:
             print('ERROR: couldnt determine the code tarball')
             return -1
-
 #------------------------------------------------------------------------------
-# for the tarball name, recover and fileset are mutually exclusive:
+# for the tarball name, 'recover' and 'fileset' options are mutually exclusive:
 # - fileset is included into the name of the original tarball, 
-# - recover=original grid job id is included into the name of the recovery tarball
-#------------------------------------------------------------------------------
+# - recover=original_grid_job_id is included into the name of the recovery tarball
+# in essense, the grid_job_id defines a 'set of failed jobs to rerun', inputs for which 
+# could be considered as yet another fileset 
+#-------v----------------------------------------------------------------------
         if (self.fUser == 'mu2epro'): name_stub = 'mu2e'
         else                        : name_stub = self.fUser;
 
@@ -233,7 +234,7 @@ class Tool:
             jobid  = 'xxxxxxxx';
             server = 'yyyyyyyy';
             for line in submission_record:
-                print(line)
+                # print(line) # this is just debugging
                 if line != '':
                     w = line.split()
                     if ((w[0] == 'Use') and (w[1] == 'job') and (w[2] == 'id')) : 
@@ -241,13 +242,14 @@ class Tool:
                         server = w[3].split('@')[1]
                         break
     
+            # self.Print(name,1,'done printing the submission_record')
             # print('jobid:',jobid)
 
             if (jobid != 'xxxxxxxx'):
-                #------------------------------------------------------------------------------
-                # now, that we have the grid job ID, append it to the status file - eventually, 
-                # when the daa format is figured out, that will go to the DB
-
+#------------------------------------------------------------------------------
+# now, that we have the grid job ID, append it to the status file - eventually, 
+# when the data format is figured out, that will go to the DB
+#---------------v--------------------------------------------------------------
                 job_status_dir = 'tmp/'+self.fProject+'/grid_job_status'
 
                 if (not os.path.exists(job_status_dir)): 

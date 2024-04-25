@@ -68,6 +68,8 @@ if [ $xrootd == "xrootd" ] ; then
     fi
 fi
 
+parameters=$parameters" --jobsub-arg=--append_condor_requirements='(TARGET.CpuFamily==25)'"
+
 # echo \* \<`date +%Y-%m-%d\ %a`\> *xxxxxxxx SUBMITTED* : $project.$idsid.$sub_stub          $p_time_xrootd 
 
 if [ ".$doit" == ".d" ] ; then parameters=$parameters" --dry-run" ; fi

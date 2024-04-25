@@ -54,7 +54,7 @@ class CopyLogFiles:
 
         try:
             optlist, args = getopt.getopt(sys.argv[1:], '',
-                                          ['project=', 'verbose=', 'grid_id=', 'use-running-dir='] )
+                                          ['project=', 'verbose=', 'jobid=', 'grid_id=', 'use-running-dir='] )
  
         except getopt.GetoptError:
             self.Print(name,0,'%s' % sys.argv)
@@ -67,6 +67,8 @@ class CopyLogFiles:
 
             if key == '--project':
                 self.fProject = val
+            elif key == '--jobid':
+                self.fGridIDList = val.split(',')
             elif key == '--grid_id':
                 self.fGridIDList = val.split(',')
             elif key == '--use-running-dir':
@@ -89,7 +91,7 @@ class CopyLogFiles:
 
 #------------------------------------------------------------------------------
 # 'job': of grid_job.GridJob type 
-#------------------------------------------------------------------------------
+#---v--------------------------------------------------------------------------
     def copy_log_files(self,job):
         name = 'copy_log_files'
 
@@ -102,10 +104,10 @@ class CopyLogFiles:
         if (not os.path.exists(odir)): os.makedirs(odir,exist_ok=True);
 
         print('odir:',odir)
-        #------------------------------------------------------------------------------
-        # file_types is either 'log' (default) or 'log,fcl' etc
-        # fcl file are no longer copied - they are source into the log files
-        #------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+# file_types is either 'log' (default) or 'log,fcl' etc
+# fcl file are no longer copied - they are source into the log files
+#-------v----------------------------------------------------------------------
         file_types = self.fFileTypes.split(',');
         for ext in file_types:
 
@@ -124,13 +126,16 @@ class CopyLogFiles:
                 ld1.sort()
                 for sd2 in ld1 :
                     self.Print(name,1,'sd2=%s'%sd2);
-                    #------------------------------------------------------------------------------
-                    # skip subdirectories like 00148.915da673
+#------------------------------------------------------------------------------
+# skip subdirectories like 00148.915da673
+#-------------------v----------------------------------------------------------
                     dbn = os.path.basename(sd2);
                     if (len(dbn.split('.')) == 1) :
-                        # at this point, need to check whether the segment has completed successfully
-                        # do not copy files for failed segments
-                        # 'rc' is the return code, 0 if evethything is fine 
+#------------------------------------------------------------------------------
+# at this point, need to check whether the segment has completed successfully
+# do not copy files for failed segments
+# 'rc' is the return code, 0 if evethything is fine 
+#-----------------------v------------------------------------------------------
                         rc = self.check_segment(sd2);
                         if (rc == 0):
                             for fn in glob.glob(sd2+'/*.'+ext) : 
@@ -140,12 +145,11 @@ class CopyLogFiles:
                         else:
                             print('skip failed segment , subdirectory:',sd2)
                     else:
-                        print('in trouble: %s'%fn)
-        #------------------------------------------------------------------------------
-        # done, update the job status
-        #------------------------------------------------------------------------------
+                        print('in trouble as subdirectory dbn=%s'%dbn)
+#------------------------------------------------------------------------------
+# done, update the job status
+#-------v----------------------------------------------------------------------
         job.fStatus |= grid_job.kLogsCopiedBit;
-
 
 #------------------------------------------------------------------------------
 # main program, just make a GridSubmit instance and call its methods

@@ -1,0 +1,49 @@
+#+startup:fold
+
+sqlite3 seems to be a very good option for a single user environment
+
+* ------------------------------------------------------------------------------
+* dataset description: 
+
+dataset : { 
+  id     : string;
+  nfiles : int; 
+}
+
+file : {
+  name           : string; 
+  size           : float; 
+  nevents        : int;
+  lo_run         : int;
+  hi_run         : int;
+  lo_subrun      : int;
+  hi_subrun      : int;
+  creation_date: : date;
+}
+
+file_location : {
+  filename  : string;
+  directory : string;
+}
+
+fileset is a subset of files of a given dataset
+
+fileset : {
+  dataset : string;
+  name    : string;
+  nevents : int;
+}
+
+fileset_file : {
+  filename : string;
+  fsname   : string;
+}
+
+* ------------------------------------------------------------------------------
+* job description:
+
+job: {
+  name       : string;
+  fcl_file   : string;
+  input_dsid : string;
+}
