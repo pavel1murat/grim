@@ -389,6 +389,10 @@ class Tool:
         grid_dsid  = self.fProject+'.'+self.fIDsID+'_'+stage.name()+'_'+job.name();
         # topdir     = '/pnfs/mu2e/scratch/users/'+self.fUser+'/workflow/'+grid_dsid+'/outstage/';
 
+        self.Print(name,1,'>>> making FCLs for job         : %s:%s'% (job.stage().name(),job.name()))
+        self.Print(name,1,'>>> job.fMaxInputFilesPerSegment: %i'   % (job.fMaxInputFilesPerSegment))
+        self.Print(name,1,'>>> job.fNEventsPerSegment      : %i'   % (job.fNEventsPerSegment))
+
         if (self.fRecover):
             # in case of recovery, only need to tar up a bunch of FCL files 
             fcltop  = os.getcwd()+'/tmp/'+self.fProject+'/fcl'
@@ -506,7 +510,7 @@ class Tool:
 
         self.Print(name,1,'job.fResample:%s'%job.fResample);
         if (job.fResample == 'no'):
-            nevents = self.fNEventsPerSegment;
+            nevents = job.fNEventsPerSegment;
 
             if (ids.defname() != 'generator'):
                 cmd = cmd+' --merge=%i'%job.fMaxInputFilesPerSegment;  # integer
@@ -542,9 +546,9 @@ class Tool:
 
             if (self.fNSegments and (self.fNSegments < nfiles)): nfiles = self.fNSegments;
 
-            nevents = job.fNEventsPerSegment;
-            if (self.fNEventsPerSegment): 
-                cmd = cmd+' --events=%i'%self.fNEventsPerSegment;
+            self.Print(name,1,'job.fNEventsPerSegment  = %s' % job.fNEventsPerSegment )
+            if (job.fNEventsPerSegment): 
+                cmd = cmd+' --events-per-job=%i'%job.fNEventsPerSegment;
 
             cmd = cmd+' --njobs=%i'%nfiles;
             cmd = cmd+' --auxinput=1:physics.filters.'+job.fResamplingModuleLabel+'.fileNames:'+input_file_list;
