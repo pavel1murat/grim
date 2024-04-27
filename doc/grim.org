@@ -202,6 +202,23 @@ condor_status -json fnpc23037  | grep Cpu
 10774671.12  mu2epro         4/24 13:43   0+02:50:31 slot1_8@fnpc23027.fnal.gov
 10774671.22  mu2epro         4/24 13:43   0+02:47:59 slot1_91@fnpc23115.fnal.gov
 #+end_src
+* tape upload: art files        
+* tape upload: stntuples                                                     
+- for now, keep stntuples disk-resident, back them up to tape   
+- assume stntuples are located in /pnfs/mu2e/persistent/users/mu2epro/$project/stntuple/$dsid
+- to do that : 
+-  copy stntuple files to be saved to tape to XXX/tmp directory 
+- run [[file:../scripts/upload_stn_dataset][grim/scripts/upload_stn_dataset]] : (start from reading comments on top of the script)
+#+begin_src 
+grim/scripts/upload_stn_dataset pipenu bmup4b0s56r0100/000
+#+end_src
+- next day, run mu2eDatasetLocation to assign tape locations to the uploaded files
+- that can't be done immediately, because the files get Enstore locations assigned only after a while
+- in SAM, the dataset assignment is done based on the file name, so for multi-fileset datasets, 
+  can do the upload by fileset
+#+begin_src
+mu2eDatasetLocation --add=tape nts.mu2e.bmup4b0s56r0100.pipenu.stn
+#+end_src 
 * ------------------------------------------------------------------------------
 * individual scripts in alphabetic order                                     
 ** [[file:../scripts/build_tarball.py][grim/scripts/build_tarball.py]]         : interface to Rob's gridexport                                                 

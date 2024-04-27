@@ -2,7 +2,7 @@
 #------------------------------------------------------------------------------
 # assume that a concatenated STNTUPLE dataset to be uploaded is copied to 
 # the /pnfs/mu2e/persistent/users/mu2epro/su2020/stntuple/$dsid/tmp area 
-# 
+# mu2eFileUpload moves files
 #------------------------------------------------------------------------------
 project=$1
    dsid=$2
@@ -17,7 +17,9 @@ cwd=`pwd`
 cd $dir
 
 rc=0
-
+#------------------------------------------------------------------------------
+# generate metadata for stntuples
+#------------------------------------------------------------------------------
 for f in `ls $dir/*.stn` ; do 
     # jsonMaker.py  -f phy-nts  -x  $f 
     printJson --no-parents $f  >| $f.json
@@ -29,7 +31,9 @@ for f in `ls $dir/*.stn` ; do
     echo rc=$rc , printing metadata:
     cat $f.json
 done
-
+#------------------------------------------------------------------------------
+# declare fiels to SAM and proceed with the upload
+#------------------------------------------------------------------------------
 if [ $rc == "0" ] ; then 
     ls $dir/*.json | mu2eFileDeclare
     rc=$?

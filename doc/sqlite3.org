@@ -43,7 +43,15 @@ fileset_file : {
 * job description:
 
 job: {
-  name       : string;
-  fcl_file   : string;
-  input_dsid : string;
+  name       : string;       # job name : $input_dsid.$stage_$name
+  fcl_file   : string;       # fcl file: $stage_$name_$family.fcl
+  input_dsid : string;       # 
+  stage      : string;       #  (family of the input dsid)
+  nsegments  : int;          # 
+  ncompleted : int ;
+  nheld;
+}
+
+job_segment  : {
+  number:  int    ;          # segment number
 }

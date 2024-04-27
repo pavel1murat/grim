@@ -86,6 +86,7 @@ class ListPnfsFiles:
                 self.fGridID = val
                 self.Print(name,1,'self.fGridID=%s'%self.fGridID)
             elif key == '--grid_id':
+                print(" --grid_id flag is OBSOLETE, use --jobid");
                 self.fGridID = val
                 self.Print(name,1,'self.fGridID=%s'%self.fGridID)
             elif key == '--use-running-dir':

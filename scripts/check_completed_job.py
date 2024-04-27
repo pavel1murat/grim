@@ -3,11 +3,12 @@
 # reports errors, and also stores separately a list of FCL files corresponding to the failed 
 # segments for a future recovery job
 #
-# call: grim/scripts/check_completed_job.py --project=su2020 --grid_id=11122234[,444555666...]
+# call: grim/scripts/check_completed_job.py --project=su2020 --jobid=11122234[,444555666...]
 #
-# --grid_id : a grid job ID or a comma-separated list of job ID's. 
+# --jobid   : a grid job ID or a comma-separated list of job ID's. 
 #             A job ID could be either a numerical ID (xxxxxxxx) , it could also be spelled in a 
 #             full form, i.e. xxxxxx@jobsubxx.fnal.gov
+# --grid_id : the same as '--jobid', but obsolete
 #-------------------------------------------------------------------------------------------------
 
 import configparser, subprocess, shutil, json
@@ -105,6 +106,7 @@ class Tool:
             elif key == '--jobid':
                 self.fGridJobID = val.split(',')   # looks like it is a list ?
             elif key == '--grid_id':
+                print(" --grid_id flag is OBSOLETE, use --jobid");
                 self.fGridJobID = val.split(',')   # looks like it is a list ?
             elif key == '--use-running-dir':
                 self.fUseRunningDir = int(val)
@@ -269,7 +271,7 @@ class Tool:
                 continue;
 #------------------------------------------------------------------------------
 # this is what one expects - one log file per segment subdirectory. 
-# 1. check ART return code
+# 1. check the ART return code
 #-----------v------------------------------------------------------------------
             logfile = logs[0]
             cmd = 'cat '+logfile+' | grep "Art has completed"'
@@ -309,8 +311,6 @@ class Tool:
                     continue;
 #------------------------------------------------------------------------------
 # mu2egrid return code = 0
-
-#------------------------------------------------------------------------------
 # seemingly, success. need to check for presence of all output files though
 #                        print('>> segment %5i:      '%i,' rc = ',rc)
 #-----------v------------------------------------------------------------------
@@ -337,7 +337,7 @@ class Tool:
                 self.handle_failed_segment(dd,job,next_fcl_dir,fcl_list[i]);
 #------------------------------------------------------------------------------
 # check completed, move status file to tmp/$project/completed
-#------------------------------------------------------------------------------
+#-------v----------------------------------------------------------------------
         self.fGridJob.fNSuccess = nsuccess;
 
         self.fGridJob.fStatus |= grid_job.kStatusCheckedBit ;

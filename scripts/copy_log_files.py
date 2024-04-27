@@ -70,6 +70,7 @@ class CopyLogFiles:
             elif key == '--jobid':
                 self.fGridIDList = val.split(',')
             elif key == '--grid_id':
+                print(" --grid_id flag is OBSOLETE, use --jobid");
                 self.fGridIDList = val.split(',')
             elif key == '--use-running-dir':
                 self.fUseRunningDir = int(val)
