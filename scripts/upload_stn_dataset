@@ -1,44 +1,55 @@
 #!/usr/bin/bash
 #------------------------------------------------------------------------------
-# assume that a concatenated STNTUPLE dataset to be uploaded is copied to 
-# the /pnfs/mu2e/persistent/users/mu2epro/su2020/stntuple/$dsid/tmp area 
+# assume that a concatenated STNTUPLE dataset to be uploaded is copied to
+# the /pnfs/mu2e/persistent/users/mu2epro/$project/stntuple/$dsid area
 # mu2eFileUpload moves files
+# if a dataset has several filesets, can go by fileset. Example:
+#
+#               upload_stn_dataset pipenu bmup4b0s56r0000/001
 #------------------------------------------------------------------------------
 project=$1
    dsid=$2
 
- dir=/pnfs/mu2e/persistent/users/mu2epro/$project/stntuple/$dsid/tmp
+ dir=/pnfs/mu2e/persistent/users/mu2epro/$project/stntuple/$dsid
 
 setup mu2etools
 setup mu2efiletools
 # setup dhtools
 
 cwd=`pwd`
+#------------------------------------------------------------------------------
+# copy files to ./tmp from where they will be moved to tape-backed dCache pool
+#------------------------------------------------------------------------------
 cd $dir
+
+if [ ! -d tmp ] ; then mkdir tmp ; fi
+
+for f in `ls *.stn` ; do cp $f tmp/. ; done
 
 rc=0
 #------------------------------------------------------------------------------
-# generate metadata for stntuples
+# cd to ./tmp and generate metadata for stntuples there
 #------------------------------------------------------------------------------
-for f in `ls $dir/*.stn` ; do 
-    # jsonMaker.py  -f phy-nts  -x  $f 
+cd tmp
+for f in `ls *.stn` ; do
+    # jsonMaker.py  -f phy-nts  -x  $f
     printJson --no-parents $f  >| $f.json
     rc=$?
-    if [ $rc != "0" ] ; then 
+    if [ $rc != "0" ] ; then
 	echo file=$f failed to generate metadata rc = $rc
-	break ; 
+	break ;
     fi
     echo rc=$rc , printing metadata:
     cat $f.json
 done
 #------------------------------------------------------------------------------
-# declare fiels to SAM and proceed with the upload
+# declare files to SAM and proceed with the upload
 #------------------------------------------------------------------------------
-if [ $rc == "0" ] ; then 
-    ls $dir/*.json | mu2eFileDeclare
+if [ $rc == "0" ] ; then
+    ls *.json | mu2eFileDeclare
     rc=$?
     if [ $rc == "0" ] ; then
-	ls $dir/*.stn  | mu2eFileUpload --tape 
+	ls *.stn  | mu2eFileUpload --tape
     fi
 fi
 cd $cwd

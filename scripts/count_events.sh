@@ -13,12 +13,10 @@ if [ ".$fileset" != "." ] ; then
     dir=$dir/$fileset
 fi
 
-for f in `ls $dir/*.log` ; do 
-    echo $f ; 
+for f in `ls $dir/*.log` ; do
+    echo $f ;
 done | wc
 
-for f in `ls $dir/*.log` ; do 
+for f in `ls $dir/*.log` ; do
     cat $f | awk -v stream=$stream '{if (($1 == "TrigReport") && ($5 == stream)) print $2}'
 done | awk '{n += $1} END{print n}'
-
-

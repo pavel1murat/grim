@@ -391,7 +391,8 @@ class Tool:
 
         self.Print(name,1,'>>> making FCLs for job         : %s:%s'% (job.stage().name(),job.name()))
         self.Print(name,1,'>>> job.fMaxInputFilesPerSegment: %i'   % (job.fMaxInputFilesPerSegment))
-        self.Print(name,1,'>>> job.fNEventsPerSegment      : %i'   % (job.fNEventsPerSegment))
+        if (job.fNEventsPerSegment): self.Print(name,1,'>>> job.fNEventsPerSegment      : %i'   % (job.fNEventsPerSegment));
+        else                       : self.Print(name,1,'>>> job.fNEventsPerSegment      : None');
 
         if (self.fRecover):
             # in case of recovery, only need to tar up a bunch of FCL files 

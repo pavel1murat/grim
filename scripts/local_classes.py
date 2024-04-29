@@ -102,7 +102,7 @@ class Job:
 
         self.fMaxInputFilesPerSegment =  1
         self.fMaxSegments             = 500
-        self.fNEventsPerSegment       = 10
+        self.fNEventsPerSegment       = None
         self.fResample                = 'no'          # yes/no
         self.fMaxMemory               = '2000MB'
         self.fRequestedTime           = '12h'
