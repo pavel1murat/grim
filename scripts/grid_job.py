@@ -82,7 +82,7 @@ class GridJob:
 
 #------------------------------------------------------------------------------
 # job status is defined only if its configuration is known
-# otherwise, keep the job status fiel in 'active' directory, so it would be visible
+# therefore, keep the job status file in 'active' directory, so it would be visible
 #------------------------------------------------------------------------------
     def completed(self):
         if (self.fConfig):
@@ -155,6 +155,9 @@ class GridJob:
 
     def stage(self):
         return self.fStage;
+
+    def status(self):
+        return self.fStatus;
 
     def stage_name(self):
         return self.fStage;

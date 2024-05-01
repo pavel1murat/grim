@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 #------------------------------------------------------------------------------
-# monitor grid jobs for a given project, print a table of running ones
-# supposed to be run by cron
+# monitor grid jobs for a given project, print status of running jobs
+# supposed to be run by cron, not there yet
 #
-# call: grim/scripts/grid_monitor.py --project=project_name [--delete=list] [--verbose=level]
+# call: grim/scripts/grid_monitor.py --project=project_name [--clean] [--verbose=level]
+#
+# -- project: project name
+#
+# -- clean: moves status files of completed jobs (status = 0xf) to tmp/$project/completed_jobs 
+#           subdirectory, so next time only status of non-completed jobs will be displayed 
 #
 # by default, runs with verbose=1
 #------------------------------------------------------------------------------
@@ -20,9 +25,11 @@ class GridMonitor:
         self.fVerbose       = 1
         self.fTmpDir        = None;
         self.fRunningDir    = None;
+        self.fCompletedDir  = None;
         self.fDescription   = 'xxxxxxxxxx'
         self.fConfigFile    = '.grid_config'
         self.fFilesToDelete = None
+        self.fDoCleanup     = None;
 
 # ---------------------------------------------------------------------
     def Print(self,Name,level,Message):
@@ -44,7 +51,7 @@ class GridMonitor:
         try:
             optlist, args = getopt.getopt(sys.argv[1:], '',
                                           ['project=', 
-                                           'delete=', 
+                                           'clean', 
                                            'verbose=' 
                                           ]
                                          )
@@ -60,8 +67,8 @@ class GridMonitor:
 
             if key == '--project':
                 self.fProject = val
-            elif key == '--delete':
-                self.fFilesToDelete = val;
+            elif key == '--clean':
+                self.fDoCleanup = 1;
             elif key == '--verbose':
                 self.fVerbose = int(val)
 
@@ -94,6 +101,7 @@ class GridMonitor:
             return -1;
 
         self.fRunningDir   = self.fTmpDir+'/grid_job_status';
+        self.fCompletedDir = self.fTmpDir+'/completed_jobs';
         return 0;
 
 #------------------------------------------------------------------------------
@@ -168,9 +176,9 @@ class GridMonitor:
                     elif (words[5] == 'H'):
                         # segment running
                         job.fNHeld += 1;
-
-        #------------------------------------------------------------------------------
-        # loop over all segments again, check status
+#------------------------------------------------------------------------------
+# loop over all segments again, check status
+#-------v----------------------------------------------------------------------
         for id in jobs.keys():
             job = jobs[id]
             # print('job id:',id,' nrunning = ',job.fNRunning);
@@ -193,7 +201,18 @@ class GridMonitor:
             if (job.fNSuccess): print('%8i'%job.fNSuccess,end=" ")
             else:               print('%8s'%""           ,end=" ")
             print('%-20s'%job.fSubmTime)
-            
+#------------------------------------------------------------------------------
+# if requested, do the cleanup - move status files corresponding to completed jobs
+# to tmp/$project/completed_jobs
+#-------v----------------------------------------------------------------------
+        if (self.fDoCleanup):
+            for fn in glob.glob(running_dir+'/*'):
+                # each file - a status file
+                # print('----------- fn = ',fn)
+                job            = grid_job.GridJob(fn)
+                if (job.status() == 0xf):
+                    self.Print(name,2, 'cleanup: moving %s to %s' % (fn,self.fCompletedDir))
+                    shutil.move(fn,self.fCompletedDir)
 #------------------------------------------------------------------------------
 # main program, just make a GridSubmit instance and call its methods
 #------------------------------------------------------------------------------

@@ -134,6 +134,9 @@ class Job:
     def base_fcl(self):
         return self.fBaseFcl
 
+    def status(self):
+        return self.fCompletedStatus;
+
     def description(self):
         return self.stage().project().name()+'.'+self.input_dataset().id()+'.'+self.stage().name()+'_'+self.name()
 
