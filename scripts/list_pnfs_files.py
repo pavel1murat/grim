@@ -185,9 +185,13 @@ class ListPnfsFiles:
     
                 if (os.path.exists(catalog_fn)): 
                     if (self.fAppend == None):
-                        print('WARNING : catalog file %s exists, RECREATE!'%catalog_fn);
-                        os.remove(catalog_fn);
-                        f = open(catalog_fn,'w')
+                        print('WARNING : catalog file %s exists, recreate or append ? [r/a] '%catalog_fn);
+                        s = str(input())
+                        if (s[0] != 'r'): 
+                            os.remove(catalog_fn);
+                            f = open(catalog_fn,'w')
+                        else:
+                            f = open(catalog_fn,'a')
                     else:
                         print('WARNING : catalog file %s exists, APPEND!'%catalog_fn);
                         f = open(catalog_fn,'a')

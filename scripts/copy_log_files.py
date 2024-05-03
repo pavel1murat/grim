@@ -146,7 +146,7 @@ class CopyLogFiles:
                         else:
                             print('skip failed segment , subdirectory:',sd2)
                     else:
-                        print('in trouble as subdirectory dbn=%s'%dbn)
+                        print('ERROR: wrong subdirectory name dbn=%s. Incomplete transfer ?'%dbn)
 #------------------------------------------------------------------------------
 # done, update the job status
 #-------v----------------------------------------------------------------------

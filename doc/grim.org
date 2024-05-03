@@ -43,24 +43,36 @@ getToken
    - reconstruction 
    - ntupling
 
-   Within the same project, different datasets could be independent or related to each other datasets,
-   with some datasets serving as an input for generating other datasets
-     
+   Within the same project, different datasets could be independent or related to each other,
+   with some datasets serving as an input for generating other datasets. 
+   Examples of 'related' datasets:
+ 
    - example 1: 'raw data' and 'reco' datasets containing the same events
-   - example 2: stage 1 and stage 2 Mu2e muon or pion beam tracing
-
-   - in general, tracing the beam from the production target to the stopping target 
-     may involve two, three, or even more stages
+   - example 2: stage 1 and stage 2 of the Mu2e muon/pion beam tracing 
+                (in general, tracing the beam from the production target to the stopping target 
+                  may involve two, three, or even more stages)
 
    a group of related datasets is called a 'dataset family'. 
 
    - for a given dataset family, configurations of all respective jobs are defined 
      in a $project/datasets/$family/init_project.py file.
 
-   It is assumed that the information about a project is stored in a ./$project subdirectory 
-   of a current work area. A project includes infrastructure to generate of one or several dataset 
-   families and definitions of jobs to produce the corresponding datasets
+** project organization                                                      
+- everything related to the project name=$project is stored in a subdirectory of the current work area, 
+  named by this project, $project. 
 
+  A project includes infrastructure to generate of one or several dataset 
+  families and definitions of jobs to produce the corresponding datasets
+
+  a dataset with a given dataset ID is described in a $project/datasets/$dsid subdirectory 
+  and the package structure is as follows:
+#+begin_quote 
+  - $project 
+    - datasets
+        - familyID1
+        - familyID2
+        - ...
+#+end_quote 
 ** project stages                                                            
 
 - a project may include multiple stages. 
