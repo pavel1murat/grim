@@ -23,21 +23,21 @@ jtype=`echo $3 | awk -F : '{print $2}'`
 
 job_type=${stage}_${jtype}
 
-gridjobid=$4 
+gridjobid=$4
 
 ftypes=$5
 
 rc=0
 
 if [ $USER == "mu2epro" ] ; then dcache="persistent" ; else dcache="scratch" ; fi
-				 
+
 # echo ftypes=$ftypes
 #------------------------------------------------------------------------------
 # build names of the input directory (the one with the GRID job output)
 # and the output directory - the one to copy the files over
 #------------------------------------------------------------------------------
 idir=/pnfs/mu2e/$dcache/users/$USER/workflow/$project.$idsid.$job_type/outstage/$gridjobid
-odir=/mu2e/data/users/$USER/$project/$idsid.$job_type
+odir=/exp/mu2e/data/users/$USER/$project/$idsid.$job_type
 if [ .`echo $ftypes | grep :log`  != "." ] ; then
 #------------------------------------------------------------------------------
 # saving log and fcl
@@ -48,9 +48,9 @@ if [ .`echo $ftypes | grep :log`  != "." ] ; then
 # a_ copy fcl files
 #------------------------------------------------------------------------------
     echo ----- copying fcl files
-    
+
     if [ ! -d $odir/fcl ] ; then mkdir -p $odir/fcl ; fi
-    
+
     for f in `ls $idir/00/*/* | grep .fcl$` ; do
 	bn=`basename $f`
 	cp $f $odir/fcl/$bn
@@ -70,9 +70,9 @@ if [ .`echo $ftypes | grep :log`  != "." ] ; then
     echo ----- making $tarball
 
     cd /mu2e/data/users/$USER
-    
+
     tar -cjf $tarball $project/$idsid.$job_type/*
-    
+
 #    jsonMaker -f phy-etc -x $tarball
     printJson --no-parents $tarball  >| $tarball.json
 
@@ -93,7 +93,7 @@ fi
 #------------------------------------------------------------------------------
 if [ .`echo $ftypes | grep :art`  != "." ] ; then
 
-    for grid_id in `echo $gridjobid | sed 's/,/ /g'` ; do 
+    for grid_id in `echo $gridjobid | sed 's/,/ /g'` ; do
 
 	idir=/pnfs/mu2e/$dcache/users/$USER/workflow/$project.$idsid.$job_type/outstage/$grid_id
 
@@ -108,9 +108,9 @@ if [ .`echo $ftypes | grep :art`  != "." ] ; then
 	for f in `ls $idir/00/*/* | grep .art.json$` ; do
 	    bn=`basename $f`
 	    cat $f | awk '
-BEGIN            {doit = 1} 
-/"parents":/     {doit = 0}  
-                 {if (doit == 1) {print $0}} 
+BEGIN            {doit = 1}
+/"parents":/     {doit = 0}
+                 {if (doit == 1) {print $0}}
 /],/             {if (doit == 0) {doit = 1}}' >| $odd/$bn
 	done
 
