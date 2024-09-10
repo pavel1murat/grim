@@ -99,7 +99,7 @@
 
 * 4.0) run _check_completed_job.py_ to identify failed segments :            
 
-  grim/scripts/check_completed_job.py --project=<project> --grid_id=xxxxxxxx
+  grim/scripts/check_completed_job.py --project=<project> --jobid=xxxxxxxx
 
   the script will check if all job segments have completed successfully and, 
   if some have failed, will automatically create an input for the recovery job. 
@@ -121,13 +121,13 @@
 
 * 4.2) create input for the next stage                                       
 
-  grim/scripts/list_pnfs_files.py --project=<project> --grid_id=<grid_id> [--append]
+  grim/scripts/list_pnfs_files.py --project=<project> --jobid=<grid_job_id> [--append]
 
-note --append option...
+  note availability of the '--append' option...
 
 * 4.3) save log files of a successfully completed job                        
 
-       grim/scripts/copy_log_files.py --grid_id=<grid_id>
+       grim/scripts/copy_log_files.py --jobid=<grid_job_id>
 
       do all that only after running grid_monitor.py - the scripts operate only on completed jobs, 
       which status files are available in tmp/$project/completed_jobs
