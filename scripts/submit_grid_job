@@ -70,7 +70,8 @@ fi
 
 parameters=$parameters" --jobsub-arg=--append_condor_requirements='(TARGET.CpuFamily==25)'"
 # 2025 - this was dropped, adding manually to get XROOTD working
-parameters=$parameters" --jobsub-arg=--auth-methods='token,proxy'"
+# 2025-08-14: not sure it is needed any more, but for sure prevents job from being submitted - comment it out
+# parameters=$parameters" --jobsub-arg=--auth-methods='token,proxy'"
 
 # echo \* \<`date +%Y-%m-%d\ %a`\> *xxxxxxxx SUBMITTED* : $project.$idsid.$sub_stub          $p_time_xrootd 
 
