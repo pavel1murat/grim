@@ -12,7 +12,7 @@ In its present state, GRIM is not a production-level set of tools - it doesn't
 have cron-based job submission and monitoring mechanisms needed at that level.
 
 GRIM is rather a grid submission toolkit for individual users and analysis groups, 
-however it ieasily handles bookkeeping for multiple multi-stage jobs with 
+however it easily handles bookkeeping for multiple multi-stage jobs with 
 tens of thousands of segments per stage
 * ------------------------------------------------------------------------------
 * grid job submission prerequisites                                          
