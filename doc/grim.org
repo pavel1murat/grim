@@ -32,7 +32,7 @@ getToken
    to the existing Mu2e tools (muse, generate_fcl, mu2egrid) 
 
 * grim project                                                               
-   A a grim project describes a task of generating multiple datasets for an analysis.
+   A grim project describes a task of generating multiple datasets for an analysis.
 
    For example, a project may include:
    - generation of the proton interactions in the production target 
