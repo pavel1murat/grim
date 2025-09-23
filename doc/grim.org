@@ -33,6 +33,7 @@ getToken
 
 * grim project                                                               
    A grim project describes a task of generating multiple datasets for an analysis.
+   Example: https://github.com/mu2e/pipenu.git
 
    For example, a project may include:
    - generation of the proton interactions in the production target 
