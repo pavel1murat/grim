@@ -14,6 +14,10 @@ have cron-based job submission and monitoring mechanisms needed at that level.
 GRIM is rather a grid submission toolkit for individual users and analysis groups, 
 however it easily handles bookkeeping for multiple multi-stage jobs with 
 tens of thousands of segments per stage
+
+NB: the interfaces evolve in time, the most up-to date information
+on any script parameters can be found on top of every script, for example:
+[[file:../scripts/submit_job.py]] - if in doubt, always check that.
 * ------------------------------------------------------------------------------
 * grid job submission prerequisites                                          
 #+begin_src                                                                  
