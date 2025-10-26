@@ -127,13 +127,18 @@ getToken
 * large datasets                                                             
   for underlying generate_fcl, a single job size is limited by 1000 segments
 
-  to generate FCLs for a large dataset, split it into filesets, 
-  make each fileset of 1000 files (a limit per job of Andrei's generate_fcl),
-  for example, 000 , 001, 002 ...
+  to generate FCLs for a large dataset, split it into several filesets, 
+  making each fileset of 1000 files (a limit per job of Andrei's generate_fcl)
+  or less, for example, 000 , 001, 002 ...
 
-  to avoid duplication of the subrun numbers in different jobs, 
+  when generating FCLs, to avoid duplication of the subrun numbers in different jobs, 
   use --first-subrun=1000 for fileset=001, --first-subrun=2000 for fileset=002 etc
 
+  when submitting the jobs and checking the completion, use the '--fileset' parameter,
+  for example:
+#+begin_src
+  submit_job.py --fileset=001 ....
+#+end_src
   this approach is naive and straightforward, however it is efficient and 
   avoids complicated logic needed otherwise
 
