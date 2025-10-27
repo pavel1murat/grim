@@ -8,7 +8,7 @@ GRIM provides a uniform interface to various existing Mu2e tools used
 for the grid submission, makes those tools to communicate to each other, 
 provides some level of bookkeeping, and significantly simplifies using GRID.
 
-In its present state, GRIM is not a production-level set of tools - it doesn't
+In its present state, GRIM is not a production-grade set of tools - it doesn't
 have cron-based job submission and monitoring mechanisms needed at that level.
 
 GRIM is rather a grid submission toolkit for individual users and analysis groups, 
@@ -138,8 +138,8 @@ getToken
   when generating FCLs, to avoid duplication of the subrun numbers in different jobs, 
   use --first-subrun=1000 for fileset=001, --first-subrun=2000 for fileset=002 etc
 
-  when submitting the jobs and checking the completion, use the '--fileset' parameter,
-  for example:
+  to submit a jobs for a given fileset, use the '--fileset' parameter of
+  [[file:../scripts/submit_job.py][submit_job.py]] , for example:
 #+begin_src
   submit_job.py --fileset=001 ....
 #+end_src
@@ -175,11 +175,10 @@ the recovery procedure looks as follows:
   After that, all grim tools could be used, either with default parameters 
   or with the '--fileset' command line parameter of gen_fcl.py
 * filesets                                                                   
-  - a fileset can have any name, for example. '0001' or 'murat
-  - in a $dsid/catalog directory which stores local file catalogs, a list of files 
-    of a given dataset is stored in a file named $dsname.files 
-  - in a $dsid/catalog directory, a  list of files corresponding to a given fileset, 
-    is stored in a file named $dsname.$fileset.files
+  - a fileset can have any name, for example. '0001' or 'murat'
+  - local file catalogs (lists of files) are stored in a $dsid/catalog directory
+  - a list of files of a given dataset is stored in a file named '$dsname.files' 
+  - a list of files corresponding to a given fileset is stored in a file named '$dsname.$fileset.files'
 * how to diagnose errors                                                     
   - all grim scripts have a verbose more (add --verbose=1 switch)
   - run in verbose more, see which commands are executed
