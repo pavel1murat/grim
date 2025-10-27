@@ -135,7 +135,7 @@ getToken
   making each fileset of 1000 files (a limit per job of Andrei's generate_fcl)
   or less, for example, 000 , 001, 002 ...
 
-  when generating FCLs, to avoid duplication of the subrun numbers in different jobs, 
+  To avoid duplication of the subrun numbers in the FCL files of different jobs, 
   use --first-subrun=1000 for fileset=001, --first-subrun=2000 for fileset=002 etc
 
   to submit jobs for a given fileset, use the '--fileset' parameter of
