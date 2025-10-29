@@ -72,6 +72,8 @@ class Dataset:
     def output_stream(self):
         return self.fID[9];
 
+    def print(self):
+        print(f'dsid:{self.fID} defname:{self.fDefName:35} catalog:{self.fCatalog} fileset:{self.fFileset}');
 #------------------------------------------------------------------------------
 # 'name' is the job name and, simultaneously, the name of the FCL file
 #------------------------------------------------------------------------------
@@ -113,7 +115,7 @@ class Job:
         self.fOutputFormat            = [];
         self.fGridID                  = None;
         self.fVerbose                 = None;
-        self.fCompletedStatus         = None;
+        self.fCompletedStatus         = 0;
 
         pattern = self.fStage.fProject.fProjectName+'.grid_output_dir';
 
@@ -130,6 +132,9 @@ class Job:
             return -1
         
             # print ("local_classes.Job::__init__ fOutputDir : ",self.fOutputDir)
+
+    def aux_inputs(self):
+        return self.fAuxInputs
 
     def base_fcl(self):
         return self.fBaseFcl
@@ -190,6 +195,12 @@ class Job:
                                                   # like 'r01'
     def reco_version(self):
         return 'r'+self.fRecoVersion;
+
+    def resample(self):
+        return self.fResample;
+
+    def run_number(self):
+        return self.fRunNumber;
 
     def stage(self):
         return self.fStage;
@@ -253,13 +264,10 @@ class Stage:
             return None;
 
     def print(self) :
-        print("----------- Stage printout: name=",self.fName);
-        # print("fInputDataset = ",self.fInputDataset);
-        # print("fJob          = ",self.fJob);
         for key in self.fJob.keys():
             job = self.fJob[key];
             for jname in job.keys():
-                print("job:%-10s"%jname, "input dsid:",key);
+                print(f'stage:{self.fName} job:{jname:10} input dsid:{key}');
 
     def project(self):
         return self.fProject;
@@ -323,8 +331,18 @@ class ProjectBase:
         self.fStage[name]            = Stage(name,self);
         return self.fStage[name]
 
+    def print(self):
+        print(f'------------ project:{self.fProjectName} family:{self.fFamilyID}');
+        self.print_stages()
+        self.print_datasets()
+
+    def print_stages(self):
+        print("-- stages:");
+        for k in self.fStage.keys():
+            self.fStage[k].print()
+
     def print_datasets(self):
-        print("ProjectBase.print_datasets");
-        for ds in self.fDataset.keys():
-            print("dsid:",ds,self.fDataset[ds])
+        print("-- datasets:");
+        for k in self.fDataset.keys():
+            self.fDataset[k].print()
 #

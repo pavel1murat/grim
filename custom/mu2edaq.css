@@ -1,0 +1,193 @@
+<style>
+/* ------------------------------------------------------------------------------
+  positioning
+------------------------------------------------------------------------------ */
+* {
+  box-sizing: border-box;
+}
+
+.row {
+  margin-left : 5px;
+  margin-right: 5px;
+}
+  
+.column {
+  float: left;
+  width: 44%;
+  padding: 2px;
+}
+
+/* Clearfix (clear floats) */
+.row::after {
+  content: "";
+  clear  : both;
+  display: table;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid #ddd;
+}
+
+th, td {
+  text-align: left;
+  padding: 4px;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+
+/* ------------------------------------------------------------------------------
+  output window
+------------------------------------------------------------------------------ */
+#myDIV {
+    padding   : 0px;
+    height    : 1050px ; /*980px;*/
+    width     : 55% ; /* 600px; */
+    overflow  : auto;
+    background: #bdb;
+}
+
+#roctabs {
+    padding   : 10px;
+    height    : 440px;
+    width     : 600px; /*60% ;*/ /* 600px; */
+    overflow  : auto;
+    background: #bdb;
+}
+
+#artdaq_process_tabs {
+    padding   : 10px;
+    height    : 440px;
+    width     : 600px; /*60% ;*/ /* 600px; */
+    overflow  : auto;
+    background: #bdb;
+}
+
+#node_tabs {
+    padding   : 10px;
+    height    : 440px;
+    width     : 600px; /*60% ;*/ /* 600px; */
+    overflow  : auto;
+    background: #bdb;
+}
+
+#content {
+/*  margin: 40%; */
+/*  height: 300px; */
+/*  width:  400px; */
+  background-color: #bdb;
+}
+
+#roc_content {
+/*  margin: 40%; */
+/*  height: 300px; */
+/*  width:  400px; */
+  background-color: #bdb;
+}
+
+
+/* ------------------------------------------------------------------------------
+    Style the tabs
+------------------------------------------------------------------------------ */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: inherit;
+  float     : left;
+  border    : none;
+  outline   : none;
+  cursor    : pointer;
+  padding   : 5px 5px;
+  transition: 0.3s;
+  font-size : 14px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #bdb;
+}
+
+/* Create an active/current tablink class */
+.tab button.disabled {
+  background-color: #e9aa;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+/* ------------------------------------------------------------------------------
+  drop-up menus
+------------------------------------------------------------------------------ */
+.dropbtn {
+  background-color: #bdb;
+  color: black;
+  padding:   10px;
+  font-size: 12px;
+  border: none;
+}
+
+.dropup {
+  position: relative;
+  display: inline-block;
+}
+
+.dropup-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  bottom: 20px;
+  z-index: 2;
+}
+
+.dropup-content a {
+  color: black;
+  padding: 5px 10px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropup-content div {
+  color: black;
+  padding: 5px 10px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropup-content a:hover {background-color: #ccc}
+
+.dropup-content div:hover {background-color: #ccc}
+
+.dropup:hover .dropup-content {
+  display: block;
+}
+
+.dropup:hover .dropbtn {
+  background-color:   #bdb   /*  #2980B9;  */
+}
+</style>

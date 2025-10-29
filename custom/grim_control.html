@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="midas.css">
+        <link rel="stylesheet" href="dropup.css">
+        <link rel="stylesheet" href="mu2edaq.css">
+        <script src="controls.js"></script>
+        <script src="midas.js"></script>
+        <script src="mhttpd.js"></script>
+        <script src="filesrw.js"></script>
+        <script src="odbbrowser.js"></script>
+        <script src="mu2edaq.js"></script>
+        <script src="grim_commands.js"></script>
+        
+        <title>GRIM</title>
+        
+        <script>
+
+  //-----------------------------------------------------------------------------
+  // global variables
+  // the hostname (nodename) should be the same within the scope of this script
+  //-----------------------------------------------------------------------------
+         function updateCmdParamsTable(node_index) {
+             const cmd_name            = grim_get_node_name(g_node);
+             const cmd_table           = document.getElementById('cmd_params');
+             cmd_table.innerHTML       = '';
+             cmd_table.cmd_name        = cmd_name;
+             cmd_table_tbody           = document.createElement('tbody');
+//-----------------------------------------------------------------------------
+// pick current active node (g_node from grim_commands.js) and list its processes
+//-----------------------------------------------------------------------------
+             var paths=["/Mu2e/Offline/Grim"];
+//    let process_list=[] ;
+//    sleep(1000);
+//    mjsonrpc_db_get_values(paths).then(function(rpc) {
+//      let artdaq      = rpc.result.data[0];
+//      console.log('artdaq=',artdaq);
+//      if (artdaq.enabled == 1) {
+//        /* loop over the artdaq items */
+//        for (const key in artdaq) {
+//          if (key.indexOf('/') >= 0) { continue; }
+//          if ((key.toUpperCase() == 'STATUS') || (key.toUpperCase() == 'ENABLED')) {continue;}
+//          // artdaq process
+//          const p = artdaq[key];
+//          if (p.enabled) {
+//            process_list.push(key);
+//          }
+//        }
+//      }
+//      
+             let r1 = document.createElement('tr');
+             r1.innerHTML = '<td> <div class="mtableheader" colspan=2> GRIM </div> </td>'
+             td1         = document.createElement('td');
+             td1.colspan = 3;
+//
+//      let active_btn = 0;
+//      div1 = document.createElement('div');
+//      div1.className = 'tab';
+//      let np = process_list.length;
+//      for (let i=0; i<np; i++) {
+//        const p = process_list[i];
+//        let btn = document.createElement('button');
+//        // btn.style.display = "block";
+//        btn.className = "process_tabs"
+//        if (i == g_process) {
+//          btn.className += " active";
+//        }
+//        btn.innerHTML = p;
+//        btn.id        = 'process_btn_'+String(i).padStart(2,'0')
+//        btn.onclick   = function () { grim_choose_artdaq_process_id(event,btn.id); }
+//        div1.appendChild(btn);
+//      }
+//
+//      td1.appendChild(div1);
+             r1.appendChild(td1);
+             cmd_table_tbody.appendChild(r1);
+             //
+             tr2 = document.createElement('tr');
+             td2 = document.createElement('td');
+             td2.colspan = 2;
+//
+             let odb_conf_path = '/Mu2e/Commands/Grim/';
+             let cmd     = new Command('aload_parameters','cmd_params',odb_conf_path);
+             let btn     = grim_make_simple_button(cmd);
+             td2.appendChild(btn);
+             //
+//
+//      // still, command in executed by GRIM - parameters need to be stored in '/Mu2e/ActiveRunConfiguration/DAQ/Grim'
+//      let odb_grim_path = '/Mu2e/Commands/DAQ/Grim';
+//      cmd     = new Command('print_fcl','cmd_params',odb_grim_path);
+//      btn     = grim_make_exec_button_par(cmd);
+//      td2.appendChild(btn);
+//
+             tr2.appendChild(td2);
+//
+             cmd_table_tbody.appendChild(tr2);
+             //                                                       // update table
+             cmd_table.appendChild(cmd_table_tbody);
+//
+//    }).catch(function(error) {
+//      mjsonrpc_error_alert(error);
+//    });
+         }
+//-----------------------------------------------------------------------------
+// main function defining the page contents
+//-----------------------------------------------------------------------------
+         function loadPage() {
+             const urlParams = new URLSearchParams(window.location.search);
+             // g_hostname      = urlParams.get('hostname') || 'none';  // 
+    
+//      let title       = document.getElementById('table-title');
+//      title.innerHTML = '&nbsp;&nbsp;&nbsp;'+g_hostname+' status page';
+//-----------------------------------------------------------------------------
+//  fill GRIM table
+//-----------------------------------------------------------------------------
+             const cmd_table     = document.getElementById('cmd_table');
+             cmd_table.innerHTML = '';
+             
+             cmd_tbody = document.createElement('tbody');
+             tr1 = document.createElement('tr');
+             tr1.innerHTML ='<td> <div class="mtableheader" colspan=2> GRIM  AAA </div> </td>';
+             cmd_tbody.appendChild(tr1);
+             
+//    const  paths=["/Mu2e/Offline/murat/grim_projects/murat",];
+//    mjsonrpc_db_get_values(paths).then(function(rpc) {
+//      let list_of_nodes  = rpc.result.data[0];
+//
+//      let row     = null;
+//      let td      = null;
+//      let div     = null;
+//      let node_id = 0;
+//      let nnodes  = 0;
+//      
+//      let new_row = 1;
+//      for (const key in list_of_nodes) {
+//        if (key.indexOf('/') >= 0) { continue; }
+//        const node_name = key;
+//        const node      = list_of_nodes[key];
+//        if (new_row) {
+//          row = document.createElement('tr');
+//          td  = document.createElement('td');
+//          td.colspan = 20;
+//          
+//          div = document.createElement('div');
+//          div.className = 'tab';
+//          td.appendChild(div);
+//          row.appendChild(td);
+//          new_row = 0;
+//        }
+//        
+//        let btn = document.createElement('button');
+//        btn.className = 'nodetabs';
+//        if (node.enabled == 0) btn.className += ' disabled';
+//        btn.id        = 'node'+node_id.toString().padStart(3,'0');
+//        btn.onclick   = function() { grim_update_node_id(event,btn.id); }
+//        btn.innerHTML = node_name;
+//        div.appendChild(btn);
+//        
+//        nnodes += 1;
+//        
+//        if ((node_name == 'mu2e-dl-01') || (nnodes >= 9)) {
+//          cmd_tbody.appendChild(row);
+//          
+//          // start new row
+//          nnodes  = 0;
+//          new_row = 1;
+//        }
+//        node_id += 1;
+//      }
+//      
+//      if (nnodes > 0) {
+//        cmd_tbody.appendChild(row);
+//      }
+//-----------------------------------------------------------------------------
+// now come commands
+//-----------------------------------------------------------------------------
+             let tr2 = document.createElement('tr');
+    
+             let td2     = document.createElement('td');
+             td2.colspan = 3;
+
+             // and the last action button not using ODB
+             let cmd3  = new Command('reset_output','cmd_params','/Mu2e/Offline/murat/grim_projects/pbar2m');
+             // let btn3 = grim_make_exec_button(cmd3);
+             let btn3 = grim_make_simple_button(cmd3);
+             td2.appendChild(btn3);
+
+             let cmd      = new Command('load_parameters','cmd_params','/Mu2e/Offline/murat/grim_projects/pbar2m');
+             let btn      = grim_make_simple_button(cmd);
+             td2.appendChild(btn);
+//-----------------------------------------------------------------------------
+// create a "get_state" drop-button
+//-----------------------------------------------------------------------------
+             cmd = new Command('grid_monitor','cmd_params'   ,'/Mu2e/Commands/Grim');
+             btn = grim_make_dropup_button(cmd);
+             td2.appendChild(btn);
+//             
+//             cmd  = new Command('submit_job','cmd_params','/Mu2e/Commands/Grim');
+//             let btn2 = grim_make_dropup_button(cmd);
+//             td2.appendChild(btn2);
+//             
+
+             tr2.appendChild(td2);
+
+             cmd_tbody.appendChild(tr2);
+             cmd_table.appendChild(cmd_tbody);
+//-----------------------------------------------------------------------------
+//  fill node table
+//-----------------------------------------------------------------------------
+             updateCmdParamsTable(g_node);
+//-----------------------------------------------------------------------------
+//  fill GRIM parameters table
+//-----------------------------------------------------------------------------
+             const cmd_params     = document.getElementById('cmd_params');
+             cmd_params.innerHTML = '';
+             
+             odb_browser('cmd_params',`/Mu2e/Commands/Grim`,0);
+//    }).catch(function(error) {
+//        mjsonrpc_error_alert(error);
+       //    });
+       //-----------------------------------------------------------------------------
+       //  end
+       //-----------------------------------------------------------------------------
+         }    
+//-----------------------------------------------------------------------------
+// loadPage is the function doing the job
+//-----------------------------------------------------------------------------
+         document.addEventListener("DOMContentLoaded", loadPage);
+        </script>
+    </head>
+<!-- ------------------------------------------------------------------------------
+     here the HTML structure starts
+     it seems to be convenient to have the large scale topology in HtML and use
+     javascript to fill hte details
+     her is the high-level structure of the page - menus on the left, output window - on the right
+  ------------------------------------------------------------------------------  -->
+    <body class="mcss" onload="mhttpd_init('grim_control'); show_facilities(); msg_load();">
+        <div id="mheader"></div>
+        <div id="msidenav"></div>
+        <div id="mmain">
+ <!-- ---------------- row 1: ----------------  -->
+            <div class="row">
+                <div class="column"> <!-- column gets pushed to the left -->
+                    <table class="mtable" id="cmd_table"> </table> <!-- Table content is generated dynamically -->
+                    <table class="mtable" id="config_table"  > </table> <!-- Table content is generated dynamically -->
+                    <table class="mtable" id="cmd_params"    > </table> <!-- Table content is generated dynamically -->
+                </div>
+<!--    ------------------------- this is the output window  -->
+                <div class="column"; style="width:54%"> <!-- gets pushed to the left -->
+                    <table>
+                        <tr>
+                            <td id="navigationFacilitiesButtons"></td>
+                        </tr>
+                    </table>
+                    
+                    <table class="mtable" id="messageTable" ">
+                        <tr>
+                            <td class="select">
+                                <label for="nameFilter">Filter: </label>
+                                
+                                <input type="text" id="nameFilter" placeholder="Program Name" title="Please enter a program name">
+                                
+                                <select id="typeFilter" title="Please select a message type">
+                                    <option value="">- all -</option>
+                                    <option>INFO</option>
+                                    <option>ERROR</option>
+                                    <option>USER</option>
+                                    <option>LOG</option>
+                                    <option>TALK</option>
+                                </select>
+              
+                <input type="text" id="timeFilter" placeholder="Time (hh:mm:ss)" title="Please select a time to search">
+                <input type="text" id="textFilter" placeholder="Search Text" title="Please enter some search text">
+
+                <select id="timeRangeFilter" title="We will search the file from the current time into the past">
+                  <option>24 h</option>
+                  <option>48 h</option>
+                  <option>72 h</option>
+                  <option>7 d</option>
+                  <option>30 d</option>
+                </select>
+                <button class="mbutton" id="filterBtn">Filter</button>
+              
+                <select id="recentsDropdown">
+                  <option value="">Select a recent filter</option>
+                </select>
+
+              </td>
+            </tr>
+
+            <tr>
+              <td class="select">
+                <div class="mmessagebox mfont" id="messageFrame"><h1 class="mtableheader"> Messages</h1></div>
+              </td>
+            </tr>
+          </table>
+          
+          <div id="loadingOverlay"
+               style="  display: none;
+                      position: fixed;
+                      top: 0;
+                      left: 0;
+                      width: 100%;
+                      <!--
+                      height: 100%;
+                      -->
+                      height: 600px;
+                      background-color: rgba(128, 128, 128, 0.8);
+                      color: white;
+                      font-size: 24px;
+                      align-items: center;
+                      justify-content: center;
+                      z-index: 1000;">
+            Searching messages... Mouse Click to stop.
+          </div>
+          
+        </div>
+        
+        <div id="dlgError" class="dlgFrame">
+          <div class="dlgTitlebar">Error message</div>
+          <div class="dlgPanel">
+            <div id="dlgErrorText">Dialog Contents</div>
+            <br />
+            <button class="dlgButton" onClick="dlgHide('dlgError')">Close</button>
+          </div>
+        </div>
+        
+        <script src="mu2e_messages.js"></script>
+      </div>
+    </div>
+  </body>
+</html>
+<!--
+    emacs
+    Local Variables:
+    mode: web
+    End:
+  -->
