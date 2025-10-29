@@ -394,24 +394,23 @@ s5    stn_s5b                        bmum0s5bb0     -1       1       bmum0s5bb0 
 #+end_src
 ** [[file:../scripts/submit_job.py][grim/scripts/submit_job.py]]            : grid job submission tool, today it is an inteface to mu2eprodsys              
 #+begin_src 
-    call signature:
+    call signature: (see top of the script for the most up-to-date information)
 
-    grim/scripts/submit_job.py --project=grim --dsid=cele0 --stage=s4 --job=sim  [--recover=step] [--doit=./d//]
+grim/scripts/submit_job.py --project=su2020 --dsid=cele0b0s31r0000 --stage=s4 --job=sim [--doit=[yes/d]] [--fileset=...]
 
-    - project: grim
-    - dsid   : dataset family (5 first characters of the dataset ID)
-    - stage  : job stage, as defined by init_project.py of this family (or group)
-    - job    : job type , as defined by init_project.py 
-    - recover: recovery step - if defined, the corresponding "recovery" FCL tarball will be used for submission
-               if '--recover' parameter is specified, nothing else , except --doit is needed, for example:
-
-               grim/scripts/submit_job.py --recover=39134961 --doit=.
-
-    stage and type parameters together define the fcl file configuring the job
-
-    - doit   : 
-       - 'd'                      : Andrei's dry_run mode
-       - 'yes' (or anything else) : submit the job 
+--project        : project name
+--dsid           : input dataset ID
+--stage          : stage name (usually, 's1', 's2', 's3' etc)
+--job            : job name, by default the job FCL is ${stage}_${job}_${familyID}.fcl
+                   familyID = dsid[0:7]
+--fileset        : fileset name. Split datasets with nfiles > 1000 into several parts (filesets) 
+                   and process each fileset separately
+--recover        : ID of the GRID job to be recovered
+--doit           : by default, mu2eprodsys is called in a so-called 'dry_run' mode.
+                   --doit=[anything different from 'd'] proceeds with the actual submission
+                   --doit=d specifies the 'dry-run' mode
+                   --doit=v         : 'dry-run' mode plus printout of call to mu2eprodsys
+                   --doit=xrd_debug : turns on XROOTD client debugging and adds a lot of printout
 
     grim/scripts/submit_job.py stores information about the submitted job into 
 

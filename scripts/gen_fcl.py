@@ -8,19 +8,21 @@
 #                               [--first-subrun=xxxxx]  [--recover=grid_id] [--fileset=xxxx] 
 #                               [--nseg=n] [--nevents=n]
 # 
-#   project      : project name
-#   dsid         : input dataset id 
-#   first-subrun : need this parameter to generate FCLs for large datasets with more than one 
+# --project      : project name
+# --dsid         : input dataset id 
+# --first-subrun : need this parameter to generate FCLs for large datasets with more than one 
 #                  input fileset (limited at 1000 segments)
-#   stage        : stage of the job (sometimes Mu2e uses multi-stage generation)
-#   job          : 'sim' or 'stn' , more coming
-#   pileup       : default: 'b0'
-#   recover      : ID of the grid job to recover. Builds the tarball containing only FCLs of the segments to be
+# --fileset      : fileset name. Split datasets with nfiles > 1000 into several parts (filesets) 
+#                  and process each fileset separately
+# --stage        : stage of the job (sometimes Mu2e uses multi-stage generation)
+# --job          : 'sim' or 'stn' , more coming
+# --pileup       : default: 'b0'
+# --recover      : ID of the grid job to recover. Builds the tarball containing only FCLs of the segments to be
 #                  resubmitted. job_submit.py has to be called with --recover=grid_id parameter as well
 #                  it is appended to the FCL tarball and the directory containing the FCL files for recovery jobs 
 #                  that directory is supposed to contain only FCL files for segments to be resubmitted
-#   nseg         : for testing purposes, generate small number of segments, different from the default
-#   nevents      : for testing purposes, process small number of events per job segment
+# --nseg         : for testing purposes, generate small number of segments, different from the default (may not work, Andrei has changed smth)
+# --nevents      : for testing purposes, process small number of events per job segment (may not work, Andrei has changed smth)
 #-------------------------------------------------------------------------------------------------
 import subprocess, shutil, glob, random, json
 import sys, string, getopt, glob, os, time, re, array
