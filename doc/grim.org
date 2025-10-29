@@ -301,26 +301,27 @@ ONLINE_AND_NEARLINE
    - example: grim/scripts/clone_dataset_family.sh pbar2m bmum0b0 bmumcb0
 
 ** [[file:../scripts/gen_fcl.py][grim/scripts/gen_fcl.py]]               : interface to Andrei's generate_fcl                                            
+#+begin_src
+call: grim/scripts/gen_fcl.py --project=su2020 --dsid=bmum3 --stage=s2  --job=sim \
+                              [--first-subrun=xxxxx]  [--recover=grid_id] [--fileset=xxxx] 
+                              [--nseg=n] [--nevents=n]
 
-    grim/scripts/gen_fcl.py --project=grim --dsid=cele0 --stage=s4 --job=sim [ --recover=step ]
-
-    - project: grim
-    - dsid   : dataset family - 5 first characters of the dataset ID
-    - stage  : job stage, as defined by init_project.py of this family (or group)
-    - job    : job name , as defined by init_project.py 
-    - recover: say, '01', step, pattern added to the FCL tarball
-               in a recovery more assume that the directory tmp/$project/fcl/$dsid.$stage_$job.$step 
-               with a few FCL files corresponding to segments to be recovered already exists and populated ,
-               so all one needs to to is to tar them up and copy the tarball to /pnfs
-               
-    generated fcls are copied to tmp/grim/fcl/... and tarball - to /pnfs/mu2e/resilient/users/$USER/$project/.
-
-    assume the number of segments < 1000, if more than 1000 segments to be submitted, run 
-
-    gen_fcl.py .... --fileset=001 [--first-subrun=....]
-
-    by default, first-subrun=fileset*n_segments specified in init_project.py for this job
-
+--project      : project name
+--dsid         : input dataset id 
+--first-subrun : need this parameter to generate FCLs for large datasets with more than one 
+                 input fileset (limited at 1000 segments)
+--fileset      : fileset name. Split datasets with nfiles > 1000 into several parts (filesets) 
+                 and process each fileset separately
+--stage        : stage of the job (sometimes Mu2e uses multi-stage generation)
+--job          : 'sim' or 'stn' , more coming
+--pileup       : default: 'b0'
+--recover      : ID of the grid job to recover. Builds the tarball containing only FCLs of the segments to be
+                 resubmitted. job_submit.py has to be called with --recover=grid_id parameter as well
+                 it is appended to the FCL tarball and the directory containing the FCL files for recovery jobs 
+                 that directory is supposed to contain only FCL files for segments to be resubmitted
+--nseg         : for testing purposes, generate small number of segments, different from the default (may not work, Andrei has changed smth)
+--nevents      : for testing purposes, process small number of events per job segment (may not work, Andrei has changed smth)
+#+end_src
 ** [[file:../scripts/grid_time_ana.C][grim/scripts/grid_time_ana.C]]          : read data produced by parse_grid_logs.rb , plot histograms                    
 ** [[file:../scripts/grid_monitor.py][grim/scripts/grid_monitor.py]]          : displays and updates status of the jobs submitted by *submit_job.py*          
 
