@@ -27,15 +27,12 @@ foreach (_variableName ${_variableNames})
 endforeach()
   
 cet_report_compiler_flags()
-find_package(TRACE  3.17.04              REQUIRED EXPORT)
-message(-- grim: Trace_inc_dir=.${Trace_inc_dir}. )
+find_package(TRACE  3.19.00              REQUIRED EXPORT)
+message("-- grim: Trace_inc_dir=.${Trace_inc_dir}." )
 
 # these are minimum required versions, not the actual product versions
 
 find_package(Midas                       REQUIRED EXPORT)
-find_package(PostgreSQL 13.2             REQUIRED EXPORT)
-
-string (REGEX REPLACE "/include" ""  MIDAS_INSTALL_DIR ${MIDAS_INCLUDE_DIR})
 
 message(-- grim: MIDAS_ROOT=.${MIDAS_ROOT}. )
 message(-- grim: MIDAS_INSTALL_DIR=.${MIDAS_INSTALL_DIR}. )

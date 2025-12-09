@@ -46,8 +46,6 @@ class GrimEquipment(midas.frontend.EquipmentBase):
 
         equip_name            = "grim_eq"
         midas.frontend.EquipmentBase.__init__(self, client, equip_name, settings)
-
-        self._fm              = None;
 #------------------------------------------------------------------------------
 # set the status of the equipment (appears in the midas status page)
 #------------------------------------------------------------------------------
@@ -81,29 +79,6 @@ class GrimEquipment(midas.frontend.EquipmentBase):
 #------------------------------------------------------------------------------
 class GrimFrontend(midas.frontend.FrontendBase):
 #------------------------------------------------------------------------------
-# GRIM logfiles are stored in $GRIM_LOGDIR/grim.
-# $GRIM_LOGDIR is defined by grim/bin/grim_configure which is sourced by
-# $MU2E_DAQ_DIR/daq_scripts/start_farm_manager, so it can be relied upon
-# - redefines the sys.stdout 
-#---v--------------------------------------------------------------------------
-    def get_logfile(self,output_dir):
-        TRACE.TRACE(TRACE.TLVL_LOG,"--- START")
-        current_datetime = datetime.datetime.now()
-        timestamp        = current_datetime.strftime("%Y-%m-%d_%H-%M-%S")
-
-        grim_logfile      = "undefined"
-        grim_logdir       = output_dir+'/logs/grim'
-
-        os.makedirs(grim_logdir, exist_ok=True)
-        if os.path.exists(grim_logdir):
-            grim_logfile = os.path.join(grim_logdir, f"python_grim_fe_{timestamp}.log")
-        else:
-            print("Failed to create the log file directory %s." % grim_logdir)
-
-        TRACE.TRACE(TRACE.TLVL_LOG,"--- END grim_logfile=%s"%grim_logfile)
-        return grim_logfile
-
-#------------------------------------------------------------------------------
 # define needed env variables
 #------------------------------------------------------------------------------
     def __init__(self):
@@ -114,36 +89,22 @@ class GrimFrontend(midas.frontend.FrontendBase):
 # determine active configuration
 #------------------------------------------------------------------------------
         self._stop_run               = False;
-        self.output_dir              = os.path.expandvars(self.client.odb_get("/Mu2e/OutputDir"));
-        self.config_name             = self.client.odb_get("/Mu2e/ActiveRunConfiguration/Name")
-        self.cmd_top_path            = "/Mu2e/Commands/DAQ/Grim"
+
+        top_path                     = 'Mu2e/Offline/murat/grim_projects/pbar2m'
+        self.output_dir              = os.path.expandvars(self.client.odb_get(top_path+'/TmpDir'));
+        self.config_name             = 'pbar2m'
+        self.cmd_top_path            = "/Mu2e/Commands/Grim"
         self.grim_odb_path           = "/Mu2e/Offline/murat/Grim"
-
-        mu2e_config_dir              = os.path.expandvars(self.client.odb_get("/Mu2e/ConfigDir"));
-        config_dir                   = mu2e_config_dir+'/'+self.config_name;
-
-#        TRACE.TRACE(TRACE.TLVL_LOG,f":0015:config_dir={config_dir} use_runinfo_db={self.use_runinfo_db} rpc_host={self.grim_rpc_host}")
-
-        os.environ["GRIM_SETUP_FHICLCPP"] = f"{config_dir}/.setup_fhiclcpp"
-
-        self.grim_logfile = self.get_logfile(self.output_dir)
-        os.environ["GRIM_LOGFILE"       ] = self.grim_logfile
 #------------------------------------------------------------------------------
 # redefine STDOUT
 #------------------------------------------------------------------------------
-        sys.stdout  = open(self.grim_logfile, 'w')
         TRACE.TRACE(TRACE.TLVL_LOG,"0016: after get_logfile")
 #------------------------------------------------------------------------------
 # You can add equipment at any time before you call `run()`, but doing
 # it in __init__() seems logical.
 #-------v----------------------------------------------------------------------
         self.add_equipment(GrimEquipment(self.client))
-        TRACE.TRACE(TRACE.TLVL_LOG,"003: equipment added , config_dir=%s"%(config_dir))
 
-        self._fm   = farm_manager.FarmManager(odb_client=self.client,
-                                              config_dir=config_dir,
-                                              rpc_host  =self.grim_rpc_host);
-        
 #        TRACE.TRACE(TRACE.TLVL_LOG,"004: grim instantiated, self.use_runinfo_db=%i"%(self.use_runinfo_db))
 
         cmd=f"cat {os.getenv('MIDAS_EXPTAB')} | awk -v expt={os.getenv('MIDAS_EXPT_NAME')} '{{if ($1==expt) {{print $2}} }}'"
@@ -168,12 +129,6 @@ class GrimFrontend(midas.frontend.FrontendBase):
 #------------------------------------------------------------------------------
     def __del__(self):
         TRACE.TRACE(TRACE.TLVL_LOG,"001: destructor START",TRACE_NAME)
-        self._fm.__del__();
-
-        cmd = f"x=`ps -efl | grep \"tail -f {self.grim_logfile}\" | " + "awk '{print $4}' | grep -v grep`;"
-        cmd += " if [ -z \"$x\" ] ; then xargs kill -1 $x ; fi"
-        TRACE.TRACE(TRACE.TLVL_LOG,f"002: executing {cmd}",TRACE_NAME)
-        p   = subprocess.Popen(cmd,shell=True)
 
         TRACE.TRACE(TRACE.TLVL_LOG,"002: destructor END",TRACE_NAME)
 
@@ -269,7 +224,6 @@ class GrimFrontend(midas.frontend.FrontendBase):
     def process_cmd_get_state(self,parameter_path):
         rc = 0;
         
-        rpc_port = self._fm.rpc_port();
         grim_url = f'http://mu2edaq22-ctrl.fnal.gov:{rpc_port}';   ## TODO - fix URL
         s   = xmlrpc.client.ServerProxy(grim_url)
         res = s.get_state("daqint")
