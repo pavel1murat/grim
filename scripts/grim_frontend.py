@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #------------------------------------------------------------------------------
 # PM: GRIM Midas frontend : 
-# frontend name : grim_fe
 # with transition to spack, no longer need to update the PYTHONPATH
+# - reads $PWD/.grid_config , initialises ODB
 #------------------------------------------------------------------------------
 import  ctypes, os, sys, datetime, random, time, traceback, subprocess
 import  xmlrpc.client
@@ -12,7 +12,7 @@ import  midas
 import  midas.frontend 
 import  midas.event
 
-from TRACE import * ; TRACE_NAME = "grim_fe"
+from TRACE import * ; TRACE_NAME = 'grim_'+os.getenv('USER')+'_fe'
 
 # import grim.rc.control.farm_manager as farm_manager
 
@@ -42,14 +42,47 @@ class GrimEquipment(midas.frontend.EquipmentBase):
         settings.period_ms    = 10000
         settings.read_when    = midas.RO_RUNNING
         settings.log_history  = 1
+#------------------------------------------------------------------------------
+# read .grid_config, initialize ODB
+#-------v----------------------------------------------------------------------
+        cfg_file = os.getenv('GRIM_CONFIG_FILE');
 
-        equip_name            = "grim_eq"
-        midas.frontend.EquipmentBase.__init__(self, client, equip_name, settings)
+        list_of_projects = {};
+        
+        with open(cfg_file, "r") as f:
+            lines = f.readlines()
+            for line in lines:
+                if (line[0] == '#'): continue;
+                words = line.split('#')[0].split()
+                INFO(f'words:{words}');
+                project_name = words[0].split('.')[0];
+                key          = words[0].split('.')[1];
+                if (not project_name in list_of_projects.keys()):
+                    list_of_projects[project_name] = {}
+
+                p = list_of_projects[project_name]
+                p[key] = words[1];
+
+        INFO(f'list of projects:{list_of_projects}')
+#---------------^--------------------------------------------------------------
+# initialize ODB
+#-------v----------------------------------------------------------------------
+        for pname in list_of_projects.keys() :
+            p = list_of_projects[pname];
+            odb_path = '/Mu2e/Offline/'+os.getenv('USER')+'/grim_projects/'+pname;
+            if (not client.odb_exists(odb_path)):
+                client.odb_set(odb_path,p);
+            else:
+                WARN(f'ODB path:{odb_path} already exists');
+            
+                
 #------------------------------------------------------------------------------
 # set the status of the equipment (appears in the midas status page)
 #------------------------------------------------------------------------------
+        equip_name            = "grim_eq"
+        midas.frontend.EquipmentBase.__init__(self, client, equip_name, settings)
         self.set_status("Initialized")
-        TRACE(TLVL_INFO,":002: --- END equipment initialized",TRACE_NAME)
+        INFO(":002: --- END equipment initialized",TRACE_NAME)
         return;
 
 #-------^----------------------------------------------------------------------
@@ -72,7 +105,7 @@ class GrimEquipment(midas.frontend.EquipmentBase):
         return None;        # event
 
 #------------------------------------------------------------------------------
-# FE name : 'grim_fe', to distinguish from the C++ frontend
+# FE name : 'grim_$USER_fe', to distinguish from the C++ frontend
 #    A frontend contains a collection of equipment.
 #    You can access self.client to access the ODB etc (see `midas.client.MidasClient`).
 #------------------------------------------------------------------------------
@@ -82,18 +115,20 @@ class GrimFrontend(midas.frontend.FrontendBase):
 #------------------------------------------------------------------------------
     def __init__(self):
         TRACE(TLVL_LOG,"0010: START")
-        midas.frontend.FrontendBase.__init__(self, "grim_fe")
+        self.fUser = os.getenv('USER');
+        fe_name = 'grim_'+self.fUser+'_fe';
+        midas.frontend.FrontendBase.__init__(self, fe_name)
         TRACE(TLVL_LOG,"0011: FrontendBase initialized")
 #------------------------------------------------------------------------------
 # determine active configuration
 #------------------------------------------------------------------------------
         self._stop_run               = False;
 
-        top_path                     = 'Mu2e/Offline/murat/grim_projects/pbar2m'
+        top_path                     = 'Mu2e/Offline/'+self.fUser+'/grim_projects/pbar2m'
         self.output_dir              = os.path.expandvars(self.client.odb_get(top_path+'/TmpDir'));
         self.config_name             = 'pbar2m'
         self.cmd_top_path            = "/Mu2e/Commands/Grim"
-        self.grim_odb_path           = "/Mu2e/Offline/murat/Grim"
+        self.grim_odb_path           = '/Mu2e/Offline/'+self.fUser+'Grim'
 #------------------------------------------------------------------------------
 # redefine STDOUT
 #------------------------------------------------------------------------------
@@ -109,7 +144,7 @@ class GrimFrontend(midas.frontend.FrontendBase):
         cmd=f"cat {os.getenv('MIDAS_EXPTAB')} | awk -v expt={os.getenv('MIDAS_EXPT_NAME')} '{{if ($1==expt) {{print $2}} }}'"
         process = subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True)
         stdout, stderr = process.communicate();
-        self.message_fn = stdout.decode('utf-8').split()[0]+'/grim.log';
+        self.message_fn = stdout.decode('utf-8').split()[0]+os.getenv('USER')+'.log';
 #------------------------------------------------------------------------------
 # GRIM frontend starts after the DTC-ctl frontends but before the cfo_emu_frontend(520)
 #-----------------------------------------------------------------------------
@@ -222,7 +257,7 @@ class GrimFrontend(midas.frontend.FrontendBase):
 # FCL file is defined by the run configuration and the process, host is not needed
 # usual steps:
 # 1. set state to BUSY  (1:yellow)
-# 2. print fcl file to grim.log
+# 2. print fcl file to $USER.log
 # 3. set state to READY (0:green)
 #------------------------------------------------------------------------------
     def process_cmd_print_fcl(self,parameter_path):
@@ -338,7 +373,7 @@ if __name__ == "__main__":
 # The main executable is very simple:
 # just create the frontend object, and call run() on it.
 #---v--------------------------------------------------------------------------
-    Instance = "grim_fe".encode();
+    Instance = TRACE_NAME.encode();
 
     TRACE(TLVL_LOG,"000: TRACE.Instance : %s"%Instance,TRACE_NAME)
     with GrimFrontend() as fe:

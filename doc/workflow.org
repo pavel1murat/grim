@@ -10,10 +10,11 @@
 * steps of the workflow
 * ------------------------------------------------------------------------------
 * 0.1) clone offline code from git, compile it
-* 0.2) create _./.grid_config_ configuration file                            
+* 0.2) create _./.grid_config_ configuration file and point env('GRIM_CONFIG_FILE') to it                             
 
 #+begin_src 
   source grim/scripts/create_project pbar2m   # project=pbar2m
+  export GRIM_CONFIG_FILE=$PWD/.grid_config
 #+end_src
 
   - it is created in the working (muse) directory of your project.
