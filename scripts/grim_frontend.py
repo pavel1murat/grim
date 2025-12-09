@@ -12,8 +12,7 @@ import  midas
 import  midas.frontend 
 import  midas.event
 
-import  TRACE
-TRACE_NAME = "grim_fe"
+from TRACE import * ; TRACE_NAME = "grim_fe"
 
 # import grim.rc.control.farm_manager as farm_manager
 
@@ -26,7 +25,7 @@ TRACE_NAME = "grim_fe"
 #------------------------------------------------------------------------------
 class GrimEquipment(midas.frontend.EquipmentBase):
     def __init__(self, client):
-        TRACE.TRACE(TRACE.TLVL_DBG,"-- START",TRACE_NAME)
+        TRACE(TLVL_DBG,"-- START",TRACE_NAME)
 #------------------------------------------------------------------------------
 # Define the "common" settings of a frontend. These will appear in
 # /Equipment/MyPeriodicEquipment/Common. 
@@ -50,7 +49,7 @@ class GrimEquipment(midas.frontend.EquipmentBase):
 # set the status of the equipment (appears in the midas status page)
 #------------------------------------------------------------------------------
         self.set_status("Initialized")
-        TRACE.TRACE(TRACE.TLVL_LOG,":002: --- END equipment initialized",TRACE_NAME)
+        TRACE(TLVL_INFO,":002: --- END equipment initialized",TRACE_NAME)
         return;
 
 #-------^----------------------------------------------------------------------
@@ -59,7 +58,7 @@ class GrimEquipment(midas.frontend.EquipmentBase):
 # or None (if we do not write an event).
 #------------------------------------------------------------------------------
     def readout_func(self):
-        TRACE.TRACE(TRACE.TLVL_DBG+1,":001: -- START",TRACE_NAME)
+        TRACE(TLVL_DBG+1,":001: -- START",TRACE_NAME)
         # In this example, we just make a simple event with one bank.
 
         # event = midas.event.Event()
@@ -69,7 +68,7 @@ class GrimEquipment(midas.frontend.EquipmentBase):
         # data = [1,2,3,4,5,6,TRACE.TLVL_LOG,8]
         # event.create_bank("MYBK", midas.TID_INT, data)
 
-        TRACE.TRACE(TRACE.TLVL_DBG+1,"-- END",TRACE_NAME)
+        TRACE(TLVL_DBG+1,"-- END",TRACE_NAME)
         return None;        # event
 
 #------------------------------------------------------------------------------
@@ -82,9 +81,9 @@ class GrimFrontend(midas.frontend.FrontendBase):
 # define needed env variables
 #------------------------------------------------------------------------------
     def __init__(self):
-        TRACE.TRACE(TRACE.TLVL_LOG,"0010: START")
+        TRACE(TLVL_LOG,"0010: START")
         midas.frontend.FrontendBase.__init__(self, "grim_fe")
-        TRACE.TRACE(TRACE.TLVL_LOG,"0011: FrontendBase initialized")
+        TRACE(TLVL_LOG,"0011: FrontendBase initialized")
 #------------------------------------------------------------------------------
 # determine active configuration
 #------------------------------------------------------------------------------
@@ -98,14 +97,14 @@ class GrimFrontend(midas.frontend.FrontendBase):
 #------------------------------------------------------------------------------
 # redefine STDOUT
 #------------------------------------------------------------------------------
-        TRACE.TRACE(TRACE.TLVL_LOG,"0016: after get_logfile")
+        TRACE(TLVL_LOG,"0016: after get_logfile")
 #------------------------------------------------------------------------------
 # You can add equipment at any time before you call `run()`, but doing
 # it in __init__() seems logical.
 #-------v----------------------------------------------------------------------
         self.add_equipment(GrimEquipment(self.client))
 
-#        TRACE.TRACE(TRACE.TLVL_LOG,"004: grim instantiated, self.use_runinfo_db=%i"%(self.use_runinfo_db))
+#        TRACE(TLVL_LOG,"004: grim instantiated, self.use_runinfo_db=%i"%(self.use_runinfo_db))
 
         cmd=f"cat {os.getenv('MIDAS_EXPTAB')} | awk -v expt={os.getenv('MIDAS_EXPT_NAME')} '{{if ($1==expt) {{print $2}} }}'"
         process = subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True)
@@ -119,18 +118,19 @@ class GrimFrontend(midas.frontend.FrontendBase):
 # register hotlink
 # try to change priority by re-registering the same callback
 #------------------------------------------------------------------------------
-        self.client.odb_watch(self.cmd_top_path+'/Run', self.process_command)
+        watch_path = self.cmd_top_path+'/Run';
+        self.client.odb_watch(watch_path, self.process_command)
         # self.client.register_transition_callback(midas.TR_START, 502, self._tr_start_callback)
-
+        INFO(f'watch odb path:{watch_path}')
         return;
 
 #------------------------------------------------------------------------------
 # on exit, also kill the tail logfile process
 #------------------------------------------------------------------------------
     def __del__(self):
-        TRACE.TRACE(TRACE.TLVL_LOG,"001: destructor START",TRACE_NAME)
+        TRACE(TLVL_LOG,"001: destructor START",TRACE_NAME)
 
-        TRACE.TRACE(TRACE.TLVL_LOG,"002: destructor END",TRACE_NAME)
+        TRACE(TLVL_LOG,"002: destructor END",TRACE_NAME)
 
 #------------------------------------------------------------------------------
 # This function will be called at the beginning of the run.
@@ -142,7 +142,7 @@ class GrimFrontend(midas.frontend.FrontendBase):
 
         self.set_all_equipment_status("Run starting", "yellow")
 
-        TRACE.TRACE(TRACE.TLVL_LOG,"001:BEGIN_OF_RUN")
+        TRACE(TLVL_LOG,"001:BEGIN_OF_RUN")
 
        
         self.set_all_equipment_status("Running", "greenLight")
@@ -153,12 +153,12 @@ class GrimFrontend(midas.frontend.FrontendBase):
 #
 #---v--------------------------------------------------------------------------
     def end_of_run(self, run_number):
-        TRACE.TRACE(TRACE.TLVL_DBG,f'-- START: self.use_runinfo_db:{self.use_runinfo_db}')
+        TRACE(TLVL_DBG,f'-- START: self.use_runinfo_db:{self.use_runinfo_db}')
 
         self.set_all_equipment_status("Finished", "greenLight")
         self.client.msg("Frontend has seen end of run number %d" % run_number)
 
-        TRACE.TRACE(TRACE.TLVL_DBG,"-- END")
+        TRACE(TLVL_DBG,"-- END")
         return midas.status_codes["SUCCESS"]
 
 #------------------------------------------------------------------------------
@@ -168,9 +168,9 @@ class GrimFrontend(midas.frontend.FrontendBase):
 #---v--------------------------------------------------------------------------
     def frontend_exit(self):
         # breakpoint()
-        TRACE.TRACE(TRACE.TLVL_LOG,"001:START : set self._stop_run = True")
+        TRACE(TLVL_LOG,"001:START : set self._stop_run = True")
         self._stop_run = True;
-        TRACE.TRACE(TRACE.TLVL_LOG,"002: DONE")
+        TRACE(TLVL_LOG,"002: DONE")
 
     def send_message(self, message, message_type = midas.MT_INFO, facility="midas"):
         """
@@ -212,52 +212,60 @@ class GrimFrontend(midas.frontend.FrontendBase):
 
 #------------------------------------------------------------------------------
     def process_cmd_reset_output(self,parameter_path):
+        INFO(f'-- START: parameter_path:{parameter_path} file;{self.message_fn}');
         file = open(self.message_fn, 'w');
         file.close();
+        INFO(f'-- END');
         return 0;
 
 #------------------------------------------------------------------------------
-# TODO: handle parameters
-# given that GRIM is a data member, no real need to send messages
-# so this is just an exercise
+# FCL file is defined by the run configuration and the process, host is not needed
+# usual steps:
+# 1. set state to BUSY  (1:yellow)
+# 2. print fcl file to grim.log
+# 3. set state to READY (0:green)
 #------------------------------------------------------------------------------
-    def process_cmd_get_state(self,parameter_path):
+    def process_cmd_print_fcl(self,parameter_path):
         rc = 0;
         
-        grim_url = f'http://mu2edaq22-ctrl.fnal.gov:{rpc_port}';   ## TODO - fix URL
-        s   = xmlrpc.client.ServerProxy(grim_url)
-        res = s.get_state("daqint")
-        
-        TRACE.TRACE(TRACE.TLVL_LOG,f'res:{res}',TRACE_NAME);
-#-------^----------------------------------------------------------------------
-# the remaining part - print output to the proper message stream ,
-# reverting the line order
-#-------v----------------------------------------------------------------------
-        message = "";
-        lines  = res.splitlines();
-        for line in reversed(lines):
-            message = message+line;
+        TRACE(TLVL_INFO,f'-- START: parameter_path:{parameter_path}',TRACE_NAME);
 
-#        self.send_message(message,midas.MT_DEBUG,"grim");
-        self.client.msg(message,0,"grim");
+        ppath    = parameter_path+'/print_fcl'
+        par      = self.client.odb_get(ppath);
+        run_conf = par["run_conf"];
+        host     = par["host"    ];
+        process  = par["process" ];
+
+        fcl_file = os.getenv("MU2E_DAQ_DIR")+f'/config/{run_conf}/{process}.fcl'
+        
+        TRACE(TLVL_DEBUG,f'fcl_file:{fcl_file} logfile:{self.message_fn}',TRACE_NAME);
+#------------------------------------------------------------------------------
+# remember that MIDAS displays the logfile in the reverse order
+#------------------------------------------------------------------------------
+        with open(fcl_file) as f:
+            lines = f.readlines();
+            with open(self.message_fn,"a") as logfile:
+                for line in reversed(lines):
+                    logfile.write(line)
+
+
+        TRACE(TLVL_INFO,f'-- END',TRACE_NAME);
         return rc;
-    
+
+
 #------------------------------------------------------------------------------
-# host    = 'all' : generate FCL's for all hosts
-# process = 'all' : generate FCLs for all processes
-#------------------------------------------------------------------------------
-    def process_cmd_generate_fcl(self,parameter_path):
+    def process_cmd_grid_monitor(self,parameter_path):
         rc = 0;
         
-        TRACE.TRACE(TRACE.TLVL_INFO,f'-- START: parameter_path:{parameter_path}',TRACE_NAME);
+        INFO(f'-- START: parameter_path:{parameter_path}',TRACE_NAME);
 
-        ppath          = parameter_path+'/generate_fcl'
-        par            = self.client.odb_get(ppath);
-        run_conf       = par["run_conf"];
-        host           = par["host"    ];
-        diag_level     = par["print_level"];
+        ppath    = parameter_path; ## +'/grid_monitor'
+        par      = self.client.odb_get(ppath);
+        project  = 'pbar2m';
 
-        cmd=os.getenv('MU2E_DAQ_DIR')+f'/config/scripts/generate_fcl.py --run_conf={run_conf} --host={host} --process={artdaq_process} --diag_level={diag_level}';
+        cmd=f'grid_monitor.py --project={project}';
+        INFO(f'cmd={cmd}');
+        
         p = subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True,text=True)
         stdout, stderr = p.communicate();
 #------------------------------------------------------------------------------
@@ -276,41 +284,7 @@ class GrimFrontend(midas.frontend.FrontendBase):
                 for line in reversed(lines):
                     logfile.write(line+"\n")
 
-        TRACE.TRACE(TRACE.TLVL_INFO,f'-- END: run_conf:{run_conf} host:{host} ',TRACE_NAME);
-        return rc;
-    
-#------------------------------------------------------------------------------
-# FCL file is defined by the run configuration and the process, host is not needed
-# usual steps:
-# 1. set state to BUSY  (1:yellow)
-# 2. print fcl file to grim.log
-# 3. set state to READY (0:green)
-#------------------------------------------------------------------------------
-    def process_cmd_print_fcl(self,parameter_path):
-        rc = 0;
-        
-        TRACE.TRACE(TRACE.TLVL_INFO,f'-- START: parameter_path:{parameter_path}',TRACE_NAME);
-
-        ppath    = parameter_path+'/print_fcl'
-        par      = self.client.odb_get(ppath);
-        run_conf = par["run_conf"];
-        host     = par["host"    ];
-        process  = par["process" ];
-
-        fcl_file = os.getenv("MU2E_DAQ_DIR")+f'/config/{run_conf}/{process}.fcl'
-        
-        TRACE.TRACE(TRACE.TLVL_DEBUG,f'fcl_file:{fcl_file} logfile:{self.message_fn}',TRACE_NAME);
-#------------------------------------------------------------------------------
-# remember that MIDAS displays the logfile in the reverse order
-#------------------------------------------------------------------------------
-        with open(fcl_file) as f:
-            lines = f.readlines();
-            with open(self.message_fn,"a") as logfile:
-                for line in reversed(lines):
-                    logfile.write(line)
-
-
-        TRACE.TRACE(TRACE.TLVL_INFO,f'-- END',TRACE_NAME);
+        INFO(f'-- END',TRACE_NAME);
         return rc;
     
 #-------v-----------------------------------------------------------------------
@@ -325,12 +299,12 @@ class GrimFrontend(midas.frontend.FrontendBase):
         run      = self.client.odb_get(self.cmd_top_path+'/Run' )
         cmd_name = self.client.odb_get(self.cmd_top_path+'/Name')
         
-        TRACE.TRACE(TRACE.TLVL_DEBUG,f'path:{path} cmd_name:{cmd_name} run:{run}',TRACE_NAME);
+        TRACE(TLVL_DEBUG,f'path:{path} cmd_name:{cmd_name} run:{run}',TRACE_NAME);
         if (run != 1):
 #-------^----------------------------------------------------------------------
 # likely, self-resetting the request
 #------------------------------------------------------------------------------
-            TRACE.TRACE(TRACE.TLVL_WARNING,f'{self.cmd_top_path}/Run:{run}, BAIL OUT',TRACE_NAME);
+            TRACE(TLVL_WARNING,f'{self.cmd_top_path}/Run:{run}, BAIL OUT',TRACE_NAME);
             return
 #-------v----------------------------------------------------------------------
         parameter_path = self.client.odb_get(self.cmd_top_path+'/ParameterPath')
@@ -344,10 +318,10 @@ class GrimFrontend(midas.frontend.FrontendBase):
             rc = self.process_cmd_configure(parameter_path);
         elif (cmd_name.upper() == 'GEN_FCL'):
             rc = self.client.stop_run(True);
+        elif (cmd_name.upper() == 'GRID_MONITOR'):
+            rc = self.process_cmd_grid_monitor(parameter_path);
         elif (cmd_name.upper() == 'SUBMIT_JOB'):
             rc = self.process_cmd_get_state(parameter_path);
-        elif (cmd_name.upper() == 'PRINT_FCL'):
-            rc = self.process_cmd_print_fcl(parameter_path);
         elif (cmd_name.upper() == 'RESET_OUTPUT'):
             rc = self.process_cmd_reset_output(parameter_path);
 #------------------------------------------------------------------------------
@@ -364,15 +338,15 @@ if __name__ == "__main__":
 # The main executable is very simple:
 # just create the frontend object, and call run() on it.
 #---v--------------------------------------------------------------------------
-    TRACE.Instance = "grim_fe".encode();
+    Instance = "grim_fe".encode();
 
-    TRACE.TRACE(TRACE.TLVL_LOG,"000: TRACE.Instance : %s"%TRACE.Instance,TRACE_NAME)
+    TRACE(TLVL_LOG,"000: TRACE.Instance : %s"%Instance,TRACE_NAME)
     with GrimFrontend() as fe:
-        TRACE.TRACE(TRACE.TLVL_LOG,"001: in the loop",TRACE_NAME)
+        TRACE(TLVL_LOG,"001: in the loop",TRACE_NAME)
         fe.run()
-        TRACE.TRACE(TRACE.TLVL_LOG,"002: after frontend::run",TRACE_NAME)
+        TRACE(TLVL_LOG,"002: after frontend::run",TRACE_NAME)
         
 
-    TRACE.TRACE(TRACE.TLVL_LOG,"003: DONE, exiting")
+    TRACE(TLVL_LOG,"003: DONE, exiting")
 
         

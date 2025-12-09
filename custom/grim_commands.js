@@ -261,7 +261,7 @@ function grim_make_dropup_button(cmd) {
 
   const d1_1   = document.createElement('div');
   d1_1.innerHTML = 'Load Parameters'
-  d1_1.onclick   = function() { grim_load_table(cmd.table_id,cmd.parameter_path+'/'+cmd.name)};
+  d1_1.onclick   = function() { grim_load_table(cmd.table_id,cmd.parameter_path)};
   d1.appendChild(d1_1);
 
   const d1_2   = document.createElement('div');

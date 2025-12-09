@@ -9,4 +9,4 @@ include_directories($ENV{TRACE_INC})
 include_directories($ENV{MESSAGEFACILITY_INC})
 include_directories($ENV{CETLIB_EXCEPT_INC})
 
-install(PROGRAMS grim_frontend.py DESTINATION bin)
+install(PROGRAMS grim_frontend.py grid_monitor.py DESTINATION bin)

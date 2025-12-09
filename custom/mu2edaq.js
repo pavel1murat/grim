@@ -44,30 +44,6 @@ function clear_window(element_id) {
 }
 
 //-----------------------------------------------------------------------------
-function displayFile_old(filePath, elementId) {
-//  // const fs = require('fs');
-//  try {
-//    const response = await fetch(filePath);
-//    if (!response.ok) {
-//      throw new Error(`HTTP error! status: ${response.status}`);
-//    }
-//    const text = await response.text();
-//    document.getElementById(elementId).textContent = text;
-//  } catch (error) {
-//    document.getElementById(elementId).textContent = 'Error: ' + error.message;
-  //  }
-
-  var result = null;
-  var xmlhttp = new XMLHttpRequest();
-  xmlhttp.open("GET", filePath, false);
-  xmlhttp.send();
-  if (xmlhttp.status==200) {
-    document.getElementById(elementId).textContent = xmlhttp.responseText;
-  }
-  return result;
-}
-
-//-----------------------------------------------------------------------------
 function displayFile(filePath, elementId) {
 
   var result = null;

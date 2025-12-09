@@ -181,9 +181,8 @@
              td2.colspan = 3;
 
              // and the last action button not using ODB
-             let cmd3  = new Command('reset_output','cmd_params','/Mu2e/Offline/murat/grim_projects/pbar2m');
-             // let btn3 = grim_make_exec_button(cmd3);
-             let btn3 = grim_make_simple_button(cmd3);
+             let cmd3  = new Command('reset_output','cmd_params','/Mu2e/Commands/Grim');
+             let btn3 = grim_make_exec_button(cmd3);
              td2.appendChild(btn3);
 
              let cmd      = new Command('load_parameters','cmd_params','/Mu2e/Offline/murat/grim_projects/pbar2m');
@@ -247,7 +246,7 @@
                     <table class="mtable" id="cmd_params"    > </table> <!-- Table content is generated dynamically -->
                 </div>
 <!--    ------------------------- this is the output window  -->
-                <div class="column"; style="width:54%"> <!-- gets pushed to the left -->
+                <div class="column"; style="width:65%"> <!-- gets pushed to the left -->
                     <table>
                         <tr>
                             <td id="navigationFacilitiesButtons"></td>
